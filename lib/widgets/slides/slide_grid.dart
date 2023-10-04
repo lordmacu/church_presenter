@@ -83,6 +83,11 @@ class SlideGrid extends StatelessWidget {
                       dataTypeMode: slide.dataTypeMode,
                       json: slide.json);
 
+                  try {
+                    await presentController.getAllSubWindowIds();
+                  } catch (e) {
+                    await presentController.createNewWindow();
+                  }
                   sendToViewer(presentController.selectSlide.value);
                 }));
           },
