@@ -78,7 +78,53 @@ class PresentController extends GetxController {
       ..show();
   }
 
-  Future sendPlaceHolderPresentation() async {
+  Future sendPlaceHolderPresentation(payload) async {
+    var subWindowIds;
+    try {
+      subWindowIds = await getAllSubWindowIds();
+
+      if (payload != null) {
+        if (selectSlide.value.key == "") {
+          await sendRandomDataType();
+        } else {
+          await sendCurrentSlideDataToViewer(subWindowIds);
+        }
+
+        await Future.delayed(Duration(milliseconds: 50));
+        await sendDataToViewer(payload, subWindowIds);
+      }
+    } catch (e) {
+      await createNewWindow();
+      subWindowIds = await getAllSubWindowIds();
+
+      await sendRandomDataType();
+      await Future.delayed(Duration(milliseconds: 50));
+      await sendDataToViewer(payload, subWindowIds);
+    }
+  }
+
+  Future sendCurrentSlideDataToViewer(subWindowIds) async {
+    var payloaDataType;
+
+    Slide slide = selectSlide.value;
+
+    payloaDataType = jsonEncode({
+      "dataType": slide.dataType,
+      "dataTypePath": slide.dataTypePath,
+      "dataTypeMode": slide.dataTypeMode,
+    });
+
+    final setDataType = await DesktopMultiWindow.invokeMethod(
+        subWindowIds[0], "send_data_type", payloaDataType);
+  }
+
+  Future sendDataToViewer(payload, subWindowIds) async {
+    final result = await DesktopMultiWindow.invokeMethod(
+        subWindowIds[0], "send_viewer", payload);
+  }
+
+  Future sendRandomDataType() async {
+    var subWindowIds = await getAllSubWindowIds();
     String? image = await controllerSlide.getRandomImage();
 
     final payloaDataType = jsonEncode({
@@ -86,13 +132,6 @@ class PresentController extends GetxController {
       "dataTypePath": "${image!}",
       "dataTypeMode": "cover"
     });
-    var subWindowIds;
-    try {
-      subWindowIds = await getAllSubWindowIds();
-    } catch (e) {
-      await createNewWindow();
-      subWindowIds = await getAllSubWindowIds();
-    }
 
     await DesktopMultiWindow.invokeMethod(
         subWindowIds[0], "send_data_type", payloaDataType);

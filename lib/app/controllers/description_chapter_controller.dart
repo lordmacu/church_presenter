@@ -109,27 +109,16 @@ class DescriptionChapterController extends GetxController {
 
   void sendDirectToPresentation(
       int verse, String verseText, String book, int chapter) async {
-    try {
-      final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
-    } catch (e) {
-      print("hay alguna pantalla ");
-    }
+    final payload = jsonEncode({
+      "type": "verse",
+      "verseText": verseText,
+      "book": book,
+      "testament": "",
+      "chapter": chapter,
+      "verse": verse,
+    });
 
-    try {
-      final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
-
-      final payload = jsonEncode({
-        "type": "verse",
-        "verseText": verseText,
-        "book": book,
-        "testament": "",
-        "chapter": chapter,
-        "verse": verse,
-      });
-
-      final result = await DesktopMultiWindow.invokeMethod(
-          subWindowIds[0], "send_viewer", payload);
-    } catch (e) {}
+    await controllerPresent.sendPlaceHolderPresentation(payload);
   }
 
   @override
