@@ -26,7 +26,7 @@ class PlayWidget extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () async {
-                  await controllerPresenter.sendPlaceHolderPresentation(null);
+                  await controllerPresenter.sendToPresentation(null);
                 },
                 child: Container(
                   width: 35,

@@ -73,6 +73,13 @@ class SongListController extends GetxController {
           dataTypeMode: "cover",
           json: payload));
     }
+    final firstParagraphPayload = jsonEncode({
+      "type": "song",
+      "paragraph": '${song.paragraphs[0]}',
+      "title": song.title,
+    });
+
+    await controllerPresent.sendToPresentation(firstParagraphPayload);
   }
 
   @override

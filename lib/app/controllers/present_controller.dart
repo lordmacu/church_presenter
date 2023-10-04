@@ -78,7 +78,7 @@ class PresentController extends GetxController {
       ..show();
   }
 
-  Future sendPlaceHolderPresentation(payload) async {
+  Future sendToPresentation(payload) async {
     var subWindowIds;
     try {
       subWindowIds = await getAllSubWindowIds();
@@ -99,6 +99,7 @@ class PresentController extends GetxController {
 
       await sendRandomDataType();
       await Future.delayed(Duration(milliseconds: 50));
+
       await sendDataToViewer(payload, subWindowIds);
     }
   }

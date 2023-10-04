@@ -118,7 +118,7 @@ class DescriptionChapterController extends GetxController {
       "verse": verse,
     });
 
-    await controllerPresent.sendPlaceHolderPresentation(payload);
+    await controllerPresent.sendToPresentation(payload);
   }
 
   @override

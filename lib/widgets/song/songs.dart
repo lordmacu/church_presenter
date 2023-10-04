@@ -159,16 +159,11 @@ class SongsList extends StatelessWidget {
                                         child: Row(
                                           children: [
                                             IconButton(
-                                              tooltip: "Agregar",
+                                              tooltip: "Agregar a presentación",
                                               icon: Icon(Icons.add),
                                               onPressed: () {
                                                 controller.addNewSong(song);
                                               },
-                                            ),
-                                            IconButton(
-                                              tooltip: "Presentar",
-                                              icon: Icon(Icons.present_to_all),
-                                              onPressed: () {},
                                             ),
                                           ],
                                         ),
