@@ -400,6 +400,16 @@ class BibleService {
     return cleanedText;
   }
 
+  Future<bool> hasVersesData() async {
+    final ipucDb = await DatabaseHelper().db;
+    if (ipucDb == null) {
+      return false;
+    }
+    final List<Map<String, dynamic>> result =
+        await ipucDb.rawQuery('SELECT 1 FROM verses LIMIT 1');
+    return result.isNotEmpty;
+  }
+
   Future<void> initVerses() async {
     await initializeDatabase("rvr1960");
     await initializeDatabase("NTVivi");

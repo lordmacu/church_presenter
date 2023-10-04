@@ -18,15 +18,21 @@ class _LoadingView extends State<LoadingView> {
     });
 
     BibleService versiculoService = BibleService();
-    await versiculoService.initVerses();
 
-    SongService songService = SongService();
-    await songService.initSongs();
+    bool hasVersesData = await versiculoService.hasVersesData();
+    if (hasVersesData) {
+      Get.toNamed('/');
+    } else {
+      await versiculoService.initVerses();
 
-    setState(() {
-      _isLoading = 3;
-    });
-    Get.toNamed('/');
+      SongService songService = SongService();
+      await songService.initSongs();
+
+      setState(() {
+        _isLoading = 3;
+      });
+      Get.toNamed('/');
+    }
   }
 
   Future delete() async {
@@ -52,7 +58,7 @@ class _LoadingView extends State<LoadingView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    CheckIHasInformation();
+    initData();
   }
 
   @override
@@ -63,30 +69,6 @@ class _LoadingView extends State<LoadingView> {
                 child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _isLoading == 1
-                      ? Column(
-                          children: [
-                            Container(
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  await Hive.deleteBoxFromDisk('books');
-                                  await Hive.deleteBoxFromDisk('songs');
-                                  await Hive.deleteBoxFromDisk('presentations');
-                                  await Hive.deleteBoxFromDisk('verses');
-                                  await Hive.deleteBoxFromDisk('testaments');
-                                  await Hive.deleteBoxFromDisk('paragraphs');
-                                  await Hive.deleteBoxFromDisk('slides');
-                                  await Hive.deleteBoxFromDisk('lyrics');
-                                  await Hive.deleteBoxFromDisk(
-                                      'videoExplanations');
-                                  initData();
-                                },
-                                child: Text('Iniciar'),
-                              ),
-                            )
-                          ],
-                        )
-                      : Container(),
                   _isLoading == 2
                       ? Container(
                           child: const Column(
