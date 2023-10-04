@@ -48,17 +48,127 @@ class ScreenView extends StatelessWidget {
     return BoxFit.cover;
   }
 
+  Widget viewVerse() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            spreadRadius: 0,
+            blurRadius: 5,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Obx(() => _screenController.dataTypePath.value != ""
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.file(
+                    File(_screenController.dataTypePath.value),
+                    fit: getBoxFit(),
+                  ),
+                )
+              : Container()),
+          Center(
+            child: Container(
+                padding: EdgeInsets.all(40),
+                child: Obx(
+                  () => Stack(
+                    children: [
+                      // Black border
+                      Text(
+                        _screenController.verseText.value,
+                        style: TextStyle(
+                          fontSize: _screenController.fontSize.value,
+                          fontWeight: FontWeight.bold,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 4
+                            ..color = Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      // White text
+                      Text(
+                        _screenController.verseText.value,
+                        style: TextStyle(
+                          fontSize: _screenController.fontSize.value,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                )),
+          ),
+          Obx(
+            () => _screenController.book.value.length > 0
+                ? Positioned(
+                    bottom: 10,
+                    right: 10,
+                    child: Stack(
+                      children: [
+                        // Black border
+                        Text(
+                          "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            foreground: Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 4
+                              ..color = Colors.black,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        // White text
+                        Text(
+                          "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ))
+                : Container(),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget viewTypeSlide() {
+    if (_screenController.type.value == "verse") {
+      return viewVerse();
+    }
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
     double fontSize = getFontSize(text, width, height);
+
+    _screenController.fontSize.value = fontSize;
+
     DesktopMultiWindow.setMethodHandler((call, fromWindowId) async {
       var payload = jsonDecode(call.arguments);
+      _screenController.type.value = payload["type"];
+      if (call.method == "send_verse") {
+        _screenController.verseText.value = payload["verse"];
+      }
       if (call.method == "send_viewer") {
-        print(payload);
-        if (payload['type'] == "verse") {
+        if (_screenController.type.value == "verse") {
           _screenController.verseText.value = payload['verseText'];
           _screenController.verse.value = payload['verse'];
           _screenController.chapter.value = payload['chapter'];
@@ -67,7 +177,6 @@ class ScreenView extends StatelessWidget {
       }
 
       if (call.method == "send_data_type") {
-        print("sent to send_data_type ${payload}");
         _screenController.dataTypeMode.value = payload['dataTypeMode'];
         _screenController.dataTypePath.value = payload['dataTypePath'];
       }
@@ -83,100 +192,7 @@ class ScreenView extends StatelessWidget {
           onTap: () {
             toggleFullScreen();
           },
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  spreadRadius: 0,
-                  blurRadius: 5,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Obx(() => _screenController.dataTypePath.value != ""
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.file(
-                          File(_screenController.dataTypePath.value),
-                          fit: getBoxFit(),
-                        ),
-                      )
-                    : Container()),
-                Center(
-                  child: Container(
-                      padding: EdgeInsets.all(40),
-                      child: Obx(
-                        () => Stack(
-                          children: [
-                            // Black border
-                            Text(
-                              _screenController.verseText.value,
-                              style: TextStyle(
-                                fontSize: fontSize,
-                                fontWeight: FontWeight.bold,
-                                foreground: Paint()
-                                  ..style = PaintingStyle.stroke
-                                  ..strokeWidth = 4
-                                  ..color = Colors.black,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            // White text
-                            Text(
-                              _screenController.verseText.value,
-                              style: TextStyle(
-                                fontSize: fontSize,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      )),
-                ),
-                Obx(
-                  () => _screenController.book.value.length > 0
-                      ? Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: Stack(
-                            children: [
-                              // Black border
-                              Text(
-                                "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
-                                style: TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
-                                  foreground: Paint()
-                                    ..style = PaintingStyle.stroke
-                                    ..strokeWidth = 4
-                                    ..color = Colors.black,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              // White text
-                              Text(
-                                "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
-                                style: TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ))
-                      : Container(),
-                )
-              ],
-            ),
-          ),
+          child: Obx(() => viewTypeSlide()),
         ));
       },
     );

@@ -5,7 +5,9 @@ class ScreenController extends GetxController {
   var book = "".obs;
   var chapter = 0.obs;
   var verseText = "".obs;
+  var type = "verse".obs;
   var dataTypeMode = "".obs;
+  var fontSize = 10.0.obs;
   var dataTypePath = "".obs;
   var payload = ({} as Map<dynamic, dynamic>).obs;
 }
