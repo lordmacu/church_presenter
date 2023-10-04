@@ -1,15 +1,19 @@
 import 'dart:convert';
 
 import 'package:desktop_multi_window/desktop_multi_window.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:ipuc/app/controllers/slide_controller.dart';
 import 'package:ipuc/models/presentation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ipuc/models/slide.dart';
+import 'package:ipuc/widgets/slides/slide_presenter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 import 'package:uuid/uuid.dart';
+import 'package:fullscreen_window/fullscreen_window.dart';
 
 class PresentController extends GetxController {
   var selectedItem = RxString("");
@@ -43,6 +47,7 @@ class PresentController extends GetxController {
           dataTypeMode: "cover")
       .obs;
   RxList<Presentation> presentations = RxList<Presentation>();
+  final SliderController controllerSlide = Get.find();
 
   Future<void> pickImage() async {
     final pickedFile =
@@ -57,6 +62,44 @@ class PresentController extends GetxController {
 
       image.value = savedImage.path; // Guardar la ruta de la imagen
     }
+  }
+
+  Future createNewWindow() async {
+    final window = await DesktopMultiWindow.createWindow(jsonEncode({
+      'args1': 'Sub window',
+      'args2': 100,
+      'args3': true,
+      'bussiness': 'bussiness_test',
+    }));
+    window
+      ..setFrame(const Offset(0, 0) & const Size(1280, 720))
+      ..setTitle("")
+      ..center()
+      ..show();
+  }
+
+  Future sendPlaceHolderPresentation() async {
+    String? image = await controllerSlide.getRandomImage();
+
+    final payloaDataType = jsonEncode({
+      "dataType": "image",
+      "dataTypePath": "${image!}",
+      "dataTypeMode": "cover"
+    });
+    var subWindowIds;
+    try {
+      subWindowIds = await getAllSubWindowIds();
+    } catch (e) {
+      await createNewWindow();
+      subWindowIds = await getAllSubWindowIds();
+    }
+
+    await DesktopMultiWindow.invokeMethod(
+        subWindowIds[0], "send_data_type", payloaDataType);
+  }
+
+  Future<List<int>> getAllSubWindowIds() async {
+    return await DesktopMultiWindow.getAllSubWindowIds();
   }
 
   sendToViewer() async {

@@ -111,6 +111,12 @@ class DescriptionChapterController extends GetxController {
       int verse, String verseText, String book, int chapter) async {
     try {
       final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
+    } catch (e) {
+      print("hay alguna pantalla ");
+    }
+
+    try {
+      final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
 
       final payload = jsonEncode({
         "type": "verse",
