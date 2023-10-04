@@ -49,6 +49,9 @@ class ScreenView extends StatelessWidget {
   }
 
   Widget viewVerse() {
+    double fontSize = getFontSize(_screenController.verseText.value,
+        _screenController.width.value, _screenController.height.value);
+    _screenController.fontSize.value = fontSize;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -145,9 +148,78 @@ class ScreenView extends StatelessWidget {
     );
   }
 
+  Widget viewSong() {
+    double fontSize = getFontSize(_screenController.paragraph.value,
+        _screenController.width.value, _screenController.height.value);
+    _screenController.fontSize.value = fontSize;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            spreadRadius: 0,
+            blurRadius: 5,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Obx(() => _screenController.dataTypePath.value != ""
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.file(
+                    File(_screenController.dataTypePath.value),
+                    fit: getBoxFit(),
+                  ),
+                )
+              : Container()),
+          Center(
+            child: Container(
+                padding: EdgeInsets.all(40),
+                child: Obx(
+                  () => Stack(
+                    children: [
+                      // Black border
+                      Text(
+                        _screenController.paragraph.value,
+                        style: TextStyle(
+                          fontSize: _screenController.fontSize.value,
+                          fontWeight: FontWeight.bold,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 4
+                            ..color = Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      // White text
+                      Text(
+                        _screenController.paragraph.value,
+                        style: TextStyle(
+                          fontSize: _screenController.fontSize.value,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                )),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget viewTypeSlide() {
     if (_screenController.type.value == "verse") {
       return viewVerse();
+    }
+    if (_screenController.type.value == "song") {
+      return viewSong();
     }
     return Container();
   }
@@ -156,23 +228,24 @@ class ScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
-    double fontSize = getFontSize(text, width, height);
-
-    _screenController.fontSize.value = fontSize;
+    _screenController.width.value = width;
+    _screenController.height.value = height;
 
     DesktopMultiWindow.setMethodHandler((call, fromWindowId) async {
       var payload = jsonDecode(call.arguments);
-      _screenController.type.value = payload["type"];
-      if (call.method == "send_verse") {
-        _screenController.verseText.value = payload["verse"];
-      }
+
       if (call.method == "send_viewer") {
+        _screenController.type.value = payload["type"];
+
         if (_screenController.type.value == "verse") {
           _screenController.verseText.value = payload['verseText'];
           _screenController.verse.value = payload['verse'];
           _screenController.chapter.value = payload['chapter'];
           _screenController.book.value = payload['book'];
+        }
+
+        if (_screenController.type.value == "song") {
+          _screenController.paragraph.value = payload['paragraph'];
         }
       }
 

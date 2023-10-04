@@ -90,15 +90,17 @@ class PresentController extends GetxController {
           await sendCurrentSlideDataToViewer(subWindowIds);
         }
 
-        await Future.delayed(Duration(milliseconds: 50));
         await sendDataToViewer(payload, subWindowIds);
       }
     } catch (e) {
       await createNewWindow();
       subWindowIds = await getAllSubWindowIds();
 
-      await sendRandomDataType();
-      await Future.delayed(Duration(milliseconds: 50));
+      if (selectSlide.value.key == "") {
+        await sendRandomDataType();
+      } else {
+        await sendCurrentSlideDataToViewer(subWindowIds);
+      }
 
       await sendDataToViewer(payload, subWindowIds);
     }
@@ -133,7 +135,6 @@ class PresentController extends GetxController {
       "dataTypePath": "${image!}",
       "dataTypeMode": "cover"
     });
-
     await DesktopMultiWindow.invokeMethod(
         subWindowIds[0], "send_data_type", payloaDataType);
   }

@@ -9,5 +9,8 @@ class ScreenController extends GetxController {
   var dataTypeMode = "".obs;
   var fontSize = 10.0.obs;
   var dataTypePath = "".obs;
+  var paragraph = "".obs;
+  var width = 0.0.obs;
+  var height = 0.0.obs;
   var payload = ({} as Map<dynamic, dynamic>).obs;
 }

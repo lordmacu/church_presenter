@@ -56,6 +56,8 @@ class SongListController extends GetxController {
     }
     String? image = await controllerSlide.getRandomImage();
 
+    int index = 0;
+
     for (var paragraph in song.paragraphs) {
       var uuid = Uuid();
       final uniqueKey = uuid.v4();
@@ -65,13 +67,19 @@ class SongListController extends GetxController {
         "title": song.title,
       });
 
-      controllerPresent.setSlideToPresentation(Slide(
+      Slide slide = Slide(
           key: uniqueKey,
           type: "song",
           dataType: "image",
           dataTypePath: image!,
           dataTypeMode: "cover",
-          json: payload));
+          json: payload);
+      controllerPresent.setSlideToPresentation(slide);
+
+      if (index == 0) {
+        controllerPresent.selectSlide.value = slide;
+      }
+      index++;
     }
     final firstParagraphPayload = jsonEncode({
       "type": "song",
