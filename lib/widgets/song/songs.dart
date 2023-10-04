@@ -159,7 +159,8 @@ class SongsList extends StatelessWidget {
                                         child: Row(
                                           children: [
                                             IconButton(
-                                              tooltip: "Agregar a presentación",
+                                              tooltip:
+                                                  "Agregar a la presentación",
                                               icon: Icon(Icons.add),
                                               onPressed: () {
                                                 controller.addNewSong(song);

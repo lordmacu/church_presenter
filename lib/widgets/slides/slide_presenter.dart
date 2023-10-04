@@ -467,6 +467,7 @@ class SlidePresenter extends StatelessWidget {
                                     if (result == true) {
                                       controllerPresenter
                                           .deleteAllSlideToPresentation();
+                                      controllerPresenter.resetSlide();
                                     }
                                   },
                                 ),

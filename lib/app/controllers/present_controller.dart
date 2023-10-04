@@ -64,6 +64,17 @@ class PresentController extends GetxController {
     }
   }
 
+  void resetSlide() {
+    selectSlide.value = Slide(
+      key: "",
+      type: "",
+      dataType: "",
+      json: "",
+      dataTypePath: "",
+      dataTypeMode: "cover",
+    );
+  }
+
   Future createNewWindow() async {
     final window = await DesktopMultiWindow.createWindow(jsonEncode({
       'args1': 'Sub window',

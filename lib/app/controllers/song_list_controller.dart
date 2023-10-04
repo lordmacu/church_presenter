@@ -78,6 +78,7 @@ class SongListController extends GetxController {
 
       if (index == 0) {
         controllerPresent.selectSlide.value = slide;
+        controllerSlide.selectedItem.value = slide.key;
       }
       index++;
     }

@@ -52,24 +52,13 @@ class ScreenView extends StatelessWidget {
     double fontSize = getFontSize(_screenController.verseText.value,
         _screenController.width.value, _screenController.height.value);
     _screenController.fontSize.value = fontSize;
+
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            spreadRadius: 0,
-            blurRadius: 5,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
       child: Stack(
         fit: StackFit.expand,
         children: [
           Obx(() => _screenController.dataTypePath.value != ""
               ? ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
                   child: Image.file(
                     File(_screenController.dataTypePath.value),
                     fit: getBoxFit(),
@@ -78,9 +67,14 @@ class ScreenView extends StatelessWidget {
               : Container()),
           Center(
             child: Container(
-                padding: EdgeInsets.all(40),
-                child: Obx(
-                  () => Stack(
+              padding: EdgeInsets.all(40),
+              child: Obx(
+                () => AnimatedSwitcher(
+                  switchInCurve: Curves.easeInOut,
+                  switchOutCurve: Curves.easeIn,
+                  duration: Duration(milliseconds: 500),
+                  child: Stack(
+                    key: ValueKey<String>(_screenController.verseText.value),
                     children: [
                       // Black border
                       Text(
@@ -107,7 +101,9 @@ class ScreenView extends StatelessWidget {
                       ),
                     ],
                   ),
-                )),
+                ),
+              ),
+            ),
           ),
           Obx(
             () => _screenController.book.value.length > 0
@@ -152,24 +148,13 @@ class ScreenView extends StatelessWidget {
     double fontSize = getFontSize(_screenController.paragraph.value,
         _screenController.width.value, _screenController.height.value);
     _screenController.fontSize.value = fontSize;
+
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            spreadRadius: 0,
-            blurRadius: 5,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
       child: Stack(
         fit: StackFit.expand,
         children: [
           Obx(() => _screenController.dataTypePath.value != ""
               ? ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
                   child: Image.file(
                     File(_screenController.dataTypePath.value),
                     fit: getBoxFit(),
@@ -178,9 +163,14 @@ class ScreenView extends StatelessWidget {
               : Container()),
           Center(
             child: Container(
-                padding: EdgeInsets.all(40),
-                child: Obx(
-                  () => Stack(
+              padding: EdgeInsets.all(40),
+              child: Obx(
+                () => AnimatedSwitcher(
+                  duration: Duration(seconds: 1),
+                  switchInCurve: Curves.easeInOut,
+                  switchOutCurve: Curves.easeIn, // Desaparece más rápido
+                  child: Stack(
+                    key: ValueKey<String>(_screenController.paragraph.value),
                     children: [
                       // Black border
                       Text(
@@ -207,7 +197,9 @@ class ScreenView extends StatelessWidget {
                       ),
                     ],
                   ),
-                )),
+                ),
+              ),
+            ),
           ),
         ],
       ),
