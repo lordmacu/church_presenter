@@ -18,6 +18,8 @@ class ScreenView extends StatelessWidget {
   String dataTypeMode = "cover";
   String text = "No matarás";
 
+  bool isVideoEqual = false;
+
   double getFontSize(String text, double width, double height) {
     int wordCount = text.split(' ').length;
 
@@ -241,7 +243,6 @@ class ScreenView extends StatelessWidget {
     DesktopMultiWindow.setMethodHandler((call, fromWindowId) async {
       var payload = jsonDecode(call.arguments);
 
-      print(payload);
       if (call.method == "send_viewer") {
         _screenController.type.value = payload["type"];
 
@@ -259,11 +260,21 @@ class ScreenView extends StatelessWidget {
 
       if (call.method == "send_data_type") {
         _screenController.dataTypeMode.value = payload['dataTypeMode'];
+
         _screenController.dataTypePath.value = payload['dataTypePath'];
         _screenController.dataType.value = payload['dataType'];
 
         if (_screenController.dataType.value == "video") {
-          print("aqu iel mode ${_screenController.dataTypeMode.value}");
+          if (payload['dataVideoPath'] !=
+              _screenController.dataVideoPath.value) {
+            _screenController.dataVideoPath.value = payload['dataVideoPath'];
+
+            _screenController.videoPlayerController.value =
+                VideoPlayerController.file(File(payload['dataVideoPath']));
+            isVideoEqual = false;
+          } else {
+            isVideoEqual = true;
+          }
 
           if (_screenController.dataTypeMode.value == "play") {
             _screenController.videoPlayerController.value.play();
@@ -273,21 +284,10 @@ class ScreenView extends StatelessWidget {
             _screenController.videoPlayerController.value
                 .seekTo(Duration(seconds: 0));
           } else {
-            _screenController.videoPlayerController.value.play();
+            // _screenController.videoPlayerController.value.play();
           }
 
-          var position =
-              await _screenController.videoPlayerController.value.position;
-
-          if (payload['dataVideoPath'] !=
-              _screenController.dataVideoPath.value) {
-            _screenController.dataVideoPath.value = payload['dataVideoPath'];
-
-            _screenController.videoPlayerController.value =
-                VideoPlayerController.file(File(payload['dataVideoPath']));
-          }
-
-          if (_screenController.dataTypeMode.value == "new") {
+          if (_screenController.dataTypeMode.value == "new" && !isVideoEqual) {
             _screenController.videoPlayerController.value
                 .initialize()
                 .then((value) {
@@ -296,7 +296,6 @@ class ScreenView extends StatelessWidget {
                 _screenController.videoPlayerController.value.setLooping(true);
 
                 _screenController.videoPlayerController.value.setVolume(0.0);
-
                 _screenController.videoPlayerController.value.play();
               } else {
                 print("video file load failed");
