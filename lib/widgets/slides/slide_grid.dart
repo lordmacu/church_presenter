@@ -26,10 +26,18 @@ class SlideGrid extends StatelessWidget {
     try {
       final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
 
+      var jsonData = jsonDecode(slide.json);
+      var video_path = "";
+
+      if (jsonData["videoPath"] != null && jsonData["videoPath"] is String) {
+        video_path = jsonData["videoPath"];
+      }
+
       final payloaDataType = jsonEncode({
         "dataType": slide.dataType,
         "dataTypePath": slide.dataTypePath,
-        "dataTypeMode": slide.dataTypeMode,
+        "dataTypeMode": slide.dataType == "video" ? "new" : slide.dataTypeMode,
+        "dataVideoPath": video_path,
       });
 
       final setDataType = await DesktopMultiWindow.invokeMethod(

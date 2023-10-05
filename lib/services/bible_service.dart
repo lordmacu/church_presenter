@@ -500,8 +500,6 @@ class BibleService {
       verseCopy["text"] = cleanText;
       verseCopy["searchableText"] = removeDiacritics(cleanText);
 
-      print("original : ${verse["text"]} modificado : ${cleanText}");
-
       await ipucDb.insert('verses', verseCopy);
     }
 

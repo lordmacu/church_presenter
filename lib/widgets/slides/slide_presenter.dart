@@ -124,6 +124,7 @@ class SlidePresenter extends StatelessWidget {
                 selectImage: (String image, String videoPath) async {
                   Slide currentSlide = controllerPresenter.selectSlide.value;
                   var jsonData = jsonDecode(currentSlide.json);
+                  jsonData["videoPath"] = videoPath;
 
                   var jsonFinal = jsonEncode(jsonData);
                   controllerPresenter.selectSlide.value = Slide(

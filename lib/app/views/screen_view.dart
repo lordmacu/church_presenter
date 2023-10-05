@@ -252,7 +252,6 @@ class ScreenView extends StatelessWidget {
           _screenController.book.value = payload['book'];
         }
 
-        print("dfs asd   ${_screenController.type.value}");
         if (_screenController.type.value == "song") {
           _screenController.paragraph.value = payload['paragraph'];
         }
@@ -280,11 +279,15 @@ class ScreenView extends StatelessWidget {
           var position =
               await _screenController.videoPlayerController.value.position;
 
-          if (_screenController.dataTypeMode.value == "new") {
+          if (payload['dataVideoPath'] !=
+              _screenController.dataVideoPath.value) {
             _screenController.dataVideoPath.value = payload['dataVideoPath'];
 
             _screenController.videoPlayerController.value =
                 VideoPlayerController.file(File(payload['dataVideoPath']));
+          }
+
+          if (_screenController.dataTypeMode.value == "new") {
             _screenController.videoPlayerController.value
                 .initialize()
                 .then((value) {

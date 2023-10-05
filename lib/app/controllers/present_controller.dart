@@ -176,12 +176,13 @@ class PresentController extends GetxController {
       final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
 
       final payload = jsonEncode(selectSlide.value.json);
+      var jsonData = jsonDecode(selectSlide.value.json);
 
       final payloaDataType = jsonEncode({
         "dataType": selectSlide.value.dataType,
         "dataTypePath": selectSlide.value.dataTypePath,
         "dataTypeMode": "new",
-        "dataVideoPath": video,
+        "dataVideoPath": jsonData["videoPath"],
       });
 
       final setDataType = await DesktopMultiWindow.invokeMethod(
