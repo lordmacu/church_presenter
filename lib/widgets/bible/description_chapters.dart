@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/description_chapter_controller.dart';
 import 'package:flutter/services.dart';
+import 'package:localization/localization.dart';
 
 class DescriptionChapter extends StatelessWidget {
   DescriptionChapter({Key? key}) : super(key: key);
@@ -82,9 +83,8 @@ class DescriptionChapter extends StatelessWidget {
         focusNode: focusNode,
         autofocus: true,
         onKey: (event) async {
-          double itemHeight = 50.0; // La altura de cada ítem de la lista.
-          double listViewHeight =
-              200.0; // La altura del ListView. Actualízala según tu diseño.
+          double itemHeight = 50.0;
+          double listViewHeight = 200.0;
 
           if (event.runtimeType == RawKeyDownEvent &&
               event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
@@ -115,8 +115,8 @@ class DescriptionChapter extends StatelessWidget {
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: Center(
                 child: Wrap(
-                  spacing: 10, // Espaciado horizontal entre los botones
-                  runSpacing: 10, // Espaciado vertical entre las líneas
+                  spacing: 10,
+                  runSpacing: 10,
                   children: [
                     ...List.generate(controller.versions.value.length, (index) {
                       return Tooltip(
@@ -166,18 +166,17 @@ class DescriptionChapter extends StatelessWidget {
                   color: Colors.white,
                 ),
                 onChanged: (text) => controller.updateSearch(text),
-                decoration: const InputDecoration(
-                  labelText: 'Buscar versículos',
-                  labelStyle: TextStyle(
+                decoration: InputDecoration(
+                  labelText: 'search_verses'.i18n(),
+                  labelStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,
                   ),
-                  hintText: 'Escribe para buscar',
-                  hintStyle: TextStyle(
+                  hintText: 'write_to_search'.i18n(),
+                  hintStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,
                   ),
-                  // otras opciones de diseño aquí
                 ),
               ),
             ),
@@ -204,13 +203,13 @@ class DescriptionChapter extends StatelessWidget {
                 ),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: const Row(
+              child: Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     child: Text(' '),
                     width: 100,
                   ),
-                  Text('Versículo'),
+                  Text('verse'.i18n()),
                 ],
               ),
             ),
@@ -240,7 +239,7 @@ class DescriptionChapter extends StatelessWidget {
                                         child: Row(
                                           children: [
                                             IconButton(
-                                              tooltip: "Agregar",
+                                              tooltip: "add".i18n(),
                                               icon: const Icon(Icons.add),
                                               onPressed: () {
                                                 controller.addNewVerse(
@@ -251,7 +250,7 @@ class DescriptionChapter extends StatelessWidget {
                                               },
                                             ),
                                             IconButton(
-                                              tooltip: "Presentar",
+                                              tooltip: "present".i18n(),
                                               icon: const Icon(
                                                   Icons.present_to_all),
                                               onPressed: () {

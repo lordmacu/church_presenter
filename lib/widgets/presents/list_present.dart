@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/present_controller.dart';
 import 'package:ipuc/widgets/title_bar.dart';
 import 'package:flutter_sliding_box/flutter_sliding_box.dart';
 import 'package:intl/intl.dart';
+import 'package:localization/localization.dart';
 
 class ListPresent extends StatelessWidget {
   ListPresent({Key? key}) : super(key: key);
@@ -33,13 +32,16 @@ class ListPresent extends StatelessWidget {
       floatingActionButton: Obx(() {
         return AnimatedOpacity(
           opacity: !controller.isPanelOpen.value ? 1.0 : 0.0,
-          duration: const Duration(milliseconds: 100), // Duración del efecto
+          duration: const Duration(milliseconds: 100),
           child: FloatingActionButton(
             heroTag: "five",
             onPressed: () {
               controller.addEmptyPresentation();
             },
-            child: const Icon(Icons.add),
+            child: Tooltip(
+              message: "add_empty_presentation".i18n(),
+              child: Icon(Icons.add),
+            ),
             backgroundColor: Colors.blue,
           ),
         );
@@ -76,7 +78,7 @@ class ListPresent extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            const TitleBar(title: "Presentaciones"),
+            TitleBar(title: "presentations".i18n()),
             Expanded(
               child: Scrollbar(
                 controller: scrollController,
@@ -123,62 +125,60 @@ class ListPresent extends StatelessWidget {
         style: const TextStyle(color: Colors.white),
       ),
       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-        IconButton(
-          icon: const Icon(Icons.edit, color: Colors.white),
-          onPressed: () {
-            final RenderBox renderBox =
-                myWidgetKey.currentContext!.findRenderObject() as RenderBox;
-            controller.resetValues(renderBox.size.height);
-            controller.isPanelOpen.value = true;
+        Tooltip(
+          message: "edit_presentation".i18n(),
+          child: IconButton(
+            icon: const Icon(Icons.edit, color: Colors.white),
+            onPressed: () {
+              final RenderBox renderBox =
+                  myWidgetKey.currentContext!.findRenderObject() as RenderBox;
+              controller.resetValues(renderBox.size.height);
+              controller.isPanelOpen.value = true;
 
-            // Acciones de edición aquí, como abrir una nueva ventana o un modal para editar
-            controller.doubleTapItem(
-                index,
-                renderBox.size
-                    .height); // Por ejemplo, puedes reutilizar tu función doubleTapItem
+              controller.doubleTapItem(index, renderBox.size.height);
 
-            controllerPreacher.text = controller.presentations[index].preacher;
-            controllerTopic.text = controller.presentations[index].topic;
-            boxController.openBox();
-          },
+              controllerPreacher.text =
+                  controller.presentations[index].preacher;
+              controllerTopic.text = controller.presentations[index].topic;
+              boxController.openBox();
+            },
+          ),
         ),
-        IconButton(
-          icon: const Icon(Icons.delete, color: Colors.white),
-          onPressed: () async {
-            // Mostrar un cuadro de diálogo de confirmación
-            final bool? result = await showDialog<bool>(
-              context: _context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Confirmación"),
-                  content: const Text(
-                      "¿Estás seguro de que quieres borrar la presentación? Esto también eliminará todos los slides dentro."),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text("Cancelar"),
-                      onPressed: () {
-                        Navigator.of(context).pop(
-                            false); // Devuelve 'false' si el usuario pulsa 'Cancelar'
-                      },
-                    ),
-                    TextButton(
-                      child: const Text("Aceptar"),
-                      onPressed: () {
-                        Navigator.of(context).pop(
-                            true); // Devuelve 'true' si el usuario pulsa 'Aceptar'
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
+        Tooltip(
+          message: "delete_presentation".i18n(),
+          child: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.white),
+            onPressed: () async {
+              final bool? result = await showDialog<bool>(
+                context: _context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("confirmation".i18n()),
+                    content: Text("confirm_delete_presentation".i18n()),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text("cancel".i18n()),
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                      TextButton(
+                        child: Text("accept".i18n()),
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
 
-            // Si el usuario confirmó la acción
-            if (result == true) {
-              controller.key.value = controller.presentations[index].key;
-              controller.deletePresentation();
-            }
-          },
+              if (result == true) {
+                controller.key.value = controller.presentations[index].key;
+                controller.deletePresentation();
+              }
+            },
+          ),
         )
       ]),
     );
@@ -193,12 +193,12 @@ class ListPresent extends StatelessWidget {
             buildDateText(),
             buildTextField(
               controller: controllerTopic,
-              label: 'Tema',
+              label: 'topic'.i18n(),
               onChanged: (value) => controller.topic.value = value,
             ),
             buildTextField(
               controller: controllerPreacher,
-              label: 'Predicador',
+              label: 'preacher'.i18n(),
               onChanged: (value) => controller.preacher.value = value,
             ),
             const SizedBox(height: 20),
@@ -218,52 +218,8 @@ class ListPresent extends StatelessWidget {
         controller.savePresentation();
         boxController.closeBox();
       },
-      child: const Text('Guardar'),
+      child: Text('save'.i18n()),
     );
-  }
-
-  Obx buildImageSection() {
-    RxBool showHint =
-        false.obs; // Observable para controlar la visibilidad del hint
-
-    return Obx(() {
-      return controller.image.value.isEmpty
-          ? ElevatedButton(
-              onPressed: controller.pickImage,
-              child: const Text('Seleccionar imagen'),
-            )
-          : MouseRegion(
-              onEnter: (_) => showHint.value = true,
-              onExit: (_) => showHint.value = false,
-              cursor: SystemMouseCursors.click,
-              child: Obx(
-                () => Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        controller.pickImage();
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: Image.file(
-                          File(controller.image.value),
-                          width: 200,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    if (showHint.value)
-                      const Icon(
-                        Icons.edit, // Este es solo un icono de ejemplo
-                        color: Colors.blue,
-                      ),
-                  ],
-                ),
-              ),
-            );
-    });
   }
 
   TextFormField buildTextField({
@@ -283,7 +239,7 @@ class ListPresent extends StatelessWidget {
       final DateTime date = controller.date.value;
       final String formattedDate =
           DateFormat("d 'de' MMMM", 'es_ES').format(date);
-      return Text("Predicación del $formattedDate");
+      return Text("meeting_of".i18n([formattedDate]));
     });
   }
 }

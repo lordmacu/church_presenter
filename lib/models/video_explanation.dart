@@ -1,9 +1,8 @@
 import 'package:hive/hive.dart';
 import 'package:ipuc/models/paragraph.dart';
 
-part 'video_explanation.g.dart'; // Nombre del archivo del adaptador generado
+part 'video_explanation.g.dart';
 
-// video_explanation.dart
 @HiveType(typeId: 28)
 class VideoExplanation {
   @HiveField(0)

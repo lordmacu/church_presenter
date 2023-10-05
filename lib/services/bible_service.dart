@@ -361,23 +361,19 @@ class BibleService {
     String cleanedText = inputText;
 
     for (String keyword in keywords) {
-      // Escapar caracteres especiales en la palabra clave
       String escapedKeyword = RegExp.escape(keyword);
 
-      // Crear la expresión regular
       RegExp regExp = RegExp(r"\\(" + escapedKeyword + r")([^\s\\{}]*|\s?)");
 
-      // Reemplazar en el texto
       cleanedText = cleanedText.replaceAll(regExp, '');
     }
 
-    // Convertir secuencias especiales a sus caracteres Unicode equivalentes
     cleanedText = cleanedText.replaceAll(r"\'e1", "á");
     cleanedText = cleanedText.replaceAll(r"\'e9", "é");
     cleanedText = cleanedText.replaceAll(r"\'ed", "í");
     cleanedText = cleanedText.replaceAll(r"\'f3", "ó");
     cleanedText = cleanedText.replaceAll(r"\'fa", "ú");
-    cleanedText = cleanedText.replaceAll(r"\'fc", "ü"); // Añadido
+    cleanedText = cleanedText.replaceAll(r"\'fc", "ü");
     cleanedText = cleanedText.replaceAll(r"\'c1", "Á");
     cleanedText = cleanedText.replaceAll(r"\'c9", "É");
     cleanedText = cleanedText.replaceAll(r"\'cd", "Í");
@@ -390,11 +386,8 @@ class BibleService {
     cleanedText = cleanedText.replaceAll(r"\'ab", "«");
     cleanedText = cleanedText.replaceAll(r"\'bb", "»");
 
-    // Eliminar anotaciones como { [a]}, { [b]} etc.
     cleanedText =
         cleanedText.replaceAll(RegExp(r'\{\s?\[[a-zA-Z0-9]+\]\}'), '');
-
-    // Añadir más reemplazos según sea necesario
 
     return cleanedText;
   }
@@ -430,7 +423,6 @@ class BibleService {
 
     Database db = await openDatabase(path);
 
-    // Obtén la instancia de la base de datos ipuc.db usando el helper
     final ipucDb = await DatabaseHelper().db;
 
     if (ipucDb == null) {
@@ -438,12 +430,10 @@ class BibleService {
     }
     Map<String, String> bookTextMap = {};
 
-    // Importar libros
     final List<Map<String, dynamic>> books = await db.query('book');
     for (var book in books) {
       Map<String, dynamic> bookCopy = {};
 
-      // Modificar la copia
       bookCopy["book_id"] = book["id"];
       bookCopy["testament_id"] = book["testament_id"];
       bookCopy["name"] = book["name"];
@@ -453,12 +443,10 @@ class BibleService {
       await ipucDb.insert('books', bookCopy);
     }
 
-    // Importar testamentos
     final List<Map<String, dynamic>> testaments = await db.query('testament');
     for (var testament in testaments) {
       Map<String, dynamic> testamentCopy = {};
 
-      // Modificar la copia
       testamentCopy["testament_id"] = testament["id"];
       testamentCopy["name"] = testament["book_id"];
 
@@ -467,13 +455,10 @@ class BibleService {
 
     final List<Map<String, dynamic>> verses = await db.query('verse');
     for (var verse in verses) {
-      // Hacer una copia superficial del mapa 'verse' para poder modificarlo
       Map<String, dynamic> verseCopy = {};
 
       String bookName = bookTextMap[verse["book_id"].toString()] ?? 'Unknown';
-      // Asumiendo que "book_id" contiene el nombre del libro
 
-      // Combinaciones
       List<String> combinations = [
         "$bookName ${verse["chapter"]} ${verse["verse"]}",
         "$bookName ${verse["chapter"]}:${verse["verse"]}",
@@ -483,15 +468,14 @@ class BibleService {
         removeDiacritics("$bookName ${verse["chapter"]}:${verse["verse"]}"),
         removeDiacritics("$bookName ${verse["chapter"]}-${verse["verse"]}"),
         removeDiacritics("$bookName ${verse["chapter"]}.${verse["verse"]}")
-      ].map((str) => str.toLowerCase()).toList(); // Convertir a minúsculas
+      ].map((str) => str.toLowerCase()).toList();
       String allCombinations = combinations.join(" ");
 
       var cleanText = removeRtfKeywords(verse["text"], rtfwords);
-      // Modificar la copia
       verseCopy["verse_id"] = verse["id"];
       verseCopy["book_id"] = verse["book_id"];
       verseCopy["book_name"] = verse["book_name"];
-      verseCopy["book_text"] = bookName; // Aquí se incluye el texto del libro
+      verseCopy["book_text"] = bookName;
       verseCopy["version"] = version;
       verseCopy["chapter"] = verse["chapter"];
       verseCopy["verse"] = verse["verse"];
@@ -501,10 +485,6 @@ class BibleService {
 
       await ipucDb.insert('verses', verseCopy);
     }
-
-    // Cierra la base de datos de la biblia cuando hayas terminado
-    //await db.close();
-    //await ipucDb.close();
   }
 
   Future<void> initializeDatabases(version) async {

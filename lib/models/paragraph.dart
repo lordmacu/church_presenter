@@ -1,8 +1,7 @@
 import 'package:hive/hive.dart';
 
-part 'paragraph.g.dart'; // Nombre del archivo del adaptador generado
+part 'paragraph.g.dart';
 
-// paragraph.dart
 @HiveType(typeId: 22)
 class Paragraph {
   @HiveField(0)

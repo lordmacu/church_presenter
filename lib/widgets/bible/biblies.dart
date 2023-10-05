@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/biblies_controller.dart';
 import 'package:ipuc/widgets/title_bar.dart';
+import 'package:localization/localization.dart';
 
 class Biblies extends StatelessWidget {
   Biblies({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class Biblies extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const TitleBar(title: "Biblias"),
+          TitleBar(title: 'bibles'.i18n()),
           Expanded(
             child: Scrollbar(
               controller: scrollController,
@@ -35,7 +36,7 @@ class Biblies extends StatelessWidget {
                               children: [
                                 SizedBox(
                                   child: Text(
-                                    'RV60',
+                                    ' ',
                                     style: TextStyle(
                                       color: controller.selectedIndex.value ==
                                               index

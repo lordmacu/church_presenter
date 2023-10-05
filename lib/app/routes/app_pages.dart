@@ -20,6 +20,5 @@ class AppPages {
       name: AppRoutes.loading,
       page: () => const LoadingView(),
     ),
-    // añade más páginas aquí
   ];
 }

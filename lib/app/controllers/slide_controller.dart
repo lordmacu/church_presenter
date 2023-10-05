@@ -24,17 +24,15 @@ class SliderController extends GetxController {
     final directory = Directory('$docPath/ipucImages');
     final List<FileSystemEntity> files = directory.listSync();
 
-    // Filtrar solo archivos de imagen
     final imageFiles = files.where((file) {
       return file is File &&
           (file.path.endsWith('.jpg') || file.path.endsWith('.png'));
     }).toList();
 
     if (imageFiles.isEmpty) {
-      return null; // Devuelve null si no hay imágenes
+      return null;
     }
 
-    // Obtener un archivo de imagen aleatorio
     final random = Random();
     final randomIndex = random.nextInt(imageFiles.length);
     File imageFile = imageFiles[randomIndex] as File;
@@ -77,13 +75,12 @@ class SliderController extends GetxController {
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      // Guardar la imagen en el sistema de archivos del app
       final directory = await getApplicationDocumentsDirectory();
       final fileName = path.basename(pickedFile.path);
       final File savedImage =
           await File(pickedFile.path).copy('${directory.path}/$fileName');
 
-      image.value = savedImage.path; // Guardar la ruta de la imagen
+      image.value = savedImage.path;
     }
   }
 
@@ -94,16 +91,13 @@ class SliderController extends GetxController {
     if (pickedFile != null) {
       final directory = await getApplicationDocumentsDirectory();
       Uuid uuid = const Uuid();
-      final String randomVideoName =
-          uuid.v1(); // Generar un nombre de video aleatorio
-      final String randomThumbnailName =
-          uuid.v1(); // Generar un nombre de miniatura aleatorio
+      final String randomVideoName = uuid.v1();
+      final String randomThumbnailName = uuid.v1();
 
       final File savedVideo = await File(pickedFile.path)
           .copy('${directory.path}/$randomVideoName.mp4');
       video.value = savedVideo.path;
 
-      // Obtener el primer frame del video
       final thumbnailPath =
           path.join(directory.path, '$randomThumbnailName.png');
       const seconds = '0:00:01.000000';

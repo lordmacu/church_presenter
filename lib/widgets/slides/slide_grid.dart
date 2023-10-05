@@ -9,6 +9,7 @@ import 'package:ipuc/app/controllers/slide_controller.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/models/slide.dart';
 import 'package:ipuc/widgets/live_output/preview.dart';
+import 'package:localization/localization.dart';
 
 class SlideGrid extends StatelessWidget {
   SlideGrid({Key? key}) : super(key: key);
@@ -52,7 +53,7 @@ class SlideGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    int crossAxisCount = 3; // número de elementos en el eje transversal
+    int crossAxisCount = 3;
     double desiredItemHeight = 350.0;
     double childAspectRatio = width / (crossAxisCount * desiredItemHeight);
 
@@ -103,10 +104,10 @@ class SlideGrid extends StatelessWidget {
                       }));
                 },
               )
-            : const Center(
+            : Center(
                 child: Text(
-                  'Agrega una canción o un versículo..',
-                  style: TextStyle(
+                  'add_song_or_verse'.i18n(),
+                  style: const TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                   ),

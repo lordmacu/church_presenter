@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:ipuc/core/sqlite_helper.dart';
 
-import 'package:diacritic/diacritic.dart'; // para removeDiacritics
+import 'package:diacritic/diacritic.dart';
 
 class SongService {
   Box? _songs;
@@ -12,7 +12,6 @@ class SongService {
   Future<void> initSongs() async {
     try {
       await Hive.initFlutter();
-      // Registra otros adaptadores
 
       if (_songs == null || !_songs!.isOpen) {
         _songs = await Hive.openBox('songs');
@@ -63,12 +62,10 @@ class SongService {
         }
       }
 
-      // Limpiar el título aquí
       String cleanTitle = song["title"];
       cleanTitle = cleanTitle.replaceFirst("Letra ", "");
       cleanTitle = cleanTitle.replaceFirst("Letra de ", "");
 
-      // Create a search text field
       String searchableText = removeDiacritics(
           (cleanTitle + " " + paragraphs.join(" ")).replaceAll('\n', ' '));
 
@@ -77,14 +74,13 @@ class SongService {
           whereArgs: [removeDiacritics(cleanTitle)]);
       if (existingSongs.isEmpty) {
         await ipucDb.insert('songs', {
-          'title': cleanTitle, // Use the cleaned title here
+          'title': cleanTitle,
           'youtubeUrl': song["youtubeUrl"],
           'paragraphs': jsonEncode(paragraphs),
           'lyricsPlain': jsonEncode(song["lyrics"]),
           'videoExplanation': jsonEncode(paragraphsExplation),
           'searchableText': searchableText,
-          'searchableTitle':
-              removeDiacritics(cleanTitle) // Insert the searchable text here
+          'searchableTitle': removeDiacritics(cleanTitle)
         });
       }
     }
@@ -107,13 +103,11 @@ class SongService {
         paragraphs.add(lyric.replaceAll(r'\n', '\n'));
       }
 
-      // Clean the title here
       String cleanTitle = song["title"];
       cleanTitle = cleanTitle.replaceFirst("LETRA", "").trim();
       cleanTitle = cleanTitle.replaceFirst("Letra", "").trim();
       cleanTitle = cleanTitle.replaceFirst("letra", "").trim();
 
-      // Create a search text field
       String searchableText = removeDiacritics(
           (cleanTitle + " " + paragraphs.join(" ")).replaceAll('\n', ' '));
 
@@ -122,14 +116,13 @@ class SongService {
           whereArgs: [removeDiacritics(cleanTitle)]);
       if (existingSongs.isEmpty) {
         await ipucDb.insert('songs', {
-          'title': cleanTitle, // Use the cleaned title here
+          'title': cleanTitle,
           'youtubeUrl': song["youtubeUrl"],
           'paragraphs': jsonEncode(paragraphs),
           'lyricsPlain': jsonEncode(song["lyrics"]),
           'videoExplanation': jsonEncode([]),
-          'searchableText': searchableText, // Insert the searchable text here
-          'searchableTitle':
-              removeDiacritics(cleanTitle) // Insert the searchable text here
+          'searchableText': searchableText,
+          'searchableTitle': removeDiacritics(cleanTitle)
         });
       }
     }

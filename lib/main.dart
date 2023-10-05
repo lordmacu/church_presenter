@@ -21,16 +21,17 @@ import 'package:ipuc/models/verse.dart';
 import 'package:ipuc/models/video_explanation.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
+import 'package:localization/localization.dart';
 import 'package:video_player_win/video_player_win_plugin.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isWindows) WindowsVideoPlayer.registerWith();
 
-  DatabaseHelper databaseHelper =
-      DatabaseHelper(); // Crea una instancia de DatabaseHelper
-  await databaseHelper.initDb(); // Inicializa la base de datos
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  await databaseHelper.initDb();
 
   ArgumentController controller = Get.put(ArgumentController());
 
@@ -62,7 +63,7 @@ void main(List<String> args) async {
       await windowManager.focus();
     });
 
-    await FFMpegHelper.instance.initialize(); // This is a singleton instance
+    await FFMpegHelper.instance.initialize();
 
     await Hive.initFlutter();
 
@@ -95,7 +96,7 @@ Future<void> clearAllHiveBoxes() async {
     'paragraphs',
     'videoExplanations',
     'videoExplanations',
-  ]; // Lista de nombres de boxes
+  ];
   for (var boxName in boxNames) {
     var box = await Hive.openBox(boxName);
     await box.clear();
@@ -114,21 +115,30 @@ class MySubApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors
-            .black, // Esto hace que todos los Scaffold tengan un fondo negro
+    LocalJsonLocalization.delegate.directories = ['lib/i18n'];
 
+    return GetMaterialApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        LocalJsonLocalization.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('es', 'ES'),
+      ],
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.black,
         textTheme: const TextTheme(
-          // Aquí puedes especificar varios estilos de texto como headline1, headline2, etc.
           bodyLarge: TextStyle(color: Color(0xff7e7e7e)),
           bodyMedium: TextStyle(color: Color(0xff7e7e7e)),
         ),
         iconTheme: const IconThemeData(
-          color: Colors.white, // Cambia el color de los íconos aquí
+          color: Colors.white,
         ),
       ),
-      title: 'Mi Aplicación',
+      title: 'Ipuc',
       initialRoute: AppRoutes.preview,
       getPages: AppPages.pages,
     );
@@ -175,30 +185,45 @@ class _MyAppState extends State<MyApp> with WindowListener {
   }
 
   void _init() async {
-    // Add this line to override the default close handler
     await windowManager.setPreventClose(true);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    LocalJsonLocalization.delegate.directories = ['lib/i18n'];
+
     return GetMaterialApp(
+      localeResolutionCallback: (locale, supportedLocales) {
+        if (supportedLocales.contains(locale)) {
+          return locale;
+        }
+
+        return Locale('es', 'ES');
+      },
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        LocalJsonLocalization.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('es', 'ES'),
+      ],
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors
-            .black, // Esto hace que todos los Scaffold tengan un fondo negro
+        scaffoldBackgroundColor: Colors.black,
         textTheme: const TextTheme(
-          // Aquí puedes especificar varios estilos de texto como headline1, headline2, etc.
-          bodyLarge: TextStyle(
-              color: Color(0xff7e7e7e)), // This was previously bodyText1
+          bodyLarge: TextStyle(color: Color(0xff7e7e7e)),
           bodyMedium: TextStyle(color: Color(0xff7e7e7e)),
         ),
         iconTheme: const IconThemeData(
-          color: Colors.white, // Cambia el color de los íconos aquí
+          color: Colors.white,
         ),
       ),
       title: 'Mi Aplicación',
-      initialRoute: AppRoutes.loading, // Reemplaza con tu ruta inicial
-      getPages: AppPages.pages, // Reemplaza con tus páginas
+      initialRoute: AppRoutes.loading,
+      getPages: AppPages.pages,
     );
   }
 }

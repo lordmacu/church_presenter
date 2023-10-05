@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:ipuc/models/slide.dart';
 
-part 'presentation.g.dart'; // Nombre del archivo del adaptador generado
+part 'presentation.g.dart';
 
 @HiveType(typeId: 23)
 class Presentation {
@@ -22,7 +22,7 @@ class Presentation {
   final String topic;
 
   @HiveField(6)
-  final RxList<Slide> slides; // Convertir en RxList<Slide>
+  final RxList<Slide> slides;
 
   @HiveField(7)
   final String key;

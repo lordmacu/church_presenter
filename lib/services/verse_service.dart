@@ -35,7 +35,6 @@ class VerseService {
     SELECT DISTINCT version FROM verses
   ''');
 
-    // Convierte los mapas devueltos en una lista de strings
     List<String> versions =
         rows.map((row) => row['version'] as String).toList();
 

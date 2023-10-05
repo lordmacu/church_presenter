@@ -1,9 +1,8 @@
 import 'package:hive/hive.dart';
 import 'package:ipuc/models/paragraph.dart';
 
-part 'lyric.g.dart'; // Nombre del archivo del adaptador generado
+part 'lyric.g.dart';
 
-// lyric.dart
 @HiveType(typeId: 21)
 class Lyric {
   @HiveField(0)

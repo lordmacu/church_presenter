@@ -1,8 +1,7 @@
 import 'package:hive/hive.dart';
 
-part 'book.g.dart'; // Nombre del archivo del adaptador generado
+part 'book.g.dart';
 
-// Para Book
 @HiveType(typeId: 20)
 class Book {
   @HiveField(0)

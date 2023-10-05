@@ -11,6 +11,7 @@ import 'package:ipuc/app/views/videos_view.dart';
 import 'package:ipuc/models/slide.dart';
 import 'package:ipuc/widgets/slides/slide_grid.dart';
 import 'package:ipuc/widgets/title_bar.dart';
+import 'package:localization/localization.dart';
 import 'package:uuid/uuid.dart';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'dart:io';
@@ -31,7 +32,7 @@ class SlidePresenter extends StatelessWidget {
       BuildContext modalSheetContext, TextTheme textTheme) {
     return WoltModalSheetPage.withSingleChild(
       hasSabGradient: false,
-      topBarTitle: Text('Galería', style: textTheme.titleSmall),
+      topBarTitle: Text('gallery'.i18n(), style: textTheme.titleSmall),
       isTopBarLayerAlwaysVisible: true,
       trailingNavBarWidget: IconButton(
         padding: const EdgeInsets.all(10),
@@ -44,7 +45,6 @@ class SlidePresenter extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
-              // Añade este widget
               child: GalleryView(
                 folderName: 'ipucImages',
                 selectImage: (String image) async {
@@ -84,10 +84,10 @@ class SlidePresenter extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(modalSheetContext).pop(),
-              child: const SizedBox(
+              child: SizedBox(
                 height: 50,
                 width: double.infinity,
-                child: Center(child: Text('Cancelar')),
+                child: Center(child: Text('cancel'.i18n())),
               ),
             ),
           ],
@@ -100,7 +100,7 @@ class SlidePresenter extends StatelessWidget {
       BuildContext modalSheetContext, TextTheme textTheme) {
     return WoltModalSheetPage.withSingleChild(
       hasSabGradient: false,
-      topBarTitle: Text('Videos', style: textTheme.titleSmall),
+      topBarTitle: Text('videos'.i18n(), style: textTheme.titleSmall),
       isTopBarLayerAlwaysVisible: true,
       trailingNavBarWidget: IconButton(
         padding: const EdgeInsets.all(10),
@@ -113,7 +113,6 @@ class SlidePresenter extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
-              // Añade este widget
               child: VideosView(
                 folderName: 'ipucVideos',
                 selectImage: (String image, String videoPath) async {
@@ -151,10 +150,10 @@ class SlidePresenter extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(modalSheetContext).pop(),
-              child: const SizedBox(
+              child: SizedBox(
                 height: 50,
                 width: double.infinity,
-                child: Center(child: Text('Cancelar')),
+                child: Center(child: Text('cancel'.i18n())),
               ),
             ),
           ],
@@ -195,7 +194,7 @@ class SlidePresenter extends StatelessWidget {
 
         keyFloating.currentState!.closeFABs();
       },
-      tooltip: 'Agregar Imagen',
+      tooltip: 'add_image'.i18n(),
       child: const Icon(Icons.image),
     );
   }
@@ -236,7 +235,7 @@ class SlidePresenter extends StatelessWidget {
             json: payload);
         keyFloating.currentState!.closeFABs();
       },
-      tooltip: 'Agregar Video',
+      tooltip: 'add_video'.i18n(),
       child: const Icon(Icons.video_call),
     );
   }
@@ -247,17 +246,15 @@ class SlidePresenter extends StatelessWidget {
     final directory = Directory('$docPath/ipucImages');
     final List<FileSystemEntity> files = directory.listSync();
 
-    // Filtrar solo archivos de imagen
     final imageFiles = files.where((file) {
       return file is File &&
           (file.path.endsWith('.jpg') || file.path.endsWith('.png'));
     }).toList();
 
     if (imageFiles.isEmpty) {
-      return null; // Devuelve null si no hay imágenes
+      return null;
     }
 
-    // Obtener un archivo de imagen aleatorio
     final random = Random();
     final randomIndex = random.nextInt(imageFiles.length);
     File imageFile = imageFiles[randomIndex] as File;
@@ -287,7 +284,7 @@ class SlidePresenter extends StatelessWidget {
 
         keyFloating.currentState!.closeFABs();
       },
-      tooltip: 'Agregar Texto',
+      tooltip: 'add_text'.i18n(),
       heroTag: "one",
       child: const Icon(Icons.text_format),
     );
@@ -407,18 +404,17 @@ class SlidePresenter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: AnimatedFloatingActionButton(
-        //Fab list
         fabButtons: <Widget>[image(), video(), text()],
         key: keyFloating,
         colorStartAnimation: Colors.blue,
         colorEndAnimation: Colors.red,
         animatedIconData: AnimatedIcons.menu_close,
-        //To principal button
+        tooltip: "add_resource".i18n(),
       ),
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
-          const TitleBar(title: "Diapositivas"),
+          TitleBar(title: "slides".i18n()),
           Obx(
             () => Container(
                 padding: const EdgeInsets.only(top: 0, bottom: 10),
@@ -443,7 +439,7 @@ class SlidePresenter extends StatelessWidget {
                             ? Row(
                                 children: [
                                   Tooltip(
-                                    message: "Borrar todos los slides",
+                                    message: "delete_all_slides".i18n(),
                                     child: MouseRegion(
                                       cursor: SystemMouseCursors.click,
                                       child: GestureDetector(
@@ -457,31 +453,31 @@ class SlidePresenter extends StatelessWidget {
                                           ),
                                         ),
                                         onTap: () async {
-                                          // Mostrar un cuadro de diálogo de alerta para confirmar
                                           final bool? result =
                                               await showDialog<bool>(
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
                                                 title:
-                                                    const Text("Confirmación"),
-                                                content: const Text(
-                                                    "¿Seguro que quieres limpiar los slides?"),
+                                                    Text("confirmation".i18n()),
+                                                content: Text(
+                                                    "confirm_delete_slide"
+                                                        .i18n()),
                                                 actions: <Widget>[
                                                   TextButton(
                                                     child:
-                                                        const Text("Cancelar"),
+                                                        Text("cancel".i18n()),
                                                     onPressed: () {
-                                                      Navigator.of(context).pop(
-                                                          false); // Devuelve 'false' cuando el usuario pulsa 'Cancelar'
+                                                      Navigator.of(context)
+                                                          .pop(false);
                                                     },
                                                   ),
                                                   TextButton(
                                                     child:
-                                                        const Text("Aceptar"),
+                                                        Text("accept".i18n()),
                                                     onPressed: () {
-                                                      Navigator.of(context).pop(
-                                                          true); // Devuelve 'true' cuando el usuario pulsa 'Aceptar'
+                                                      Navigator.of(context)
+                                                          .pop(true);
                                                     },
                                                   ),
                                                 ],
@@ -489,7 +485,6 @@ class SlidePresenter extends StatelessWidget {
                                             },
                                           );
 
-                                          // Si el usuario confirmó la acción
                                           if (result == true) {
                                             controllerPresenter
                                                 .deleteAllSlideToPresentation();
@@ -519,7 +514,7 @@ class SlidePresenter extends StatelessWidget {
                         child: Row(
                           children: [
                             Tooltip(
-                              message: "Enviar presentación vacia",
+                              message: "send_empty_presentation".i18n(),
                               child: InkWell(
                                 onTap: () async {
                                   await controllerPresenter
@@ -539,8 +534,7 @@ class SlidePresenter extends StatelessWidget {
                                       BoxShadow(
                                         color: Colors.black26,
                                         blurRadius: 5.0,
-                                        offset: Offset(0,
-                                            4), // Aquí usaríamos const si fuese posible
+                                        offset: Offset(0, 4),
                                       ),
                                     ],
                                     border: Border.all(
@@ -583,7 +577,7 @@ class SlidePresenter extends StatelessWidget {
                                       child: Row(
                                         children: [
                                           Tooltip(
-                                            message: "Seleccionar video",
+                                            message: "select_video".i18n(),
                                             child: MouseRegion(
                                               cursor: SystemMouseCursors.click,
                                               child: GestureDetector(
@@ -650,20 +644,23 @@ class SlidePresenter extends StatelessWidget {
                                                     child: Row(
                                                       children: [
                                                         buildOptioVideo(
-                                                          tooltip: "Play",
+                                                          tooltip:
+                                                              "play".i18n(),
                                                           icon:
                                                               Icons.play_arrow,
                                                           selectedOption:
                                                               "play",
                                                         ),
                                                         buildOptioVideo(
-                                                          tooltip: "Pausar",
+                                                          tooltip:
+                                                              "pause".i18n(),
                                                           icon: Icons.pause,
                                                           selectedOption:
                                                               "pause",
                                                         ),
                                                         buildOptioVideo(
-                                                          tooltip: "Reiniciar",
+                                                          tooltip:
+                                                              "reset".i18n(),
                                                           icon:
                                                               Icons.restart_alt,
                                                           selectedOption:
@@ -695,7 +692,7 @@ class SlidePresenter extends StatelessWidget {
                                       child: Row(
                                         children: [
                                           Tooltip(
-                                            message: "Seleccionar Imagen",
+                                            message: "select_image".i18n(),
                                             child: MouseRegion(
                                               cursor: SystemMouseCursors.click,
                                               child: GestureDetector(
@@ -762,36 +759,39 @@ class SlidePresenter extends StatelessWidget {
                                                     child: Row(
                                                       children: [
                                                         buildOption(
-                                                          tooltip: "Llenar",
+                                                          tooltip:
+                                                              "fill".i18n(),
                                                           icon: Icons
                                                               .aspect_ratio,
                                                           selectedOption:
                                                               "fill",
                                                         ),
                                                         buildOption(
-                                                          tooltip: "Contener",
+                                                          tooltip:
+                                                              "contain".i18n(),
                                                           icon: Icons
                                                               .zoom_out_map,
                                                           selectedOption:
                                                               "contain",
                                                         ),
                                                         buildOption(
-                                                          tooltip: "Cover",
+                                                          tooltip:
+                                                              "cover".i18n(),
                                                           icon: Icons.crop,
                                                           selectedOption:
                                                               "cover",
                                                         ),
                                                         buildOption(
                                                           tooltip:
-                                                              "Ajustar ancho",
+                                                              "fitwidth".i18n(),
                                                           icon: Icons
                                                               .photo_size_select_large,
                                                           selectedOption:
                                                               "fitWidth",
                                                         ),
                                                         buildOption(
-                                                          tooltip:
-                                                              "Ajustar altura",
+                                                          tooltip: "fitheight"
+                                                              .i18n(),
                                                           icon: Icons
                                                               .photo_size_select_small,
                                                           selectedOption:

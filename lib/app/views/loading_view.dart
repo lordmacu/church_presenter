@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:ipuc/services/bible_service.dart';
 import 'package:ipuc/services/song_servide.dart';
+import 'package:localization/localization.dart';
 
 class LoadingView extends StatefulWidget {
   const LoadingView({Key? key}) : super(key: key);
@@ -64,11 +65,11 @@ class _LoadingView extends State<LoadingView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _isLoading == 2
-                      ? const Column(
+                      ? Column(
                           children: [
-                            CircularProgressIndicator(),
-                            SizedBox(height: 20),
-                            Text('Cargando la Bilia y las canciones...')
+                            const CircularProgressIndicator(),
+                            const SizedBox(height: 20),
+                            Text('loading_text'.i18n())
                           ],
                         )
                       : Container(),

@@ -70,7 +70,7 @@ class VideosView extends StatelessWidget {
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            childAspectRatio: 1.0, // Ajusta esto según tus necesidades
+            childAspectRatio: 1.0,
           ),
           itemCount: files.length,
           itemBuilder: (context, index) {

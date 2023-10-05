@@ -20,7 +20,6 @@ class DescriptionChapterController extends GetxController {
 
   void loadVerses() async {
     versesWithRelations.clear();
-    // Asume que VersiculoService ya tiene la función getAllVersesWithRelations
 
     versions.value = await VerseService().getAllUniqueVersions();
 

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/song_list_controller.dart';
 import 'package:ipuc/models/songdb.dart';
 import 'package:flutter/services.dart';
+import 'package:localization/localization.dart';
 
 class SongsList extends StatelessWidget {
   SongsList({Key? key}) : super(key: key);
@@ -17,9 +18,8 @@ class SongsList extends StatelessWidget {
         focusNode: focusNode,
         autofocus: true,
         onKey: (event) async {
-          double itemHeight = 50.0; // La altura de cada ítem de la lista.
-          double listViewHeight =
-              200.0; // La altura del ListView. Actualízala según tu diseño.
+          double itemHeight = 50.0;
+          double listViewHeight = 200.0;
 
           if (event.runtimeType == RawKeyDownEvent &&
               event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
@@ -40,7 +40,6 @@ class SongsList extends StatelessWidget {
               scrollController.jumpTo(scrollTo);
             }
           }
-          //sendToViewer(controller.selectedIndex.value);
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -50,7 +49,6 @@ class SongsList extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Campo de texto para buscar canciones
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.only(left: 10, right: 10),
@@ -60,31 +58,18 @@ class SongsList extends StatelessWidget {
                           fontSize: 12,
                           color: Colors.white,
                         ),
-                        decoration: const InputDecoration(
-                          labelText: 'Buscar Canción',
-                          labelStyle: TextStyle(
+                        decoration: InputDecoration(
+                          labelText: 'search_songs'.i18n(),
+                          labelStyle: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
                           ),
-                          hintText: 'Escribe para buscar',
-                          hintStyle: TextStyle(
+                          hintText: 'write_to_search_songs'.i18n(),
+                          hintStyle: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  // Botón para borrar canciones
-                  ElevatedButton(
-                    onPressed: () async {
-                      Get.toNamed('/loading');
-                    },
-                    child: const Text(
-                      'Borrar Canciones',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -114,14 +99,14 @@ class SongsList extends StatelessWidget {
                 ),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: const Row(
+              child: Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     child: Text(' '),
                     width: 100,
                   ),
                   SizedBox(
-                    child: Text('Letra'),
+                    child: Text('lyric'.i18n()),
                     width: 100,
                   ),
                 ],
@@ -152,7 +137,7 @@ class SongsList extends StatelessWidget {
                                           children: [
                                             IconButton(
                                               tooltip:
-                                                  "Agregar a la presentación",
+                                                  "add_to_presentation".i18n(),
                                               icon: const Icon(Icons.add),
                                               onPressed: () {
                                                 controller.addNewSong(song);
@@ -167,7 +152,6 @@ class SongsList extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            // Título de la canción
                                             Text(
                                               song.title,
                                               style: const TextStyle(
@@ -177,8 +161,6 @@ class SongsList extends StatelessWidget {
                                               ),
                                             ),
                                             const SizedBox(height: 10),
-                                            // Espaciado entre el título y el párrafo
-                                            // Párrafo de la canción
                                             song.paragraphs.isNotEmpty
                                                 ? Text(
                                                     '${song.paragraphs[0].length > 60 ? song.paragraphs[0].substring(0, 60) + "..." : song.paragraphs[0]}',
@@ -193,10 +175,10 @@ class SongsList extends StatelessWidget {
                                                               0xffa0a0a0),
                                                     ),
                                                   )
-                                                : const Text(
-                                                    'No lyrics available',
-                                                    // Mostrar este texto si no hay letras o párrafos disponibles
-                                                    style: TextStyle(
+                                                : Text(
+                                                    'no_lyrics_available'
+                                                        .i18n(),
+                                                    style: const TextStyle(
                                                       color: Color(0xffa0a0a0),
                                                     ),
                                                   ),

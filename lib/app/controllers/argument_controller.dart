@@ -6,13 +6,10 @@ class ArgumentController extends GetxController {
   Map? _args;
   int? _windowId;
 
-  // Getter for windowController
   WindowController? get windowController => _windowController;
 
-  // Getter for args
   Map? get args => _args;
 
-  // Getter for windowId
   int? get windowId => _windowId;
 
   void setArguments(WindowController controller, Map arguments, int windowId) {

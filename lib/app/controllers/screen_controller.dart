@@ -22,7 +22,6 @@ class ScreenController extends GetxController {
 
   @override
   void onClose() {
-    // Don't forget to dispose of the VideoPlayerController to free up resources.
     videoPlayerController.value.dispose();
     super.onClose();
   }

@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'song.g.dart'; // Nombre del archivo del adaptador generado
+part 'song.g.dart';
 
 @HiveType(typeId: 25)
 class Song {

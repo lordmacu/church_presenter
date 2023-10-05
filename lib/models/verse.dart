@@ -1,8 +1,7 @@
 import 'package:hive/hive.dart';
 
-part 'verse.g.dart'; // Nombre del archivo del adaptador generado
+part 'verse.g.dart';
 
-// Para Verse
 @HiveType(typeId: 27)
 class Verse {
   @HiveField(0)

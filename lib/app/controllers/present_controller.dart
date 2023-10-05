@@ -52,13 +52,12 @@ class PresentController extends GetxController {
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      // Guardar la imagen en el sistema de archivos del app
       final directory = await getApplicationDocumentsDirectory();
       final fileName = path.basename(pickedFile.path);
       final File savedImage =
           await File(pickedFile.path).copy('${directory.path}/$fileName');
 
-      image.value = savedImage.path; // Guardar la ruta de la imagen
+      image.value = savedImage.path;
     }
   }
 
@@ -167,7 +166,7 @@ class PresentController extends GetxController {
       await DesktopMultiWindow.invokeMethod(
           subWindowIds[0], "send_data_type", payloaDataType);
     } catch (e) {
-      // Ignorar la excepción intencionadamente
+      // catch exception
     }
   }
 
@@ -211,7 +210,6 @@ class PresentController extends GetxController {
         presentationsList.indexWhere((presentation) => presentation.key == key);
 
     if (index != -1) {
-      // Asigna el Presentation correspondiente a tu variable observable
       selectPresentation.value = presentationsList[index];
     } else {}
 
@@ -228,16 +226,12 @@ class PresentController extends GetxController {
     try {
       box = await Hive.openBox<Presentation>('presentations');
 
-      // Asegúrate de que selectPresentation está inicializado y tiene un key válido.
       if (selectPresentation.value.key != null) {
-        // Encuentra la clave en la box de Hive.
         int? key = findIndexByValue(box, selectPresentation.value.key);
 
         if (key != null) {
-          // Actualiza la lista de slides en el objeto selectPresentation
           selectPresentation.value.slides.add(newSlide);
 
-          // Actualiza la box de Hive con el objeto selectPresentation modificado.
           await box.put(key, selectPresentation.value);
           update();
         } else {}
@@ -255,19 +249,15 @@ class PresentController extends GetxController {
     try {
       presentationBox = await Hive.openBox<Presentation>('presentations');
 
-      // Ensure that selectPresentation is initialized and has a valid key.
       if (selectPresentation.value.key != null) {
-        // Find the key in the Hive box.
         int? hiveKey =
             findIndexByValue(presentationBox, selectPresentation.value.key);
 
         if (hiveKey != null) {
-          // Update the slide in the selected presentation.
           updateSlideInSelectedPresentation(newSlide);
 
-          // Update the Hive box with the modified selectPresentation object.
           await presentationBox.put(hiveKey, selectPresentation.value);
-          update(); // Assuming this is a GetX update method.
+          update();
         }
       }
     } catch (e) {
@@ -292,18 +282,15 @@ class PresentController extends GetxController {
     try {
       box = await Hive.openBox<Presentation>('presentations');
 
-      // Asegúrate de que selectPresentation está inicializado y tiene un key válido.
       if (selectPresentation.value.key != null) {
-        // Encuentra la clave en la box de Hive.
         int? key = findIndexByValue(box, selectPresentation.value.key);
 
         if (key != null) {
           List<Slide> filteredSlidesList = selectPresentation.value.slides
               .where((slide) => slide.key != slideKey)
-              .toList(); // Convert to List<Slide>
+              .toList();
 
-          RxList<Slide> filteredSlides = RxList<Slide>.from(
-              filteredSlidesList); // Convert to RxList<Slide>
+          RxList<Slide> filteredSlides = RxList<Slide>.from(filteredSlidesList);
 
           Presentation currentPresentation = selectPresentation.value;
 
@@ -314,8 +301,7 @@ class PresentController extends GetxController {
               date: currentPresentation.date,
               preacher: currentPresentation.preacher,
               topic: currentPresentation.topic,
-              slides: filteredSlides // Assign the filtered RxList here
-              );
+              slides: filteredSlides);
 
           await box.put(key, selectPresentation.value);
           update();
@@ -334,16 +320,13 @@ class PresentController extends GetxController {
     try {
       box = await Hive.openBox<Presentation>('presentations');
 
-      // Asegúrate de que selectPresentation está inicializado y tiene un key válido.
       if (selectPresentation.value.key != null) {
-        // Encuentra la clave en la box de Hive.
         int? key = findIndexByValue(box, selectPresentation.value.key);
 
         if (key != null) {
-          List<Slide> filteredSlidesList = []; // Convert to List<Slide>
+          List<Slide> filteredSlidesList = [];
 
-          RxList<Slide> filteredSlides = RxList<Slide>.from(
-              filteredSlidesList); // Convert to RxList<Slide>
+          RxList<Slide> filteredSlides = RxList<Slide>.from(filteredSlidesList);
 
           Presentation currentPresentation = selectPresentation.value;
 
@@ -354,8 +337,7 @@ class PresentController extends GetxController {
               date: currentPresentation.date,
               preacher: currentPresentation.preacher,
               topic: currentPresentation.topic,
-              slides: filteredSlides // Assign the filtered RxList here
-              );
+              slides: filteredSlides);
 
           await box.put(key, selectPresentation.value);
           update();
@@ -391,18 +373,16 @@ class PresentController extends GetxController {
 
       box.close();
     } catch (e) {
-      // Manejar errores aquí
+      // catch exception
     } finally {
       box?.close();
 
-      // Restablece las variables después de borrar el elemento
       resetValues(100);
     }
   }
 
   void doubleTapItem(int index, double height) {
-    heightItem.value = heightItem
-        .value; // Asumiendo que ya tienes este valor correctamente configurado
+    heightItem.value = heightItem.value;
     topic.value = presentations[index].topic;
     preacher.value = presentations[index].preacher;
     image.value = presentations[index].image;
@@ -426,10 +406,10 @@ class PresentController extends GetxController {
         .indexWhere((presentation) => presentation.key == targetKey);
 
     if (index != -1) {
-      return index; // Devuelve el índice del elemento que coincide
+      return index;
     }
 
-    return null; // Devuelve null si no se encuentra ninguna coincidencia
+    return null;
   }
 
   Future addEmptyPresentation() async {
@@ -438,8 +418,7 @@ class PresentController extends GetxController {
       box = await Hive.openBox<Presentation>('presentations');
       var uuid = const Uuid();
       final uniqueKey = uuid.v4();
-      DateTime currentDate = DateTime
-          .now(); // Actualiza la fecha solo si es una nueva presentación
+      DateTime currentDate = DateTime.now();
 
       var presentation = Presentation(
         key: uniqueKey,
@@ -454,12 +433,12 @@ class PresentController extends GetxController {
 
       selectPresentation.value = presentation;
 
-      final newId = box.length; // Este ID será autoincrementable
+      final newId = box.length;
       await box.put(newId, presentation);
 
       presentations.value = box.values.toList().reversed.toList();
     } catch (e) {
-      // Manejar errores aquí
+      //carch exception
     } finally {
       await box?.close();
     }
@@ -470,9 +449,7 @@ class PresentController extends GetxController {
     try {
       box = await Hive.openBox<Presentation>('presentations');
 
-      DateTime currentDate = isSaving.value
-          ? DateTime.now()
-          : date.value; // Actualiza la fecha solo si es una nueva presentación
+      DateTime currentDate = isSaving.value ? DateTime.now() : date.value;
 
       var presentation = Presentation(
         key: key.value,
@@ -485,8 +462,7 @@ class PresentController extends GetxController {
       );
 
       if (isSaving.value) {
-        // Crear un nuevo elemento
-        final newId = box.length; // Este ID será autoincrementable
+        final newId = box.length;
         await box.put(newId, presentation);
       } else {
         await box.put(findIndexByValue(box, key.value), presentation);
@@ -494,7 +470,7 @@ class PresentController extends GetxController {
 
       presentations.value = box.values.toList().reversed.toList();
     } catch (e) {
-      // Manejar errores aquí
+      // catch exception
     } finally {
       box?.close();
     }

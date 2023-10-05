@@ -14,7 +14,6 @@ class VerseDb {
       required this.text,
       required this.version});
 
-  // Convertir un Map a un objeto Song
   factory VerseDb.fromMap(Map<String, dynamic> map) {
     return VerseDb(
         id: map['id'],
@@ -25,7 +24,6 @@ class VerseDb {
         version: map['version']);
   }
 
-  // Convertir un objeto Song a un Map
   Map<String, dynamic> toMap() {
     return {
       'id': id,

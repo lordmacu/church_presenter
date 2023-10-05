@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'slide.g.dart'; // Nombre del archivo del adaptador generado
+part 'slide.g.dart';
 
 @HiveType(typeId: 24)
 class Slide {

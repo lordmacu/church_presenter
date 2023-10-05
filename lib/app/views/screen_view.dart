@@ -21,11 +21,10 @@ class ScreenView extends StatelessWidget {
   double getFontSize(String text, double width, double height) {
     int wordCount = text.split(' ').length;
 
-    double minSize = height * 0.05; // 5% de la altura de la pantalla
-    double maxSize = height * 0.1; // 10% de la altura de la pantalla
+    double minSize = height * 0.05;
+    double maxSize = height * 0.1;
 
-    double factor = (maxSize - minSize) /
-        50; // 50 es un conteo de palabras arbitrariamente grande
+    double factor = (maxSize - minSize) / 50;
     double fontSize = maxSize - (factor * wordCount);
 
     return fontSize.clamp(minSize, maxSize);
@@ -93,7 +92,6 @@ class ScreenView extends StatelessWidget {
                 child: Stack(
                   key: ValueKey<String>(_screenController.verseText.value),
                   children: [
-                    // Black border
                     Text(
                       _screenController.verseText.value,
                       style: TextStyle(
@@ -106,7 +104,6 @@ class ScreenView extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    // White text
                     Text(
                       _screenController.verseText.value,
                       style: TextStyle(
@@ -129,7 +126,6 @@ class ScreenView extends StatelessWidget {
                   right: 10,
                   child: Stack(
                     children: [
-                      // Black border
                       Text(
                         "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
                         style: TextStyle(
@@ -142,7 +138,6 @@ class ScreenView extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      // White text
                       Text(
                         "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
                         style: const TextStyle(
@@ -178,11 +173,10 @@ class ScreenView extends StatelessWidget {
               () => AnimatedSwitcher(
                 duration: const Duration(seconds: 1),
                 switchInCurve: Curves.easeInOut,
-                switchOutCurve: Curves.easeIn, // Desaparece más rápido
+                switchOutCurve: Curves.easeIn,
                 child: Stack(
                   key: ValueKey<String>(_screenController.paragraph.value),
                   children: [
-                    // Black border
                     Text(
                       _screenController.paragraph.value,
                       style: TextStyle(
@@ -195,7 +189,6 @@ class ScreenView extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    // White text
                     Text(
                       _screenController.paragraph.value,
                       style: TextStyle(
@@ -302,20 +295,17 @@ class ScreenView extends StatelessWidget {
               isVideoEqual = true;
             }
           } else {
-            // Lógica para manejar cuando 'dataVideoPath' no existe en payload
+            // no exist
           }
 
           if (_screenController.dataTypeMode.value == "play") {
             _screenController.videoPlayerController.value.play();
           } else if (_screenController.dataTypeMode.value == "pause") {
             await _screenController.pause();
-            //   _screenController.videoPlayerController.value.pause();
           } else if (_screenController.dataTypeMode.value == "reset") {
             _screenController.videoPlayerController.value
                 .seekTo(const Duration(seconds: 0));
-          } else {
-            // _screenController.videoPlayerController.value.play();
-          }
+          } else {}
 
           if (_screenController.dataTypeMode.value == "new" && !isVideoEqual) {
             _screenController.videoPlayerController.value

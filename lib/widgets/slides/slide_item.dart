@@ -28,13 +28,13 @@ class SlideItem extends StatelessWidget {
                   ? Colors.blue.withOpacity(0.7)
                   : Colors.transparent,
               width: 2),
-          borderRadius: BorderRadius.circular(10), // Radio del borde redondeado
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3), // Color de la sombra
-              spreadRadius: isSelected ? 10 : 0, // Extensión de la sombra
-              blurRadius: isSelected ? 10 : 5, // Desenfoque de la sombra
-              offset: const Offset(0, 4), // Posición de la sombra
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: isSelected ? 10 : 0,
+              blurRadius: isSelected ? 10 : 5,
+              offset: const Offset(0, 4),
             ),
           ],
         ),

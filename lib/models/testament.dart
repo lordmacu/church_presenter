@@ -1,8 +1,7 @@
 import 'package:hive/hive.dart';
 
-part 'testament.g.dart'; // Nombre del archivo del adaptador generado
+part 'testament.g.dart';
 
-// Para Testament
 @HiveType(typeId: 26)
 class Testament {
   @HiveField(0)

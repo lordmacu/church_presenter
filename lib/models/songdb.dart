@@ -10,7 +10,7 @@ class SongDb {
   final List<dynamic> paragraphs;
   final String lyricsPlain;
   final List<dynamic> videoExplanation;
-  final String searchableText; // Campo adicional para ayudar en la búsqueda
+  final String searchableText;
 
   SongDb({
     this.id,
@@ -22,7 +22,6 @@ class SongDb {
     required this.searchableText,
   });
 
-  // Convertir un Map a un objeto Song
   factory SongDb.fromMap(Map<String, dynamic> map) {
     return SongDb(
       id: map['id'],
@@ -35,7 +34,6 @@ class SongDb {
     );
   }
 
-  // Convertir un objeto Song a un Map
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -49,26 +47,21 @@ class SongDb {
   }
 
   static Future<List<SongDb>> searchSongs(String query) async {
-    // Obtener la base de datos desde el helper
     final db = await DatabaseHelper().db;
 
     if (db == null) {
-      // Manejar error, tal vez lanzando una excepción o retornando
       return [];
     }
 
-    // Pre-procesamiento único de la consulta
     query = removeDiacritics(query.toLowerCase());
 
-    // Realizar la búsqueda en SQLite
     final List<Map<String, dynamic>> result = await db.query(
       'songs',
       where: 'searchableTitle LIKE ? OR  searchableText LIKE ?',
       whereArgs: ['%$query%', '%$query%'],
-      orderBy: 'id DESC', // Para conseguir los más recientes primero
+      orderBy: 'id DESC',
     );
 
-    // Convertir los resultados a objetos de tipo Song
     List<SongDb> matchingSongs = List<SongDb>.generate(result.length, (i) {
       return SongDb(
         id: result[i]['id'],
@@ -81,34 +74,26 @@ class SongDb {
       );
     });
 
-    // Cortar el resultado a las últimas 50 canciones si es necesario
     if (matchingSongs.length > 50) {
       matchingSongs = matchingSongs.sublist(matchingSongs.length - 50);
     }
-
-    // Aquí puedes actualizar cualquier observable o estado que estés usando
-    // songsdb.assignAll(matchingSongs);
 
     return matchingSongs;
   }
 
   static Future<List<SongDb>> getFirst50Songs() async {
-    // Obtener la base de datos desde el helper
     final db = await DatabaseHelper().db;
 
     if (db == null) {
-      // Manejar error, tal vez lanzando una excepción o retornando una lista vacía
       return [];
     }
 
-    // Realizar la consulta en SQLite para obtener las primeras 50 canciones
     final List<Map<String, dynamic>> result = await db.query(
       'songs',
       orderBy: 'id ASC',
-      limit: 50, // Limitar a 50 resultados
+      limit: 50,
     );
 
-    // Convertir los resultados a objetos de tipo Song
     List<SongDb> first50Songs = List<SongDb>.generate(result.length, (i) {
       return SongDb(
         id: result[i]['id'],
@@ -123,6 +108,4 @@ class SongDb {
 
     return first50Songs;
   }
-
-// Resto de tu código de modelo aquí
 }
