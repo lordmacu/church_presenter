@@ -17,36 +17,7 @@ class DescriptionChapter extends StatelessWidget {
     }).replaceAll(RegExp(r"\\[a-z]+"), "");
   }
 
-  sendToViewer(index) async {
-    /* final verse = controller.versesWithRelations[index]['verse'] as Verse;
-    final book = controller.versesWithRelations[index]['book'] as Book;
-    final testament =
-        controller.versesWithRelations[index]['testament'] as Testament;
-
-    try {
-      final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
-
-      final payload = jsonEncode({
-        "type": "verse",
-        "verseText": verse.text,
-        "book": book.name,
-        "testament": testament.name,
-        "chapter": verse.chapter,
-        "verse": verse.verse,
-      });
-
-      final payloaDataType = jsonEncode({
-        "dataType": "image",
-        "dataTypePath": "verse",
-      });
-
-      final result = await DesktopMultiWindow.invokeMethod(
-          subWindowIds[0], "send_viewer", payload);
-
-      final setDataType = await DesktopMultiWindow.invokeMethod(
-          subWindowIds[0], "send_data_type", payloaDataType);
-    } catch (e) {}*/
-  }
+  sendToViewer(index) async {}
 
   String getBibleTitle(String bibleName) {
     if (bibleName == "bad") {

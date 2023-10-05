@@ -267,20 +267,6 @@ class SlidePresenter extends StatelessWidget {
         if (controllerPresenter.selectPresentation.value.key == "") {
           await controllerPresenter.addEmptyPresentation();
         }
-        var uuid = const Uuid();
-        final uniqueKey = uuid.v4();
-        final payload = jsonEncode({
-          "type": "image",
-        });
-
-        String? imageRandom = await getRandomImage();
-        controllerPresenter.setSlideToPresentation(Slide(
-            key: uniqueKey,
-            type: "image",
-            dataType: "image",
-            dataTypePath: imageRandom!,
-            dataTypeMode: "cover",
-            json: payload));
 
         keyFloating.currentState!.closeFABs();
       },

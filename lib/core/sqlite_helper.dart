@@ -30,11 +30,6 @@ class DatabaseHelper {
   }
 
   void _onCreate(Database db, int version) async {
-    /* await db.execute('DROP TABLE IF EXISTS songs');
-    await db.execute('DROP TABLE IF EXISTS books');
-    await db.execute('DROP TABLE IF EXISTS testaments');
-    await db.execute('DROP TABLE IF EXISTS verses');*/
-
     await db.execute('''
         CREATE TABLE IF NOT EXISTS songs (
           id INTEGER PRIMARY KEY AUTOINCREMENT,

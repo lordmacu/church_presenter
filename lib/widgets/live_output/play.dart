@@ -51,17 +51,11 @@ class PlayWidget extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {
-                /*controller.selectedItem.value =
-                      controller.selectedItem.value - 1;*/
-              },
+              onPressed: () {},
             ),
             IconButton(
               icon: const Icon(Icons.arrow_forward_ios),
-              onPressed: () {
-                /*  controller.selectedItem.value =
-                      controller.selectedItem.value + 1;*/
-              },
+              onPressed: () {},
             ),
           ],
         ),
