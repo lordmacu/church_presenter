@@ -690,10 +690,12 @@ class SlidePresenter extends StatelessWidget {
                                             child: Container(
                                               color: Colors.transparent,
                                               padding: EdgeInsets.only(
-                                                  right: 5, top: 5, bottom: 5),
+                                                  right: 5,
+                                                  top: 10,
+                                                  bottom: 10),
                                               child: Icon(
                                                 Icons.add_a_photo,
-                                                size: 40,
+                                                size: 30,
                                               ),
                                             ),
                                             onTap: () async {

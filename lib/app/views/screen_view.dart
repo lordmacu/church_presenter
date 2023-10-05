@@ -299,24 +299,30 @@ class ScreenView extends StatelessWidget {
         _screenController.dataTypePath.value = payload['dataTypePath'];
         _screenController.dataType.value = payload['dataType'];
 
-        print("llega aquidddd ?  ${payload}");
-
         if (_screenController.dataType.value == "video") {
-          if (payload['dataVideoPath'] !=
-              _screenController.dataVideoPath.value) {
-            _screenController.dataVideoPath.value = payload['dataVideoPath'];
+          print("llega aquidddd ?  ${payload}");
 
-            _screenController.videoPlayerController.value =
-                VideoPlayerController.file(File(payload['dataVideoPath']));
-            isVideoEqual = false;
+          if (payload.containsKey('dataVideoPath')) {
+            if (payload['dataVideoPath'] !=
+                _screenController.dataVideoPath.value) {
+              _screenController.dataVideoPath.value = payload['dataVideoPath'];
+
+              _screenController.videoPlayerController.value =
+                  VideoPlayerController.file(File(payload['dataVideoPath']));
+              isVideoEqual = false;
+            } else {
+              isVideoEqual = true;
+            }
           } else {
-            isVideoEqual = true;
+            // Lógica para manejar cuando 'dataVideoPath' no existe en payload
           }
 
           if (_screenController.dataTypeMode.value == "play") {
             _screenController.videoPlayerController.value.play();
           } else if (_screenController.dataTypeMode.value == "pause") {
-            _screenController.videoPlayerController.value.pause();
+            print("esta pausa --------");
+            await _screenController.pause();
+            //   _screenController.videoPlayerController.value.pause();
           } else if (_screenController.dataTypeMode.value == "reset") {
             _screenController.videoPlayerController.value
                 .seekTo(Duration(seconds: 0));
@@ -330,6 +336,7 @@ class ScreenView extends StatelessWidget {
                 .then((value) {
               if (_screenController
                   .videoPlayerController.value.value.isInitialized) {
+                print("esta entrando aqui");
                 _screenController.videoPlayerController.value.setLooping(true);
 
                 _screenController.videoPlayerController.value.setVolume(0.0);

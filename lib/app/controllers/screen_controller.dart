@@ -26,4 +26,9 @@ class ScreenController extends GetxController {
     videoPlayerController.value.dispose();
     super.onClose();
   }
+
+  Future pause() async {
+    await videoPlayerController.value.pause();
+    update();
+  }
 }
