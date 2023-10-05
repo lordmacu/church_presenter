@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:ipuc/models/lyric.dart';
-import 'package:ipuc/models/video_explanation.dart';
+
 part 'song.g.dart'; // Nombre del archivo del adaptador generado
 
 @HiveType(typeId: 25)

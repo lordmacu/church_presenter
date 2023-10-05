@@ -1,15 +1,11 @@
 import 'dart:math';
 
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
-import 'package:ipuc/models/presentation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ipuc/models/slide.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 
 class SliderController extends GetxController {
@@ -97,7 +93,7 @@ class SliderController extends GetxController {
 
     if (pickedFile != null) {
       final directory = await getApplicationDocumentsDirectory();
-      final Uuid uuid = Uuid();
+      Uuid uuid = const Uuid();
       final String randomVideoName =
           uuid.v1(); // Generar un nombre de video aleatorio
       final String randomThumbnailName =
@@ -110,7 +106,7 @@ class SliderController extends GetxController {
       // Obtener el primer frame del video
       final thumbnailPath =
           path.join(directory.path, '$randomThumbnailName.png');
-      final seconds = '0:00:01.000000';
+      const seconds = '0:00:01.000000';
 
       final generatedThumbnailPath =
           await createThumbnail(savedVideo.path, thumbnailPath, seconds);

@@ -3,20 +3,18 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
-import 'package:fullscreen_window/fullscreen_window.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/home_controller.dart';
 import 'package:ipuc/app/controllers/screen_controller.dart';
 import 'package:ipuc/core/windows_utils.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_player_win/video_player_win_plugin.dart';
 
 class ScreenView extends StatelessWidget {
-  ScreenView();
-  ScreenController _screenController = Get.put(ScreenController());
+  ScreenView({Key? key}) : super(key: key);
+  final ScreenController _screenController = Get.put(ScreenController());
 
-  String dataTypeMode = "cover";
-  String text = "No matarás";
+  final String dataTypeMode = "cover";
+  final String text = "No matarás";
 
   bool isVideoEqual = false;
 
@@ -53,11 +51,11 @@ class ScreenView extends StatelessWidget {
   }
 
   Widget getBackgroundType(context) {
-    if (_screenController.dataType == "video") {
+    if (_screenController.dataType.value == "video") {
       return VideoPlayer(_screenController.videoPlayerController.value);
     }
 
-    if (_screenController.dataType == "image") {
+    if (_screenController.dataType.value == "image") {
       return ClipRRect(
         child: Image.file(
           File(_screenController.dataTypePath.value),
@@ -78,29 +76,64 @@ class ScreenView extends StatelessWidget {
         _screenController.width.value, _screenController.height.value);
     _screenController.fontSize.value = fontSize;
 
-    return Container(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Obx(() => _screenController.dataTypePath.value != ""
-              ? getBackgroundType(context)
-              : Container()),
-          Center(
-            child: Container(
-              padding: EdgeInsets.all(40),
-              child: Obx(
-                () => AnimatedSwitcher(
-                  switchInCurve: Curves.easeInOut,
-                  switchOutCurve: Curves.easeIn,
-                  duration: Duration(milliseconds: 500),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Obx(() => _screenController.dataTypePath.value != ""
+            ? getBackgroundType(context)
+            : Container()),
+        Center(
+          child: Container(
+            padding: const EdgeInsets.all(40),
+            child: Obx(
+              () => AnimatedSwitcher(
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.easeIn,
+                duration: const Duration(milliseconds: 500),
+                child: Stack(
+                  key: ValueKey<String>(_screenController.verseText.value),
+                  children: [
+                    // Black border
+                    Text(
+                      _screenController.verseText.value,
+                      style: TextStyle(
+                        fontSize: _screenController.fontSize.value,
+                        fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..style = PaintingStyle.stroke
+                          ..strokeWidth = 4
+                          ..color = Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    // White text
+                    Text(
+                      _screenController.verseText.value,
+                      style: TextStyle(
+                        fontSize: _screenController.fontSize.value,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Obx(
+          () => _screenController.book.value.isNotEmpty
+              ? Positioned(
+                  bottom: 10,
+                  right: 10,
                   child: Stack(
-                    key: ValueKey<String>(_screenController.verseText.value),
                     children: [
                       // Black border
                       Text(
-                        _screenController.verseText.value,
+                        "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
                         style: TextStyle(
-                          fontSize: _screenController.fontSize.value,
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                           foreground: Paint()
                             ..style = PaintingStyle.stroke
@@ -111,56 +144,19 @@ class ScreenView extends StatelessWidget {
                       ),
                       // White text
                       Text(
-                        _screenController.verseText.value,
-                        style: TextStyle(
-                          fontSize: _screenController.fontSize.value,
+                        "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
+                        style: const TextStyle(
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                         textAlign: TextAlign.center,
                       ),
                     ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Obx(
-            () => _screenController.book.value.length > 0
-                ? Positioned(
-                    bottom: 10,
-                    right: 10,
-                    child: Stack(
-                      children: [
-                        // Black border
-                        Text(
-                          "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                            foreground: Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = 4
-                              ..color = Colors.black,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        // White text
-                        Text(
-                          "${_screenController.book.value} ${_screenController.chapter.value}:${_screenController.verse.value}",
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ))
-                : Container(),
-          )
-        ],
-      ),
+                  ))
+              : Container(),
+        )
+      ],
     );
   }
 
@@ -169,86 +165,79 @@ class ScreenView extends StatelessWidget {
         _screenController.width.value, _screenController.height.value);
     _screenController.fontSize.value = fontSize;
 
-    return Container(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Obx(() => _screenController.dataTypePath.value != ""
-              ? getBackgroundType(context)
-              : Container()),
-          Center(
-            child: Container(
-              padding: EdgeInsets.all(40),
-              child: Obx(
-                () => AnimatedSwitcher(
-                  duration: Duration(seconds: 1),
-                  switchInCurve: Curves.easeInOut,
-                  switchOutCurve: Curves.easeIn, // Desaparece más rápido
-                  child: Stack(
-                    key: ValueKey<String>(_screenController.paragraph.value),
-                    children: [
-                      // Black border
-                      Text(
-                        _screenController.paragraph.value,
-                        style: TextStyle(
-                          fontSize: _screenController.fontSize.value,
-                          fontWeight: FontWeight.bold,
-                          foreground: Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = 4
-                            ..color = Colors.black,
-                        ),
-                        textAlign: TextAlign.center,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Obx(() => _screenController.dataTypePath.value != ""
+            ? getBackgroundType(context)
+            : Container()),
+        Center(
+          child: Container(
+            padding: const EdgeInsets.all(40),
+            child: Obx(
+              () => AnimatedSwitcher(
+                duration: const Duration(seconds: 1),
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.easeIn, // Desaparece más rápido
+                child: Stack(
+                  key: ValueKey<String>(_screenController.paragraph.value),
+                  children: [
+                    // Black border
+                    Text(
+                      _screenController.paragraph.value,
+                      style: TextStyle(
+                        fontSize: _screenController.fontSize.value,
+                        fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..style = PaintingStyle.stroke
+                          ..strokeWidth = 4
+                          ..color = Colors.black,
                       ),
-                      // White text
-                      Text(
-                        _screenController.paragraph.value,
-                        style: TextStyle(
-                          fontSize: _screenController.fontSize.value,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,
+                    ),
+                    // White text
+                    Text(
+                      _screenController.paragraph.value,
+                      style: TextStyle(
+                        fontSize: _screenController.fontSize.value,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget viewImage(context) {
-    return Container(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Obx(() => _screenController.dataTypePath.value != ""
-              ? getBackgroundType(context)
-              : Container()),
-        ],
-      ),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Obx(() => _screenController.dataTypePath.value != ""
+            ? getBackgroundType(context)
+            : Container()),
+      ],
     );
   }
 
   Widget viewVideo(context) {
-    return Container(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Obx(() => _screenController.dataTypePath.value != ""
-              ? getBackgroundType(context)
-              : Container()),
-        ],
-      ),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Obx(() => _screenController.dataTypePath.value != ""
+            ? getBackgroundType(context)
+            : Container()),
+      ],
     );
   }
 
   Widget viewTypeSlide(context) {
-    print("aquiii esta el otro ${_screenController.type.value}");
     if (_screenController.type.value == "verse") {
       return viewVerse(context);
     }
@@ -323,7 +312,7 @@ class ScreenView extends StatelessWidget {
             //   _screenController.videoPlayerController.value.pause();
           } else if (_screenController.dataTypeMode.value == "reset") {
             _screenController.videoPlayerController.value
-                .seekTo(Duration(seconds: 0));
+                .seekTo(const Duration(seconds: 0));
           } else {
             // _screenController.videoPlayerController.value.play();
           }
@@ -334,14 +323,11 @@ class ScreenView extends StatelessWidget {
                 .then((value) {
               if (_screenController
                   .videoPlayerController.value.value.isInitialized) {
-                print("esta entrando aqui");
                 _screenController.videoPlayerController.value.setLooping(true);
 
                 _screenController.videoPlayerController.value.setVolume(0.0);
                 _screenController.videoPlayerController.value.play();
-              } else {
-                print("video file load failed");
-              }
+              } else {}
             });
           }
         }

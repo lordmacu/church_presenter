@@ -6,20 +6,21 @@ class SlideItem extends StatelessWidget {
   final bool isSelected;
   final Function onTap;
 
-  SlideItem({
+  const SlideItem({
+    Key? key,
     required this.title,
     required this.slideCount,
     required this.isSelected,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onTap(),
       child: Container(
-        padding: EdgeInsets.all(2),
-        margin: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(2),
+        margin: const EdgeInsets.all(20),
         height: 90,
         decoration: BoxDecoration(
           border: Border.all(
@@ -33,7 +34,7 @@ class SlideItem extends StatelessWidget {
               color: Colors.black.withOpacity(0.3), // Color de la sombra
               spreadRadius: isSelected ? 10 : 0, // Extensión de la sombra
               blurRadius: isSelected ? 10 : 5, // Desenfoque de la sombra
-              offset: Offset(0, 4), // Posición de la sombra
+              offset: const Offset(0, 4), // Posición de la sombra
             ),
           ],
         ),
@@ -52,9 +53,10 @@ class SlideItem extends StatelessWidget {
               left: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(10),
                       bottomLeft: Radius.circular(10)),
                   gradient: LinearGradient(
@@ -65,7 +67,7 @@ class SlideItem extends StatelessWidget {
                 ),
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                   ),
@@ -76,12 +78,12 @@ class SlideItem extends StatelessWidget {
               top: 10,
               right: 10,
               child: Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.all(5),
+                decoration: const BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.all(Radius.circular(100)),
                 ),
-                child: Text(
+                child: const Text(
                   "10",
                   style: TextStyle(
                     color: Colors.white,

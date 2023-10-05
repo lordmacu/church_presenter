@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:ipuc/app/views/gallery_view.dart';
 import 'package:ipuc/app/views/videos_view.dart';
 import 'package:ipuc/models/slide.dart';
 import 'package:ipuc/widgets/slides/slide_grid.dart';
-import 'package:ipuc/widgets/slides/slide_item.dart';
 import 'package:ipuc/widgets/title_bar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
@@ -19,14 +17,13 @@ import 'dart:io';
 
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
-import 'dart:io';
-
 import 'package:path_provider/path_provider.dart';
 
 class SlidePresenter extends StatelessWidget {
+  SlidePresenter({Key? key}) : super(key: key);
   final SliderController controller = Get.find();
   final PresentController controllerPresenter = Get.find();
-  PreviewController previewController = Get.find();
+  final PreviewController previewController = Get.find();
   final GlobalKey<AnimatedFloatingActionButtonState> keyFloating =
       GlobalKey<AnimatedFloatingActionButtonState>();
 
@@ -41,7 +38,7 @@ class SlidePresenter extends StatelessWidget {
         icon: const Icon(Icons.close),
         onPressed: Navigator.of(modalSheetContext).pop,
       ),
-      child: Container(
+      child: SizedBox(
         height: 500,
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -85,14 +82,12 @@ class SlidePresenter extends StatelessWidget {
                 },
               ),
             ),
-            Container(
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(modalSheetContext).pop(),
-                child: const SizedBox(
-                  height: 50,
-                  width: double.infinity,
-                  child: Center(child: Text('Cancelar')),
-                ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(modalSheetContext).pop(),
+              child: const SizedBox(
+                height: 50,
+                width: double.infinity,
+                child: Center(child: Text('Cancelar')),
               ),
             ),
           ],
@@ -112,7 +107,7 @@ class SlidePresenter extends StatelessWidget {
         icon: const Icon(Icons.close),
         onPressed: Navigator.of(modalSheetContext).pop,
       ),
-      child: Container(
+      child: SizedBox(
         height: 500,
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -154,14 +149,12 @@ class SlidePresenter extends StatelessWidget {
                 },
               ),
             ),
-            Container(
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(modalSheetContext).pop(),
-                child: const SizedBox(
-                  height: 50,
-                  width: double.infinity,
-                  child: Center(child: Text('Cancelar')),
-                ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(modalSheetContext).pop(),
+              child: const SizedBox(
+                height: 50,
+                width: double.infinity,
+                child: Center(child: Text('Cancelar')),
               ),
             ),
           ],
@@ -171,84 +164,80 @@ class SlidePresenter extends StatelessWidget {
   }
 
   Widget image() {
-    return Container(
-      child: FloatingActionButton(
-        heroTag: "three",
-        onPressed: () async {
-          if (controllerPresenter.selectPresentation.value.key == "") {
-            await controllerPresenter.addEmptyPresentation();
-          }
-          await controller.pickImage();
+    return FloatingActionButton(
+      heroTag: "three",
+      onPressed: () async {
+        if (controllerPresenter.selectPresentation.value.key == "") {
+          await controllerPresenter.addEmptyPresentation();
+        }
+        await controller.pickImage();
 
-          var uuid = Uuid();
-          final uniqueKey = uuid.v4();
-          final payload =
-              jsonEncode({"type": "image", "path": controller.image.value});
+        var uuid = const Uuid();
+        final uniqueKey = uuid.v4();
+        final payload =
+            jsonEncode({"type": "image", "path": controller.image.value});
 
-          controllerPresenter.setSlideToPresentation(Slide(
-              key: uniqueKey,
-              type: "image",
-              dataType: "image",
-              dataTypePath: controller.image.value,
-              dataTypeMode: "cover",
-              json: payload));
+        controllerPresenter.setSlideToPresentation(Slide(
+            key: uniqueKey,
+            type: "image",
+            dataType: "image",
+            dataTypePath: controller.image.value,
+            dataTypeMode: "cover",
+            json: payload));
 
-          controllerPresenter.selectSlide.value = Slide(
-              key: uniqueKey,
-              type: "image",
-              dataType: "image",
-              dataTypePath: controller.image.value,
-              dataTypeMode: "cover",
-              json: payload);
+        controllerPresenter.selectSlide.value = Slide(
+            key: uniqueKey,
+            type: "image",
+            dataType: "image",
+            dataTypePath: controller.image.value,
+            dataTypeMode: "cover",
+            json: payload);
 
-          keyFloating.currentState!.closeFABs();
-        },
-        tooltip: 'Agregar Imagen',
-        child: Icon(Icons.image),
-      ),
+        keyFloating.currentState!.closeFABs();
+      },
+      tooltip: 'Agregar Imagen',
+      child: const Icon(Icons.image),
     );
   }
 
   Widget video() {
-    return Container(
-      child: FloatingActionButton(
-        heroTag: "two",
-        onPressed: () async {
-          if (controllerPresenter.selectPresentation.value.key == "") {
-            await controllerPresenter.addEmptyPresentation();
-          }
+    return FloatingActionButton(
+      heroTag: "two",
+      onPressed: () async {
+        if (controllerPresenter.selectPresentation.value.key == "") {
+          await controllerPresenter.addEmptyPresentation();
+        }
 
-          await controller.pickVideo();
+        await controller.pickVideo();
 
-          var uuid = Uuid();
-          final uniqueKey = uuid.v4();
-          final payload = jsonEncode({
-            "type": "video",
-            "path": controller.video.value,
-            "firstFrame": controller.videoFirstFrame.value,
-            "videoPath": controller.video.value
-          });
+        var uuid = const Uuid();
+        final uniqueKey = uuid.v4();
+        final payload = jsonEncode({
+          "type": "video",
+          "path": controller.video.value,
+          "firstFrame": controller.videoFirstFrame.value,
+          "videoPath": controller.video.value
+        });
 
-          controllerPresenter.setSlideToPresentation(Slide(
-              key: uniqueKey,
-              type: "video",
-              dataType: "video",
-              dataTypePath: controller.video.value,
-              dataTypeMode: "play",
-              json: payload));
+        controllerPresenter.setSlideToPresentation(Slide(
+            key: uniqueKey,
+            type: "video",
+            dataType: "video",
+            dataTypePath: controller.video.value,
+            dataTypeMode: "play",
+            json: payload));
 
-          controllerPresenter.selectSlide.value = Slide(
-              key: uniqueKey,
-              type: "video",
-              dataType: "video",
-              dataTypePath: controller.video.value,
-              dataTypeMode: "cover",
-              json: payload);
-          keyFloating.currentState!.closeFABs();
-        },
-        tooltip: 'Agregar Video',
-        child: Icon(Icons.video_call),
-      ),
+        controllerPresenter.selectSlide.value = Slide(
+            key: uniqueKey,
+            type: "video",
+            dataType: "video",
+            dataTypePath: controller.video.value,
+            dataTypeMode: "cover",
+            json: payload);
+        keyFloating.currentState!.closeFABs();
+      },
+      tooltip: 'Agregar Video',
+      child: const Icon(Icons.video_call),
     );
   }
 
@@ -276,33 +265,31 @@ class SlidePresenter extends StatelessWidget {
   }
 
   Widget text() {
-    return Container(
-      child: FloatingActionButton(
-        onPressed: () async {
-          if (controllerPresenter.selectPresentation.value.key == "") {
-            await controllerPresenter.addEmptyPresentation();
-          }
-          var uuid = Uuid();
-          final uniqueKey = uuid.v4();
-          final payload = jsonEncode({
-            "type": "image",
-          });
+    return FloatingActionButton(
+      onPressed: () async {
+        if (controllerPresenter.selectPresentation.value.key == "") {
+          await controllerPresenter.addEmptyPresentation();
+        }
+        var uuid = const Uuid();
+        final uniqueKey = uuid.v4();
+        final payload = jsonEncode({
+          "type": "image",
+        });
 
-          String? imageRandom = await getRandomImage();
-          controllerPresenter.setSlideToPresentation(Slide(
-              key: uniqueKey,
-              type: "image",
-              dataType: "image",
-              dataTypePath: imageRandom!,
-              dataTypeMode: "cover",
-              json: payload));
+        String? imageRandom = await getRandomImage();
+        controllerPresenter.setSlideToPresentation(Slide(
+            key: uniqueKey,
+            type: "image",
+            dataType: "image",
+            dataTypePath: imageRandom!,
+            dataTypeMode: "cover",
+            json: payload));
 
-          keyFloating.currentState!.closeFABs();
-        },
-        tooltip: 'Agregar Texto',
-        heroTag: "one",
-        child: Icon(Icons.text_format),
-      ),
+        keyFloating.currentState!.closeFABs();
+      },
+      tooltip: 'Agregar Texto',
+      heroTag: "one",
+      child: const Icon(Icons.text_format),
     );
   }
 
@@ -321,9 +308,10 @@ class SlidePresenter extends StatelessWidget {
               color: controller.selectedOptionImage.value == selectedOption
                   ? Colors.white.withOpacity(0.3)
                   : null,
-              borderRadius: BorderRadius.all(Radius.circular(5)),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
             child: Icon(
               icon,
               size: 20,
@@ -375,9 +363,10 @@ class SlidePresenter extends StatelessWidget {
               color: controller.selectedOptionVideo.value == selectedOption
                   ? Colors.white.withOpacity(0.3)
                   : null,
-              borderRadius: BorderRadius.all(Radius.circular(5)),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
             child: Icon(
               icon,
               size: 20,
@@ -416,8 +405,6 @@ class SlidePresenter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pageIndexNotifier = ValueNotifier(0);
-
     return Scaffold(
       floatingActionButton: AnimatedFloatingActionButton(
         //Fab list
@@ -431,21 +418,21 @@ class SlidePresenter extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
-          TitleBar(title: "Diapositivas"),
+          const TitleBar(title: "Diapositivas"),
           Obx(
             () => Container(
-                padding: EdgeInsets.only(top: 0, bottom: 10),
+                padding: const EdgeInsets.only(top: 0, bottom: 10),
                 child: Stack(
                   children: [
                     Positioned(
                       right: 0,
                       child: Container(
                         width: 55,
-                        padding: EdgeInsets.only(left: 5, right: 5),
-                        margin: EdgeInsets.only(left: 20, right: 20),
+                        padding: const EdgeInsets.only(left: 5, right: 5),
+                        margin: const EdgeInsets.only(left: 20, right: 20),
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.3),
-                          borderRadius: BorderRadius.only(
+                          borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10),
                           ),
@@ -459,7 +446,7 @@ class SlidePresenter extends StatelessWidget {
                                 child: GestureDetector(
                                   child: Container(
                                     color: Colors.transparent,
-                                    padding: EdgeInsets.only(
+                                    padding: const EdgeInsets.only(
                                         right: 5, top: 5, bottom: 5),
                                     child: const Icon(
                                       Icons.clear_all,
@@ -472,19 +459,19 @@ class SlidePresenter extends StatelessWidget {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: Text("Confirmación"),
-                                          content: Text(
+                                          title: const Text("Confirmación"),
+                                          content: const Text(
                                               "¿Seguro que quieres limpiar los slides?"),
                                           actions: <Widget>[
                                             TextButton(
-                                              child: Text("Cancelar"),
+                                              child: const Text("Cancelar"),
                                               onPressed: () {
                                                 Navigator.of(context).pop(
                                                     false); // Devuelve 'false' cuando el usuario pulsa 'Cancelar'
                                               },
                                             ),
                                             TextButton(
-                                              child: Text("Aceptar"),
+                                              child: const Text("Aceptar"),
                                               onPressed: () {
                                                 Navigator.of(context).pop(
                                                     true); // Devuelve 'true' cuando el usuario pulsa 'Aceptar'
@@ -512,11 +499,11 @@ class SlidePresenter extends StatelessWidget {
                     Positioned(
                       left: 10,
                       child: Container(
-                        padding: EdgeInsets.only(
+                        padding: const EdgeInsets.only(
                             left: 10, right: 10, top: 10, bottom: 10),
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.3),
-                          borderRadius: BorderRadius.only(
+                          borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10),
                           ),
@@ -524,266 +511,259 @@ class SlidePresenter extends StatelessWidget {
                         child: Row(
                           children: [
                             Tooltip(
-                                message: "Enviar presentación vacia",
+                              message: "Enviar presentación vacia",
+                              child: InkWell(
+                                onTap: () async {
+                                  await controllerPresenter
+                                      .sendToPresentation(null);
+                                },
                                 child: Container(
-                                  child: InkWell(
-                                    onTap: () async {
-                                      await controllerPresenter
-                                          .sendToPresentation(null);
-                                    },
-                                    child: Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Colors.blue,
-                                            Colors.blueAccent
-                                          ],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            blurRadius: 5.0,
-                                            offset: Offset(0, 4),
-                                          ),
-                                        ],
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 2.0,
-                                        ),
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: const LinearGradient(
+                                      colors: [Colors.blue, Colors.blueAccent],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 5.0,
+                                        offset: Offset(0,
+                                            4), // Aquí usaríamos const si fuese posible
                                       ),
-                                      child: const Icon(
-                                        Icons.play_arrow,
-                                        color: Colors.white,
-                                        size: 20.0,
-                                      ),
+                                    ],
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2.0,
                                     ),
                                   ),
-                                )),
+                                  child: const Icon(
+                                    Icons.play_arrow,
+                                    color: Colors.white,
+                                    size: 20.0,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
                     ),
-                    Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          controllerPresenter.selectSlide.value.type != "image"
-                              ? Container(
-                                  padding: EdgeInsets.only(left: 5, right: 5),
-                                  margin: EdgeInsets.only(left: 20, right: 20),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.3),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
-                                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        controllerPresenter.selectSlide.value.type != "image"
+                            ? Container(
+                                padding:
+                                    const EdgeInsets.only(left: 5, right: 5),
+                                margin:
+                                    const EdgeInsets.only(left: 20, right: 20),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.3),
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(10),
+                                    bottomRight: Radius.circular(10),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Tooltip(
-                                        message: "Seleccionar video",
-                                        child: MouseRegion(
-                                          cursor: SystemMouseCursors.click,
-                                          child: GestureDetector(
-                                            child: Container(
-                                              color: Colors.transparent,
-                                              padding: EdgeInsets.only(
-                                                  right: 5, top: 5, bottom: 5),
-                                              child: const Icon(
-                                                Icons.video_call,
-                                                size: 40,
-                                              ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Tooltip(
+                                      message: "Seleccionar video",
+                                      child: MouseRegion(
+                                        cursor: SystemMouseCursors.click,
+                                        child: GestureDetector(
+                                          child: Container(
+                                            color: Colors.transparent,
+                                            padding: const EdgeInsets.only(
+                                                right: 5, top: 5, bottom: 5),
+                                            child: const Icon(
+                                              Icons.video_call,
+                                              size: 40,
                                             ),
-                                            onTap: () async {
-                                              final pageIndexNotifier =
-                                                  ValueNotifier(1);
-
-                                              WoltModalSheet.show<void>(
-                                                pageIndexNotifier:
-                                                    pageIndexNotifier,
-                                                context: context,
-                                                pageListBuilder:
-                                                    (modalSheetContext) {
-                                                  final textTheme =
-                                                      Theme.of(context)
-                                                          .textTheme;
-                                                  return [
-                                                    imageGalleryPage(
-                                                        modalSheetContext,
-                                                        textTheme),
-                                                    videoGalleryPage(
-                                                        modalSheetContext,
-                                                        textTheme),
-                                                  ];
-                                                },
-                                                modalTypeBuilder: (context) {
-                                                  return WoltModalType.dialog;
-                                                },
-                                                onModalDismissedWithBarrierTap:
-                                                    () {},
-                                                maxDialogWidth: 1000,
-                                                minDialogWidth: 1000,
-                                                minPageHeight: 0.0,
-                                                maxPageHeight: 0.9,
-                                              );
-                                            },
                                           ),
+                                          onTap: () async {
+                                            final pageIndexNotifier =
+                                                ValueNotifier(1);
+
+                                            WoltModalSheet.show<void>(
+                                              pageIndexNotifier:
+                                                  pageIndexNotifier,
+                                              context: context,
+                                              pageListBuilder:
+                                                  (modalSheetContext) {
+                                                final textTheme =
+                                                    Theme.of(context).textTheme;
+                                                return [
+                                                  imageGalleryPage(
+                                                      modalSheetContext,
+                                                      textTheme),
+                                                  videoGalleryPage(
+                                                      modalSheetContext,
+                                                      textTheme),
+                                                ];
+                                              },
+                                              modalTypeBuilder: (context) {
+                                                return WoltModalType.dialog;
+                                              },
+                                              onModalDismissedWithBarrierTap:
+                                                  () {},
+                                              maxDialogWidth: 1000,
+                                              minDialogWidth: 1000,
+                                              minPageHeight: 0.0,
+                                              maxPageHeight: 0.9,
+                                            );
+                                          },
                                         ),
                                       ),
-                                      Obx(
-                                        () => controllerPresenter.selectSlide
-                                                    .value.dataType ==
-                                                "video"
-                                            ? Container(
-                                                padding:
-                                                    EdgeInsets.only(left: 5),
-                                                child: Row(
-                                                  children: [
-                                                    buildOptioVideo(
-                                                      tooltip: "Play",
-                                                      icon: Icons.play_arrow,
-                                                      selectedOption: "play",
-                                                    ),
-                                                    buildOptioVideo(
-                                                      tooltip: "Pausar",
-                                                      icon: Icons.pause,
-                                                      selectedOption: "pause",
-                                                    ),
-                                                    buildOptioVideo(
-                                                      tooltip: "Reiniciar",
-                                                      icon: Icons.restart_alt,
-                                                      selectedOption: "reset",
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : Container(),
-                          controllerPresenter.selectSlide.value.type != "video"
-                              ? Container(
-                                  margin: EdgeInsets.only(left: 20, right: 20),
-                                  padding: EdgeInsets.only(left: 5, right: 5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.3),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
                                     ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Tooltip(
-                                        message: "Seleccionar Imagen",
-                                        child: MouseRegion(
-                                          cursor: SystemMouseCursors.click,
-                                          child: GestureDetector(
-                                            child: Container(
-                                              color: Colors.transparent,
-                                              padding: EdgeInsets.only(
-                                                  right: 5,
-                                                  top: 10,
-                                                  bottom: 10),
-                                              child: Icon(
-                                                Icons.add_a_photo,
-                                                size: 30,
+                                    Obx(
+                                      () => controllerPresenter
+                                                  .selectSlide.value.dataType ==
+                                              "video"
+                                          ? Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 5),
+                                              child: Row(
+                                                children: [
+                                                  buildOptioVideo(
+                                                    tooltip: "Play",
+                                                    icon: Icons.play_arrow,
+                                                    selectedOption: "play",
+                                                  ),
+                                                  buildOptioVideo(
+                                                    tooltip: "Pausar",
+                                                    icon: Icons.pause,
+                                                    selectedOption: "pause",
+                                                  ),
+                                                  buildOptioVideo(
+                                                    tooltip: "Reiniciar",
+                                                    icon: Icons.restart_alt,
+                                                    selectedOption: "reset",
+                                                  ),
+                                                ],
                                               ),
+                                            )
+                                          : Container(),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                        controllerPresenter.selectSlide.value.type != "video"
+                            ? Container(
+                                margin:
+                                    const EdgeInsets.only(left: 20, right: 20),
+                                padding:
+                                    const EdgeInsets.only(left: 5, right: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.3),
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(10),
+                                    bottomRight: Radius.circular(10),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Tooltip(
+                                      message: "Seleccionar Imagen",
+                                      child: MouseRegion(
+                                        cursor: SystemMouseCursors.click,
+                                        child: GestureDetector(
+                                          child: Container(
+                                            color: Colors.transparent,
+                                            padding: const EdgeInsets.only(
+                                                right: 5, top: 10, bottom: 10),
+                                            child: const Icon(
+                                              Icons.add_a_photo,
+                                              size: 30,
                                             ),
-                                            onTap: () async {
-                                              final pageIndexNotifier =
-                                                  ValueNotifier(0);
-
-                                              WoltModalSheet.show<void>(
-                                                pageIndexNotifier:
-                                                    pageIndexNotifier,
-                                                context: context,
-                                                pageListBuilder:
-                                                    (modalSheetContext) {
-                                                  final textTheme =
-                                                      Theme.of(context)
-                                                          .textTheme;
-                                                  return [
-                                                    imageGalleryPage(
-                                                        modalSheetContext,
-                                                        textTheme),
-                                                    videoGalleryPage(
-                                                        modalSheetContext,
-                                                        textTheme),
-                                                  ];
-                                                },
-                                                modalTypeBuilder: (context) {
-                                                  return WoltModalType.dialog;
-                                                },
-                                                onModalDismissedWithBarrierTap:
-                                                    () {},
-                                                maxDialogWidth: 1000,
-                                                minDialogWidth: 1000,
-                                                minPageHeight: 0.0,
-                                                maxPageHeight: 0.9,
-                                              );
-                                            },
                                           ),
+                                          onTap: () async {
+                                            final pageIndexNotifier =
+                                                ValueNotifier(0);
+
+                                            WoltModalSheet.show<void>(
+                                              pageIndexNotifier:
+                                                  pageIndexNotifier,
+                                              context: context,
+                                              pageListBuilder:
+                                                  (modalSheetContext) {
+                                                final textTheme =
+                                                    Theme.of(context).textTheme;
+                                                return [
+                                                  imageGalleryPage(
+                                                      modalSheetContext,
+                                                      textTheme),
+                                                  videoGalleryPage(
+                                                      modalSheetContext,
+                                                      textTheme),
+                                                ];
+                                              },
+                                              modalTypeBuilder: (context) {
+                                                return WoltModalType.dialog;
+                                              },
+                                              onModalDismissedWithBarrierTap:
+                                                  () {},
+                                              maxDialogWidth: 1000,
+                                              minDialogWidth: 1000,
+                                              minPageHeight: 0.0,
+                                              maxPageHeight: 0.9,
+                                            );
+                                          },
                                         ),
                                       ),
-                                      Obx(
-                                        () => controllerPresenter.selectSlide
-                                                    .value.dataType ==
-                                                "image"
-                                            ? Container(
-                                                padding:
-                                                    EdgeInsets.only(left: 5),
-                                                child: Row(
-                                                  children: [
-                                                    buildOption(
-                                                      tooltip: "Llenar",
-                                                      icon: Icons.aspect_ratio,
-                                                      selectedOption: "fill",
-                                                    ),
-                                                    buildOption(
-                                                      tooltip: "Contener",
-                                                      icon: Icons.zoom_out_map,
-                                                      selectedOption: "contain",
-                                                    ),
-                                                    buildOption(
-                                                      tooltip: "Cover",
-                                                      icon: Icons.crop,
-                                                      selectedOption: "cover",
-                                                    ),
-                                                    buildOption(
-                                                      tooltip: "Ajustar ancho",
-                                                      icon: Icons
-                                                          .photo_size_select_large,
-                                                      selectedOption:
-                                                          "fitWidth",
-                                                    ),
-                                                    buildOption(
-                                                      tooltip: "Ajustar altura",
-                                                      icon: Icons
-                                                          .photo_size_select_small,
-                                                      selectedOption:
-                                                          "fitHeight",
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : Container()
-                        ],
-                      ),
-                    )
+                                    ),
+                                    Obx(
+                                      () => controllerPresenter
+                                                  .selectSlide.value.dataType ==
+                                              "image"
+                                          ? Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 5),
+                                              child: Row(
+                                                children: [
+                                                  buildOption(
+                                                    tooltip: "Llenar",
+                                                    icon: Icons.aspect_ratio,
+                                                    selectedOption: "fill",
+                                                  ),
+                                                  buildOption(
+                                                    tooltip: "Contener",
+                                                    icon: Icons.zoom_out_map,
+                                                    selectedOption: "contain",
+                                                  ),
+                                                  buildOption(
+                                                    tooltip: "Cover",
+                                                    icon: Icons.crop,
+                                                    selectedOption: "cover",
+                                                  ),
+                                                  buildOption(
+                                                    tooltip: "Ajustar ancho",
+                                                    icon: Icons
+                                                        .photo_size_select_large,
+                                                    selectedOption: "fitWidth",
+                                                  ),
+                                                  buildOption(
+                                                    tooltip: "Ajustar altura",
+                                                    icon: Icons
+                                                        .photo_size_select_small,
+                                                    selectedOption: "fitHeight",
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          : Container(),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container()
+                      ],
+                    ),
                   ],
                 )),
           ),

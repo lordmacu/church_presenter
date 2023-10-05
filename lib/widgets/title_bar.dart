@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class TitleBar extends StatelessWidget {
   final String title;
 
-  TitleBar({required this.title});
+  const TitleBar({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 10, right: 10, bottom: 3, top: 3),
+      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 3, top: 3),
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -31,7 +31,7 @@ class TitleBar extends StatelessWidget {
           ),
         ),
       ),
-      child: Text(this.title, style: TextStyle(fontSize: 13)),
+      child: Text(title, style: const TextStyle(fontSize: 13)),
     );
   }
 }

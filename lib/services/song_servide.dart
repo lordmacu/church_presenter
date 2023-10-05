@@ -3,15 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:hive_flutter/adapters.dart';
 import 'package:ipuc/core/sqlite_helper.dart';
-import 'package:ipuc/models/lyric.dart';
-import 'package:ipuc/models/paragraph.dart';
-import 'package:ipuc/models/song.dart';
-import 'package:ipuc/models/video_explanation.dart';
 
-import 'dart:convert';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'package:flutter/services.dart';
 import 'package:diacritic/diacritic.dart'; // para removeDiacritics
 
 class SongService {
@@ -33,6 +25,7 @@ class SongService {
         await initializeDatabaseJson('lib/assets/songs3.json');
       }
     } catch (e) {
+      //catch exception
     } finally {
       await _songs!.close();
     }

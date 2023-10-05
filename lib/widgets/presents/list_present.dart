@@ -6,16 +6,16 @@ import 'package:ipuc/app/controllers/present_controller.dart';
 import 'package:ipuc/widgets/title_bar.dart';
 import 'package:flutter_sliding_box/flutter_sliding_box.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 
 class ListPresent extends StatelessWidget {
+  ListPresent({Key? key}) : super(key: key);
   final PresentController controller = Get.find();
   final ScrollController scrollController = ScrollController();
   final BoxController boxController = BoxController();
   final GlobalKey myWidgetKey = GlobalKey();
   final TextEditingController controllerTopic = TextEditingController();
   final TextEditingController controllerPreacher = TextEditingController();
-  late BuildContext _context;
+  late final BuildContext _context;
 
   void resetForm() {
     final RenderBox renderBox =
@@ -33,13 +33,13 @@ class ListPresent extends StatelessWidget {
       floatingActionButton: Obx(() {
         return AnimatedOpacity(
           opacity: !controller.isPanelOpen.value ? 1.0 : 0.0,
-          duration: Duration(milliseconds: 100), // Duración del efecto
+          duration: const Duration(milliseconds: 100), // Duración del efecto
           child: FloatingActionButton(
             heroTag: "five",
             onPressed: () {
               controller.addEmptyPresentation();
             },
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
             backgroundColor: Colors.blue,
           ),
         );
@@ -49,22 +49,20 @@ class ListPresent extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context) {
-    return Container(
-      child: SlidingBox(
-        draggable: false,
-        collapsed: true,
-        controller: boxController,
-        minHeight: 0,
-        onBoxOpen: () {
-          controller.isPanelOpen.value = true;
-        },
-        onBoxClose: () {
-          controller.isPanelOpen.value = false;
-        },
-        maxHeight: controller.heightItem.value - 100,
-        backdrop: buildBackdrop(),
-        body: buildForm(),
-      ),
+    return SlidingBox(
+      draggable: false,
+      collapsed: true,
+      controller: boxController,
+      minHeight: 0,
+      onBoxOpen: () {
+        controller.isPanelOpen.value = true;
+      },
+      onBoxClose: () {
+        controller.isPanelOpen.value = false;
+      },
+      maxHeight: controller.heightItem.value - 100,
+      backdrop: buildBackdrop(),
+      body: buildForm(),
     );
   }
 
@@ -74,11 +72,11 @@ class ListPresent extends StatelessWidget {
       moving: false,
       body: Container(
         key: myWidgetKey,
-        color: Color(0xff353535),
+        color: const Color(0xff353535),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            TitleBar(title: "Presentaciones"),
+            const TitleBar(title: "Presentaciones"),
             Expanded(
               child: Scrollbar(
                 controller: scrollController,
@@ -104,10 +102,10 @@ class ListPresent extends StatelessWidget {
   Obx buildListItem(int index) {
     return Obx(() {
       return Container(
-        padding: EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.symmetric(vertical: 5),
         color:
             controller.selectedItem.value == controller.presentations[index].key
-                ? Color(0xFF6c6c6c)
+                ? const Color(0xFF6c6c6c)
                 : Colors.transparent,
         child: buildListTile(index),
       );
@@ -115,7 +113,6 @@ class ListPresent extends StatelessWidget {
   }
 
   ListTile buildListTile(int index) {
-    final imagePath = controller.presentations[index].image;
     final topic = controller.presentations[index].topic;
     return ListTile(
       onTap: () {
@@ -123,11 +120,11 @@ class ListPresent extends StatelessWidget {
       },
       title: Text(
         topic,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
         IconButton(
-          icon: Icon(Icons.edit, color: Colors.white),
+          icon: const Icon(Icons.edit, color: Colors.white),
           onPressed: () {
             final RenderBox renderBox =
                 myWidgetKey.currentContext!.findRenderObject() as RenderBox;
@@ -146,26 +143,26 @@ class ListPresent extends StatelessWidget {
           },
         ),
         IconButton(
-          icon: Icon(Icons.delete, color: Colors.white),
+          icon: const Icon(Icons.delete, color: Colors.white),
           onPressed: () async {
             // Mostrar un cuadro de diálogo de confirmación
             final bool? result = await showDialog<bool>(
               context: _context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text("Confirmación"),
-                  content: Text(
+                  title: const Text("Confirmación"),
+                  content: const Text(
                       "¿Estás seguro de que quieres borrar la presentación? Esto también eliminará todos los slides dentro."),
                   actions: <Widget>[
                     TextButton(
-                      child: Text("Cancelar"),
+                      child: const Text("Cancelar"),
                       onPressed: () {
                         Navigator.of(context).pop(
                             false); // Devuelve 'false' si el usuario pulsa 'Cancelar'
                       },
                     ),
                     TextButton(
-                      child: Text("Aceptar"),
+                      child: const Text("Aceptar"),
                       onPressed: () {
                         Navigator.of(context).pop(
                             true); // Devuelve 'true' si el usuario pulsa 'Aceptar'
@@ -189,7 +186,7 @@ class ListPresent extends StatelessWidget {
 
   Container buildForm() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Form(
         child: Column(
           children: [
@@ -204,10 +201,7 @@ class ListPresent extends StatelessWidget {
               label: 'Predicador',
               onChanged: (value) => controller.preacher.value = value,
             ),
-            Container(
-              padding: EdgeInsets.only(top: 10, bottom: 20),
-              child: buildImageSection(),
-            ),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [buildSaveButton()],
@@ -224,7 +218,7 @@ class ListPresent extends StatelessWidget {
         controller.savePresentation();
         boxController.closeBox();
       },
-      child: Text('Guardar'),
+      child: const Text('Guardar'),
     );
   }
 
@@ -236,7 +230,7 @@ class ListPresent extends StatelessWidget {
       return controller.image.value.isEmpty
           ? ElevatedButton(
               onPressed: controller.pickImage,
-              child: Text('Seleccionar imagen'),
+              child: const Text('Seleccionar imagen'),
             )
           : MouseRegion(
               onEnter: (_) => showHint.value = true,
@@ -261,7 +255,7 @@ class ListPresent extends StatelessWidget {
                       ),
                     ),
                     if (showHint.value)
-                      Icon(
+                      const Icon(
                         Icons.edit, // Este es solo un icono de ejemplo
                         color: Colors.blue,
                       ),

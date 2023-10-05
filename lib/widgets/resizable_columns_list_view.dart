@@ -3,6 +3,7 @@ import 'package:ipuc/app/controllers/column_controller.dart';
 import 'package:get/get.dart';
 
 class ResizableColumnsListView extends StatelessWidget {
+  ResizableColumnsListView({Key? key}) : super(key: key);
   final ColumnController columnController = Get.put(ColumnController());
 
   @override

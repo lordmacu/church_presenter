@@ -4,7 +4,9 @@ class ProgressBarWithText extends StatelessWidget {
   final int current;
   final int total;
 
-  ProgressBarWithText({required this.current, required this.total});
+  const ProgressBarWithText(
+      {Key? key, required this.current, required this.total})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +21,10 @@ class ProgressBarWithText extends StatelessWidget {
             color: Colors.blue,
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Text(
           "$current / $total",
-          style: TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: 12),
         ),
       ],
     );

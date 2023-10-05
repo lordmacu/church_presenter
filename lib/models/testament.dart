@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 part 'testament.g.dart'; // Nombre del archivo del adaptador generado
 
 // Para Testament

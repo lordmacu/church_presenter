@@ -16,9 +16,9 @@ class ScreenController extends GetxController {
   var paragraph = "".obs;
   var width = 0.0.obs;
   var height = 0.0.obs;
-  var payload = ({} as Map<dynamic, dynamic>).obs;
+  var payload = {}.obs;
   late Rx<VideoPlayerController> videoPlayerController =
-      VideoPlayerController.network('').obs;
+      VideoPlayerController.networkUrl(Uri()).obs;
 
   @override
   void onClose() {

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as path;
@@ -8,7 +7,7 @@ import 'package:path/path.dart' as path;
 class VideoWidget extends StatefulWidget {
   final String path;
 
-  VideoWidget({required this.path});
+  const VideoWidget({Key? key, required this.path}) : super(key: key);
 
   @override
   _VideoWidgetState createState() => _VideoWidgetState();
@@ -16,6 +15,7 @@ class VideoWidget extends StatefulWidget {
 
 class _VideoWidgetState extends State<VideoWidget> {
   String finalPath = "";
+
   Future<String?> createThumbnail(
       String videoPath, String outputPath, String seconds) async {
     final programFilesPath = Platform.environment['ProgramFiles'];
@@ -48,12 +48,12 @@ class _VideoWidgetState extends State<VideoWidget> {
   }
 
   Future createVideoUrl() async {
-    final Uuid uuid = Uuid();
+    Uuid uuid = const Uuid();
 
     final directory = await getApplicationDocumentsDirectory();
     final String randomThumbnailName = uuid.v1();
     final thumbnailPath = path.join(directory.path, '$randomThumbnailName.png');
-    final seconds = '0:00:01.000000';
+    const seconds = '0:00:01.000000';
     await createThumbnail(widget.path, thumbnailPath, seconds);
     setState(() {
       finalPath = thumbnailPath;
@@ -63,16 +63,15 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: finalPath != ""
           ? Image.file(File(finalPath))
-          : Center(child: CircularProgressIndicator()),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     createVideoUrl();
   }

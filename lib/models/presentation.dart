@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:ipuc/models/slide.dart';
+
 part 'presentation.g.dart'; // Nombre del archivo del adaptador generado
 
 @HiveType(typeId: 23)

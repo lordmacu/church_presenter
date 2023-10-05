@@ -39,12 +39,12 @@ class VideoController extends GetxController {
   }
 
   Future createVideoUrl() async {
-    final Uuid uuid = Uuid();
+    Uuid uuid = const Uuid();
 
     final directory = await getApplicationDocumentsDirectory();
     final String randomThumbnailName = uuid.v1();
     final thumbnailPath = path.join(directory.path, '$randomThumbnailName.png');
-    final seconds = '0:00:01.000000';
+    const seconds = '0:00:01.000000';
     createThumbnail(videoPath.value, thumbnailPath, seconds);
   }
 

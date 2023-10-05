@@ -1,22 +1,14 @@
-import 'dart:convert';
-
-import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
-import 'package:ipuc/app/controllers/description_chapter_controller.dart';
 import 'package:ipuc/app/controllers/song_list_controller.dart';
-import 'package:ipuc/models/book.dart';
-import 'package:ipuc/models/song.dart';
 import 'package:ipuc/models/songdb.dart';
-import 'package:ipuc/models/testament.dart';
-import 'package:ipuc/models/verse.dart';
 import 'package:flutter/services.dart';
 
 class SongsList extends StatelessWidget {
+  SongsList({Key? key}) : super(key: key);
   final SongListController controller = Get.find();
-  ScrollController scrollController = ScrollController();
-  ScrollController scrollaController = ScrollController();
+  final ScrollController scrollController = ScrollController();
+  final ScrollController scrollaController = ScrollController();
   final FocusNode focusNode = FocusNode();
 
   @override
@@ -54,17 +46,17 @@ class SongsList extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: EdgeInsets.only(left: 10, right: 10),
+              padding: const EdgeInsets.only(left: 10, right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // Campo de texto para buscar canciones
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: const EdgeInsets.only(left: 10, right: 10),
                       child: TextField(
                         onChanged: (text) => controller.searchSongs(text),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Colors.white,
                         ),
@@ -121,14 +113,14 @@ class SongsList extends StatelessWidget {
                   ),
                 ),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: const Row(
                 children: [
-                  Container(
+                  SizedBox(
                     child: Text(' '),
                     width: 100,
                   ),
-                  Container(
+                  SizedBox(
                     child: Text('Letra'),
                     width: 100,
                   ),
@@ -151,17 +143,17 @@ class SongsList extends StatelessWidget {
                               },
                               child: Container(
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 8),
                                   child: Row(
                                     children: [
-                                      Container(
+                                      SizedBox(
                                         child: Row(
                                           children: [
                                             IconButton(
                                               tooltip:
                                                   "Agregar a la presentación",
-                                              icon: Icon(Icons.add),
+                                              icon: const Icon(Icons.add),
                                               onPressed: () {
                                                 controller.addNewSong(song);
                                               },
@@ -171,45 +163,44 @@ class SongsList extends StatelessWidget {
                                         width: 100,
                                       ),
                                       Expanded(
-                                        child: Container(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              // Título de la canción
-                                              Text(
-                                                '${song.title}',
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
-                                                ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // Título de la canción
+                                            Text(
+                                              song.title,
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
                                               ),
-                                              SizedBox(
-                                                  height:
-                                                      10), // Espaciado entre el título y el párrafo
-                                              // Párrafo de la canción
-                                              song.paragraphs.isNotEmpty
-                                                  ? Text(
-                                                      '${song.paragraphs[0].length > 60 ? song.paragraphs[0].substring(0, 60) + "..." : song.paragraphs[0]}',
-                                                      style: TextStyle(
-                                                        color: controller
-                                                                    .selectedIndex
-                                                                    .value ==
-                                                                index
-                                                            ? Color(0xffa0a0a0)
-                                                            : Color(0xffa0a0a0),
-                                                      ),
-                                                    )
-                                                  : Text(
-                                                      'No lyrics available', // Mostrar este texto si no hay letras o párrafos disponibles
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xffa0a0a0),
-                                                      ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            // Espaciado entre el título y el párrafo
+                                            // Párrafo de la canción
+                                            song.paragraphs.isNotEmpty
+                                                ? Text(
+                                                    '${song.paragraphs[0].length > 60 ? song.paragraphs[0].substring(0, 60) + "..." : song.paragraphs[0]}',
+                                                    style: TextStyle(
+                                                      color: controller
+                                                                  .selectedIndex
+                                                                  .value ==
+                                                              index
+                                                          ? const Color(
+                                                              0xffa0a0a0)
+                                                          : const Color(
+                                                              0xffa0a0a0),
                                                     ),
-                                            ],
-                                          ),
+                                                  )
+                                                : const Text(
+                                                    'No lyrics available',
+                                                    // Mostrar este texto si no hay letras o párrafos disponibles
+                                                    style: TextStyle(
+                                                      color: Color(0xffa0a0a0),
+                                                    ),
+                                                  ),
+                                          ],
                                         ),
                                       )
                                     ],
@@ -218,7 +209,8 @@ class SongsList extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   border: Border(
                                     bottom: BorderSide(
-                                      color: Color(0xff979797).withOpacity(0.3),
+                                      color: const Color(0xff979797)
+                                          .withOpacity(0.3),
                                       width: 1,
                                     ),
                                   ),

@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/slide_controller.dart';
 import 'package:ipuc/widgets/video_widget.dart';
-import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as path;
 
 class VideosView extends StatelessWidget {
   final String folderName;
-  Function selectImage;
-  SliderController controllerSlide = Get.find();
+  final Function selectImage;
+  final SliderController controllerSlide = Get.find();
 
-  VideosView({required this.folderName, required this.selectImage});
+  VideosView({Key? key, required this.folderName, required this.selectImage})
+      : super(key: key);
 
   Future<List<FileSystemEntity>> getFilesInDirectory() async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -59,7 +59,7 @@ class VideosView extends StatelessWidget {
       future: getFilesInDirectory(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
@@ -68,7 +68,7 @@ class VideosView extends StatelessWidget {
         final files = snapshot.data!;
 
         return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             childAspectRatio: 1.0, // Ajusta esto según tus necesidades
           ),
@@ -76,13 +76,13 @@ class VideosView extends StatelessWidget {
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () async {
-                final Uuid uuid = Uuid();
+                Uuid uuid = const Uuid();
 
                 final directory = await getApplicationDocumentsDirectory();
                 final String randomThumbnailName = uuid.v1();
                 final thumbnailPath =
                     path.join(directory.path, '$randomThumbnailName.png');
-                final seconds = '0:00:01.000000';
+                const seconds = '0:00:01.000000';
                 await createThumbnail(
                     files[index].path, thumbnailPath, seconds);
 

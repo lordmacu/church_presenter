@@ -1,13 +1,9 @@
 import 'dart:convert';
 
-import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/present_controller.dart';
 import 'package:ipuc/app/controllers/slide_controller.dart';
-import 'package:ipuc/models/book.dart';
 import 'package:ipuc/models/slide.dart';
-import 'package:ipuc/models/testament.dart';
-import 'package:ipuc/models/verse.dart';
 import 'package:ipuc/services/verse_service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -38,7 +34,7 @@ class DescriptionChapterController extends GetxController {
     searchQuery.value = query;
     versesWithRelations.clear();
 
-    if (searchQuery.value.length > 0) {
+    if (searchQuery.value.isNotEmpty) {
       List<Map<String, dynamic>> allVerses =
           await VerseService().searchVerses(query, selectedVersion.value);
       versesWithRelations.assignAll(allVerses);
@@ -61,7 +57,7 @@ class DescriptionChapterController extends GetxController {
       await controllerPresent.addEmptyPresentation();
     }
 
-    var uuid = Uuid();
+    var uuid = const Uuid();
     final uniqueKey = uuid.v4();
 
     final payload = jsonEncode({
@@ -86,7 +82,7 @@ class DescriptionChapterController extends GetxController {
   void addEmptyPresentationImage() async {
     String? image = await controllerSlide.getRandomImage();
 
-    var uuid = Uuid();
+    var uuid = const Uuid();
     final uniqueKey = uuid.v4();
     final payload = jsonEncode({"type": "image", "path": image});
 
@@ -102,7 +98,7 @@ class DescriptionChapterController extends GetxController {
         key: uniqueKey,
         type: "image",
         dataType: "image",
-        dataTypePath: image!,
+        dataTypePath: image,
         dataTypeMode: "cover",
         json: payload);
   }

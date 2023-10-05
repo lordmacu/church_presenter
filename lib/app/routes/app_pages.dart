@@ -1,4 +1,3 @@
-import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/routes/app_routes.dart';
 import 'package:ipuc/app/views/home_view.dart';
@@ -6,20 +5,20 @@ import 'package:ipuc/app/views/loading_view.dart';
 import 'package:ipuc/app/views/screen_view.dart';
 
 class AppPages {
-  static const INITIAL = AppRoutes.INITIAL;
+  static const initial = AppRoutes.initial;
 
   static final pages = [
     GetPage(
-      name: AppRoutes.INITIAL,
+      name: AppRoutes.initial,
       page: () => HomeView(),
     ),
     GetPage(
-      name: AppRoutes.PREVIEW,
+      name: AppRoutes.preview,
       page: () => ScreenView(),
     ),
     GetPage(
-      name: AppRoutes.LOADING,
-      page: () => LoadingView(),
+      name: AppRoutes.loading,
+      page: () => const LoadingView(),
     ),
     // añade más páginas aquí
   ];

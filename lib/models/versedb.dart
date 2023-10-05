@@ -1,8 +1,3 @@
-import 'dart:convert';
-
-import 'package:diacritic/diacritic.dart';
-import 'package:ipuc/core/sqlite_helper.dart';
-
 class VerseDb {
   final int? id;
   final int? bookId;

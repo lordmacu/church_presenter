@@ -1,24 +1,13 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:ipuc/app/controllers/present_controller.dart';
 import 'package:ipuc/app/controllers/slide_controller.dart';
-import 'package:ipuc/models/book.dart';
-import 'package:ipuc/models/lyric.dart';
 import 'package:ipuc/models/slide.dart';
 import 'package:ipuc/models/song.dart';
 import 'package:ipuc/models/songdb.dart';
-import 'package:ipuc/models/testament.dart';
-import 'package:ipuc/models/verse.dart';
-import 'package:ipuc/services/verse_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:diacritic/diacritic.dart';
-
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'package:diacritic/diacritic.dart'; // para removeDiacritics
 
 class SongListController extends GetxController {
   var selectedIndex = 0.obs;
@@ -59,11 +48,11 @@ class SongListController extends GetxController {
     int index = 0;
 
     for (var paragraph in song.paragraphs) {
-      var uuid = Uuid();
+      var uuid = const Uuid();
       final uniqueKey = uuid.v4();
       final payload = jsonEncode({
         "type": "song",
-        "paragraph": '${paragraph}',
+        "paragraph": '$paragraph',
         "title": song.title,
       });
 

@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 part 'verse.g.dart'; // Nombre del archivo del adaptador generado
 
 // Para Verse

@@ -1,19 +1,13 @@
-import 'dart:convert';
-
-import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/description_chapter_controller.dart';
-import 'package:ipuc/models/book.dart';
-import 'package:ipuc/models/testament.dart';
-import 'package:ipuc/models/verse.dart';
 import 'package:flutter/services.dart';
 
 class DescriptionChapter extends StatelessWidget {
+  DescriptionChapter({Key? key}) : super(key: key);
   final DescriptionChapterController controller = Get.find();
-  ScrollController scrollController = ScrollController();
-  ScrollController scrollaController = ScrollController();
+  final ScrollController scrollController = ScrollController();
+  final ScrollController scrollaController = ScrollController();
   final FocusNode focusNode = FocusNode();
 
   String cleanRtfText(String text) {
@@ -118,7 +112,7 @@ class DescriptionChapter extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: EdgeInsets.only(top: 10, bottom: 10),
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: Center(
                 child: Wrap(
                   spacing: 10, // Espaciado horizontal entre los botones
@@ -127,7 +121,7 @@ class DescriptionChapter extends StatelessWidget {
                     ...List.generate(controller.versions.value.length, (index) {
                       return Tooltip(
                         message:
-                            "${getBibleTitle(controller.versions.value[index])}",
+                            getBibleTitle(controller.versions.value[index]),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: Obx(() => ElevatedButton(
@@ -144,14 +138,14 @@ class DescriptionChapter extends StatelessWidget {
                                   controller.selectedVersion.value =
                                       controller.versions.value[index];
                                   controller.loadBibleByVersion();
-                                  if (controller.searchQuery.value.length > 0) {
+                                  if (controller.searchQuery.value.isNotEmpty) {
                                     controller.updateSearch(
                                         controller.searchQuery.value);
                                   }
                                 },
                                 child: Text(
-                                  '${controller.versions.value[index]}',
-                                  style: TextStyle(
+                                  controller.versions.value[index],
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     color: Colors.white,
                                   ),
@@ -165,9 +159,9 @@ class DescriptionChapter extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.only(left: 10, right: 10),
+              padding: const EdgeInsets.only(left: 10, right: 10),
               child: TextField(
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   color: Colors.white,
                 ),
@@ -209,10 +203,10 @@ class DescriptionChapter extends StatelessWidget {
                   ),
                 ),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: const Row(
                 children: [
-                  Container(
+                  SizedBox(
                     child: Text(' '),
                     width: 100,
                   ),
@@ -238,16 +232,16 @@ class DescriptionChapter extends StatelessWidget {
                               },
                               child: Container(
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 8),
                                   child: Row(
                                     children: [
-                                      Container(
+                                      SizedBox(
                                         child: Row(
                                           children: [
                                             IconButton(
                                               tooltip: "Agregar",
-                                              icon: Icon(Icons.add),
+                                              icon: const Icon(Icons.add),
                                               onPressed: () {
                                                 controller.addNewVerse(
                                                     verse['verse'],
@@ -258,7 +252,8 @@ class DescriptionChapter extends StatelessWidget {
                                             ),
                                             IconButton(
                                               tooltip: "Presentar",
-                                              icon: Icon(Icons.present_to_all),
+                                              icon: const Icon(
+                                                  Icons.present_to_all),
                                               onPressed: () {
                                                 controller
                                                     .sendDirectToPresentation(
@@ -275,29 +270,24 @@ class DescriptionChapter extends StatelessWidget {
                                       Expanded(
                                         child: Column(
                                           children: [
-                                            Container(
-                                              child: Text(
-                                                '${verse['text'].trim()}',
-                                                softWrap: true,
-                                                overflow: TextOverflow.clip,
-                                                maxLines: 3,
-                                                style: TextStyle(
-                                                  color: controller
-                                                              .selectedIndex
-                                                              .value ==
-                                                          index
-                                                      ? Color(0xffa0a0a0)
-                                                      : Color(0xffa0a0a0),
-                                                ),
+                                            Text(
+                                              '${verse['text'].trim()}',
+                                              softWrap: true,
+                                              overflow: TextOverflow.clip,
+                                              maxLines: 3,
+                                              style: TextStyle(
+                                                color: controller.selectedIndex
+                                                            .value ==
+                                                        index
+                                                    ? const Color(0xffa0a0a0)
+                                                    : const Color(0xffa0a0a0),
                                               ),
                                             ),
-                                            Container(
-                                              child: Text(
-                                                '${verse['book_text']} ${verse['chapter']}:${verse['verse']} (${verse['version']})',
-                                                textAlign: TextAlign.right,
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
+                                            Text(
+                                              '${verse['book_text']} ${verse['chapter']}:${verse['verse']} (${verse['version']})',
+                                              textAlign: TextAlign.right,
+                                              style: const TextStyle(
+                                                  color: Colors.white),
                                             )
                                           ],
                                         ),
@@ -308,7 +298,8 @@ class DescriptionChapter extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   border: Border(
                                     bottom: BorderSide(
-                                      color: Color(0xff979797).withOpacity(0.3),
+                                      color: const Color(0xff979797)
+                                          .withOpacity(0.3),
                                       width: 1,
                                     ),
                                   ),

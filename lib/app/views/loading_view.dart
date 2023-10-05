@@ -5,6 +5,8 @@ import 'package:ipuc/services/bible_service.dart';
 import 'package:ipuc/services/song_servide.dart';
 
 class LoadingView extends StatefulWidget {
+  const LoadingView({Key? key}) : super(key: key);
+
   @override
   _LoadingView createState() => _LoadingView();
 }
@@ -47,16 +49,8 @@ class _LoadingView extends State<LoadingView> {
     await Hive.deleteBoxFromDisk('videoExplanations');
   }
 
-  Future CheckIHasInformation() async {
-    // Get.toNamed('/');
-    setState(() {
-      _isLoading = 1;
-    });
-  }
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initData();
   }
@@ -70,14 +64,12 @@ class _LoadingView extends State<LoadingView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _isLoading == 2
-                      ? Container(
-                          child: const Column(
-                            children: [
-                              CircularProgressIndicator(),
-                              SizedBox(height: 20),
-                              Text('Cargando la Bilia y las canciones...')
-                            ],
-                          ),
+                      ? const Column(
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 20),
+                            Text('Cargando la Bilia y las canciones...')
+                          ],
                         )
                       : Container(),
                 ],

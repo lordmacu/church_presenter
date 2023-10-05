@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:flutter/material.dart';
@@ -10,15 +9,14 @@ import 'package:ipuc/app/controllers/slide_controller.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/models/slide.dart';
 import 'package:ipuc/widgets/live_output/preview.dart';
-import 'package:ipuc/widgets/slides/slide_item.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SlideGrid extends StatelessWidget {
+  SlideGrid({Key? key}) : super(key: key);
   final SliderController controller = Get.find();
-  ScrollController slideController = ScrollController();
-  ArgumentController argumentController = Get.find();
-  PresentController presentController = Get.find();
-  PreviewController previewController = Get.find();
+  final ScrollController slideController = ScrollController();
+  final ArgumentController argumentController = Get.find();
+  final PresentController presentController = Get.find();
+  final PreviewController previewController = Get.find();
 
   final FocusNode focusNode = FocusNode();
 
@@ -27,27 +25,28 @@ class SlideGrid extends StatelessWidget {
       final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
 
       var jsonData = jsonDecode(slide.json);
-      var video_path = "";
+      var videoPath = "";
 
       if (jsonData["videoPath"] != null && jsonData["videoPath"] is String) {
-        video_path = jsonData["videoPath"];
+        videoPath = jsonData["videoPath"];
       }
 
       final payloaDataType = jsonEncode({
         "dataType": slide.dataType,
         "dataTypePath": slide.dataTypePath,
         "dataTypeMode": slide.dataType == "video" ? "new" : slide.dataTypeMode,
-        "dataVideoPath": video_path,
+        "dataVideoPath": videoPath,
       });
-      print("esto se va a enviar: $payloaDataType");
-      final setDataType = await DesktopMultiWindow.invokeMethod(
+      await DesktopMultiWindow.invokeMethod(
           subWindowIds[0], "send_data_type", payloaDataType);
 
-      await Future.delayed(Duration(milliseconds: 50));
+      await Future.delayed(const Duration(milliseconds: 50));
 
-      final result = await DesktopMultiWindow.invokeMethod(
+      await DesktopMultiWindow.invokeMethod(
           subWindowIds[0], "send_viewer", slide.json);
-    } catch (e) {}
+    } catch (e) {
+      //catch errors
+    }
   }
 
   @override
@@ -87,7 +86,7 @@ class SlideGrid extends StatelessWidget {
                       key: slide.key,
                       type: slide.type,
                       dataType: slide.dataType,
-                      dataTypePath: slide.dataTypePath!,
+                      dataTypePath: slide.dataTypePath,
                       dataTypeMode: slide.dataTypeMode,
                       json: slide.json);
 

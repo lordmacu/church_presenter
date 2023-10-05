@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:ipuc/models/paragraph.dart';
+
 part 'lyric.g.dart'; // Nombre del archivo del adaptador generado
 
 // lyric.dart

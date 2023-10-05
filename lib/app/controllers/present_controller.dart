@@ -8,12 +8,10 @@ import 'package:ipuc/app/controllers/slide_controller.dart';
 import 'package:ipuc/models/presentation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ipuc/models/slide.dart';
-import 'package:ipuc/widgets/slides/slide_presenter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 import 'package:uuid/uuid.dart';
-import 'package:fullscreen_window/fullscreen_window.dart';
 
 class PresentController extends GetxController {
   var selectedItem = RxString("");
@@ -90,7 +88,7 @@ class PresentController extends GetxController {
   }
 
   Future sendToPresentation(payload) async {
-    var subWindowIds;
+    var subWindowIds = [];
     try {
       subWindowIds = await getAllSubWindowIds();
 
@@ -118,7 +116,7 @@ class PresentController extends GetxController {
   }
 
   Future sendCurrentSlideDataToViewer(subWindowIds) async {
-    var payloaDataType;
+    var payloaDataType = "";
 
     Slide slide = selectSlide.value;
 
@@ -128,12 +126,12 @@ class PresentController extends GetxController {
       "dataTypeMode": slide.dataTypeMode,
     });
 
-    final setDataType = await DesktopMultiWindow.invokeMethod(
+    await DesktopMultiWindow.invokeMethod(
         subWindowIds[0], "send_data_type", payloaDataType);
   }
 
   Future sendDataToViewer(payload, subWindowIds) async {
-    final result = await DesktopMultiWindow.invokeMethod(
+    await DesktopMultiWindow.invokeMethod(
         subWindowIds[0], "send_viewer", payload);
   }
 
@@ -143,7 +141,7 @@ class PresentController extends GetxController {
 
     final payloaDataType = jsonEncode({
       "dataType": "image",
-      "dataTypePath": "${image!}",
+      "dataTypePath": "$image",
       "dataTypeMode": "cover"
     });
     await DesktopMultiWindow.invokeMethod(
@@ -158,7 +156,7 @@ class PresentController extends GetxController {
     try {
       final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
 
-      final payload = jsonEncode(selectSlide.value.json);
+      jsonEncode(selectSlide.value.json);
 
       final payloaDataType = jsonEncode({
         "dataType": selectSlide.value.dataType,
@@ -166,16 +164,18 @@ class PresentController extends GetxController {
         "dataTypeMode": selectSlide.value.dataTypeMode,
       });
 
-      final setDataType = await DesktopMultiWindow.invokeMethod(
+      await DesktopMultiWindow.invokeMethod(
           subWindowIds[0], "send_data_type", payloaDataType);
-    } catch (e) {}
+    } catch (e) {
+      // Ignorar la excepción intencionadamente
+    }
   }
 
   sendToViewerVideo(String video) async {
     try {
       final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
 
-      final payload = jsonEncode(selectSlide.value.json);
+      jsonEncode(selectSlide.value.json);
       var jsonData = jsonDecode(selectSlide.value.json);
 
       final payloaDataType = jsonEncode({
@@ -185,9 +185,11 @@ class PresentController extends GetxController {
         "dataVideoPath": jsonData["videoPath"],
       });
 
-      final setDataType = await DesktopMultiWindow.invokeMethod(
+      await DesktopMultiWindow.invokeMethod(
           subWindowIds[0], "send_data_type", payloaDataType);
-    } catch (e) {}
+    } catch (e) {
+      //catch exception
+    }
   }
 
   void resetValues(double height) async {
@@ -214,8 +216,9 @@ class PresentController extends GetxController {
     } else {}
 
     try {} catch (e) {
+      //catch exception
     } finally {
-      box?.close();
+      box.close();
     }
   }
 
@@ -228,7 +231,7 @@ class PresentController extends GetxController {
       // Asegúrate de que selectPresentation está inicializado y tiene un key válido.
       if (selectPresentation.value.key != null) {
         // Encuentra la clave en la box de Hive.
-        int? key = findIndexByValue(box, selectPresentation.value.key!);
+        int? key = findIndexByValue(box, selectPresentation.value.key);
 
         if (key != null) {
           // Actualiza la lista de slides en el objeto selectPresentation
@@ -240,6 +243,7 @@ class PresentController extends GetxController {
         } else {}
       } else {}
     } catch (e) {
+      //catch exception
     } finally {
       box?.close();
     }
@@ -255,7 +259,7 @@ class PresentController extends GetxController {
       if (selectPresentation.value.key != null) {
         // Find the key in the Hive box.
         int? hiveKey =
-            findIndexByValue(presentationBox, selectPresentation.value.key!);
+            findIndexByValue(presentationBox, selectPresentation.value.key);
 
         if (hiveKey != null) {
           // Update the slide in the selected presentation.
@@ -267,7 +271,7 @@ class PresentController extends GetxController {
         }
       }
     } catch (e) {
-      print("An error occurred: $e");
+      //catch exception
     } finally {
       await presentationBox?.close();
     }
@@ -276,7 +280,6 @@ class PresentController extends GetxController {
   void updateSlideInSelectedPresentation(Slide newSlide) {
     for (var i = 0; i < selectPresentation.value.slides.length; i++) {
       if (selectPresentation.value.slides[i].key == newSlide.key) {
-        print("Found match at index: $i");
         selectPresentation.value.slides[i] = newSlide;
         break;
       }
@@ -292,7 +295,7 @@ class PresentController extends GetxController {
       // Asegúrate de que selectPresentation está inicializado y tiene un key válido.
       if (selectPresentation.value.key != null) {
         // Encuentra la clave en la box de Hive.
-        int? key = findIndexByValue(box, selectPresentation.value.key!);
+        int? key = findIndexByValue(box, selectPresentation.value.key);
 
         if (key != null) {
           List<Slide> filteredSlidesList = selectPresentation.value.slides
@@ -319,6 +322,7 @@ class PresentController extends GetxController {
         } else {}
       } else {}
     } catch (e) {
+      //catch exception
     } finally {
       box?.close();
     }
@@ -333,7 +337,7 @@ class PresentController extends GetxController {
       // Asegúrate de que selectPresentation está inicializado y tiene un key válido.
       if (selectPresentation.value.key != null) {
         // Encuentra la clave en la box de Hive.
-        int? key = findIndexByValue(box, selectPresentation.value.key!);
+        int? key = findIndexByValue(box, selectPresentation.value.key);
 
         if (key != null) {
           List<Slide> filteredSlidesList = []; // Convert to List<Slide>
@@ -358,6 +362,7 @@ class PresentController extends GetxController {
         } else {}
       } else {}
     } catch (e) {
+      //catch exception
     } finally {
       box?.close();
     }
@@ -431,7 +436,7 @@ class PresentController extends GetxController {
     Box<Presentation>? box;
     try {
       box = await Hive.openBox<Presentation>('presentations');
-      var uuid = Uuid();
+      var uuid = const Uuid();
       final uniqueKey = uuid.v4();
       DateTime currentDate = DateTime
           .now(); // Actualiza la fecha solo si es una nueva presentación
@@ -478,7 +483,6 @@ class PresentController extends GetxController {
         topic: topic.value,
         slides: RxList<Slide>([]),
       );
-      final newId = box.length; // Este ID será autoincrementable
 
       if (isSaving.value) {
         // Crear un nuevo elemento
@@ -501,7 +505,7 @@ class PresentController extends GetxController {
 
     presentations.value = box.values.toList().reversed.toList();
 
-    if (box.values.toList().length > 0) {
+    if (box.values.toList().isNotEmpty) {
       await selectItem(presentations.value[0].key);
     }
     box.close();

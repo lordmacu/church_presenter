@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,7 +20,6 @@ import 'package:ipuc/models/testament.dart';
 import 'package:ipuc/models/verse.dart';
 import 'package:ipuc/models/video_explanation.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:ipuc/services/song_servide.dart';
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:video_player_win/video_player_win_plugin.dart';
 import 'package:window_manager/window_manager.dart';
@@ -53,7 +51,7 @@ void main(List<String> args) async {
   } else {
     await windowManager.ensureInitialized();
 
-    WindowOptions windowOptions = WindowOptions(
+    WindowOptions windowOptions = const WindowOptions(
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
@@ -78,25 +76,12 @@ void main(List<String> args) async {
     Hive.registerAdapter(ParagraphAdapter());
     Hive.registerAdapter(VideoExplanationAdapter());
 
-    /* await Hive.deleteBoxFromDisk('books');
-    await Hive.deleteBoxFromDisk('songs');
-    await Hive.deleteBoxFromDisk('presentations');
-    await Hive.deleteBoxFromDisk('verses');
-    await Hive.deleteBoxFromDisk('testaments');
-    await Hive.deleteBoxFromDisk('paragraphs');
-    await Hive.deleteBoxFromDisk('slides');
-    await Hive.deleteBoxFromDisk('lyrics');
-    await Hive.deleteBoxFromDisk('videoExplanations');*/
-
-    SongService songService = SongService();
     var songBox = await Hive.openBox('songs');
 
-    // Comprobamos si la caja 'songs' está vacía
-    bool shouldShowInitializationView = songBox.isEmpty;
     await songBox.close();
 
     initializeDateFormatting('es_ES', null).then((_) {
-      runApp(MyApp());
+      runApp(const MyApp());
     });
   }
 }
@@ -118,7 +103,7 @@ Future<void> clearAllHiveBoxes() async {
 }
 
 class MySubApp extends StatelessWidget {
-  MySubApp({
+  const MySubApp({
     Key? key,
     required this.windowController,
     required this.args,
@@ -134,23 +119,27 @@ class MySubApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors
             .black, // Esto hace que todos los Scaffold tengan un fondo negro
 
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           // Aquí puedes especificar varios estilos de texto como headline1, headline2, etc.
-          bodyText1: TextStyle(color: Color(0xff7e7e7e)),
-          bodyText2: TextStyle(color: Color(0xff7e7e7e)),
+          bodyLarge: TextStyle(color: Color(0xff7e7e7e)),
+          bodyMedium: TextStyle(color: Color(0xff7e7e7e)),
         ),
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.white, // Cambia el color de los íconos aquí
         ),
       ),
       title: 'Mi Aplicación',
-      initialRoute: AppRoutes.PREVIEW,
+      initialRoute: AppRoutes.preview,
       getPages: AppPages.pages,
     );
   }
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({
+    Key? key,
+  }) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -171,16 +160,12 @@ class _MyAppState extends State<MyApp> with WindowListener {
         var subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
 
         await WindowController.fromWindowId(subWindowIds[0]).close();
-      } catch (e) {}
+      } catch (e) {
+        //catch exception
+      }
 
       await windowManager.destroy();
     }
-  }
-
-  @override
-  void onWindowMove() {
-    // do something
-    print('[onWindowMove] onWindowMove:');
   }
 
   @override
@@ -201,17 +186,18 @@ class _MyAppState extends State<MyApp> with WindowListener {
       theme: ThemeData(
         scaffoldBackgroundColor: Colors
             .black, // Esto hace que todos los Scaffold tengan un fondo negro
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           // Aquí puedes especificar varios estilos de texto como headline1, headline2, etc.
-          bodyText1: TextStyle(color: Color(0xff7e7e7e)),
-          bodyText2: TextStyle(color: Color(0xff7e7e7e)),
+          bodyLarge: TextStyle(
+              color: Color(0xff7e7e7e)), // This was previously bodyText1
+          bodyMedium: TextStyle(color: Color(0xff7e7e7e)),
         ),
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.white, // Cambia el color de los íconos aquí
         ),
       ),
       title: 'Mi Aplicación',
-      initialRoute: AppRoutes.LOADING, // Reemplaza con tu ruta inicial
+      initialRoute: AppRoutes.loading, // Reemplaza con tu ruta inicial
       getPages: AppPages.pages, // Reemplaza con tus páginas
     );
   }

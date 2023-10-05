@@ -7,9 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/present_controller.dart';
 import 'package:ipuc/app/controllers/preview_controller.dart';
-import 'package:ipuc/models/presentation.dart';
-import 'package:ipuc/models/slide.dart';
-import 'package:quds_popup_menu/quds_popup_menu.dart';
 
 class PreviewWidget extends StatelessWidget {
   final String type;
@@ -22,10 +19,11 @@ class PreviewWidget extends StatelessWidget {
   final Function onTap;
   final int index;
 
-  PreviewController previewController = Get.put(PreviewController());
-  PresentController presentController = Get.find();
+  final PreviewController previewController = Get.put(PreviewController());
+  final PresentController presentController = Get.find();
 
   PreviewWidget({
+    Key? key,
     required this.type,
     required this.isSelected,
     required this.onTap,
@@ -35,18 +33,18 @@ class PreviewWidget extends StatelessWidget {
     required this.dataTypePath,
     required this.dataTypeMode,
     required this.keyItem,
-  });
+  }) : super(key: key);
 
   void _showPopupMenu(Offset offset, BuildContext context) {
     showMenu(
       context: context,
       position: RelativeRect.fromLTRB(offset.dx, offset.dy, 0.0, 0.0),
       items: <PopupMenuEntry>[
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 'Option 1',
           child: Text('Option 1'),
         ),
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 'Option 2',
           child: Text('Option 2'),
         ),
@@ -106,8 +104,8 @@ class PreviewWidget extends StatelessWidget {
         child: GestureDetector(
             onTap: () => onTap(),
             child: Container(
-              padding: EdgeInsets.all(2),
-              margin: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(2),
+              margin: const EdgeInsets.all(20),
               height: 230,
               decoration: BoxDecoration(
                 color: Colors.black,
@@ -122,7 +120,7 @@ class PreviewWidget extends StatelessWidget {
                     color: Colors.black.withOpacity(0.3),
                     spreadRadius: 0,
                     blurRadius: 5,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -136,35 +134,33 @@ class PreviewWidget extends StatelessWidget {
                       fit: getBoxFit(),
                     ),
                   ),
-                  Container(
-                    child: Center(
-                      child: Stack(
-                        children: [
-                          // Black border
-                          Text(
-                            previewController.verseText.value,
-                            style: TextStyle(
-                              fontSize: fontSize,
-                              fontWeight: FontWeight.bold,
-                              foreground: Paint()
-                                ..style = PaintingStyle.stroke
-                                ..strokeWidth = 4
-                                ..color = Colors.black,
-                            ),
-                            textAlign: TextAlign.center,
+                  Center(
+                    child: Stack(
+                      children: [
+                        // Black border
+                        Text(
+                          previewController.verseText.value,
+                          style: TextStyle(
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.bold,
+                            foreground: Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 4
+                              ..color = Colors.black,
                           ),
-                          // White text
-                          Text(
-                            previewController.verseText.value,
-                            style: TextStyle(
-                              fontSize: fontSize,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
+                          textAlign: TextAlign.center,
+                        ),
+                        // White text
+                        Text(
+                          previewController.verseText.value,
+                          style: TextStyle(
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                        ],
-                      ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
                   Positioned(
@@ -225,8 +221,8 @@ class PreviewWidget extends StatelessWidget {
             child: GestureDetector(
                 onTap: () => onTap(),
                 child: Container(
-                  padding: EdgeInsets.all(2),
-                  margin: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(2),
+                  margin: const EdgeInsets.all(20),
                   height: 180,
                   decoration: BoxDecoration(
                     color: Colors.black,
@@ -241,7 +237,7 @@ class PreviewWidget extends StatelessWidget {
                         color: Colors.black.withOpacity(0.3),
                         spreadRadius: 0,
                         blurRadius: 5,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
@@ -256,7 +252,7 @@ class PreviewWidget extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: Center(
                           child: Stack(
                             children: [
@@ -332,8 +328,8 @@ class PreviewWidget extends StatelessWidget {
 
   Widget previewView() {
     return Container(
-      padding: EdgeInsets.all(2),
-      margin: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(2),
+      margin: const EdgeInsets.all(20),
       height: 180,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -342,7 +338,7 @@ class PreviewWidget extends StatelessWidget {
             color: Colors.black.withOpacity(0.3),
             spreadRadius: 0,
             blurRadius: 5,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -373,7 +369,7 @@ class PreviewWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 // White text
-                Text(
+                const Text(
                   "slide",
                   style: TextStyle(
                     fontSize: 17,
@@ -395,11 +391,6 @@ class PreviewWidget extends StatelessWidget {
 
     previewController.path.value = data['path'];
 
-    /* if (dataTypePath != data['path']) {
-      previewController.path.value = dataTypePath;
-    }*/
-
-    double fontSize = getFontSize(previewController.verseText.value, 100, 260);
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -415,8 +406,8 @@ class PreviewWidget extends StatelessWidget {
             child: GestureDetector(
                 onTap: () => onTap(),
                 child: Container(
-                  padding: EdgeInsets.all(2),
-                  margin: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(2),
+                  margin: const EdgeInsets.all(20),
                   height: 180,
                   decoration: BoxDecoration(
                     color: Colors.black,
@@ -431,7 +422,7 @@ class PreviewWidget extends StatelessWidget {
                         color: Colors.black.withOpacity(0.3),
                         spreadRadius: 0,
                         blurRadius: 5,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
@@ -460,8 +451,6 @@ class PreviewWidget extends StatelessWidget {
     var data = jsonDecode(json);
     previewController.path.value = data['firstFrame'];
 
-    double fontSize = getFontSize(previewController.verseText.value, 100, 260);
-
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -477,8 +466,8 @@ class PreviewWidget extends StatelessWidget {
             child: GestureDetector(
                 onTap: () => onTap(),
                 child: Container(
-                  padding: EdgeInsets.all(2),
-                  margin: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(2),
+                  margin: const EdgeInsets.all(20),
                   height: 180,
                   decoration: BoxDecoration(
                     color: Colors.black,
@@ -493,7 +482,7 @@ class PreviewWidget extends StatelessWidget {
                         color: Colors.black.withOpacity(0.3),
                         spreadRadius: 0,
                         blurRadius: 5,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
@@ -509,7 +498,7 @@ class PreviewWidget extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      Positioned(
+                      const Positioned(
                         left: 0,
                         right: 0,
                         top: 0,
@@ -527,16 +516,16 @@ class PreviewWidget extends StatelessWidget {
   }
 
   Widget getTypeView(context) {
-    if (this.type == "verse") {
+    if (type == "verse") {
       return verseView(context);
     }
-    if (this.type == "song") {
+    if (type == "song") {
       return songView(context);
     }
-    if (this.type == "image") {
+    if (type == "image") {
       return imageView(context);
     }
-    if (this.type == "video") {
+    if (type == "video") {
       return videoView(context);
     }
     return previewView();
@@ -544,13 +533,12 @@ class PreviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Stack(
+    return Stack(
       children: [
         getTypeView(context),
         Positioned(
           child: Container(
-            padding: EdgeInsets.all(
+            padding: const EdgeInsets.all(
                 8.0), // Agrega un poco de espacio alrededor del texto
             decoration: BoxDecoration(
               color: Colors.grey.withOpacity(0.8),
@@ -559,7 +547,7 @@ class PreviewWidget extends StatelessWidget {
             child: Center(
               child: Text(
                 "${index + 1}",
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white, // Configura el color del texto a blanco
                 ),
               ),
@@ -575,14 +563,14 @@ class PreviewWidget extends StatelessWidget {
                 onTap: () async {
                   await presentController.deleteSlideToPresentation(keyItem);
                 },
-                customBorder: CircleBorder(),
+                customBorder: const CircleBorder(),
                 child: Container(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: Colors.red.withOpacity(0.8),
                     shape: BoxShape.circle,
                   ),
-                  child: Center(
+                  child: const Center(
                     child: Icon(
                       Icons.delete,
                       size: 20,
@@ -594,6 +582,6 @@ class PreviewWidget extends StatelessWidget {
           right: 10,
         )
       ],
-    ));
+    );
   }
 }

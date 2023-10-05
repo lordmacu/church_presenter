@@ -1,5 +1,4 @@
 import 'dart:ffi';
-import 'package:ffi/ffi.dart';
 
 typedef SetWindowLongC = Int32 Function(
     IntPtr hWnd, Int32 nIndex, Int32 dwNewLong);
@@ -13,33 +12,33 @@ typedef GetForegroundWindowDart = int Function();
 
 final user32 = DynamicLibrary.open('user32.dll');
 
-final SetWindowLong =
+final setWindowLong =
     user32.lookupFunction<SetWindowLongC, SetWindowLongDart>('SetWindowLongW');
-final ShowWindow =
+final showWindow =
     user32.lookupFunction<ShowWindowC, ShowWindowDart>('ShowWindow');
-final GetForegroundWindow =
+final getForegroundWindow =
     user32.lookupFunction<GetForegroundWindowC, GetForegroundWindowDart>(
         'GetForegroundWindow');
 
-const GWL_STYLE = -16;
-const WS_CAPTION = 0x00C00000;
-const WS_THICKFRAME = 0x00040000;
-const SW_MAXIMIZE = 3;
-const SW_RESTORE = 9;
+const gwlStyle = -16;
+const wsCaption = 0x00C00000;
+const wsThickFrame = 0x00040000;
+const swMaximize = 3;
+const swRestore = 9;
 
 bool isFullScreen = false;
 
 void toggleFullScreen() {
-  final hWnd = GetForegroundWindow();
+  final hWnd = getForegroundWindow();
   if (isFullScreen) {
-    int styles = SetWindowLong(hWnd, GWL_STYLE, 0);
-    SetWindowLong(hWnd, GWL_STYLE, styles | (WS_CAPTION | WS_THICKFRAME));
-    ShowWindow(hWnd, SW_RESTORE);
+    int styles = setWindowLong(hWnd, gwlStyle, 0);
+    setWindowLong(hWnd, gwlStyle, styles | (wsCaption | wsThickFrame));
+    showWindow(hWnd, swRestore);
     isFullScreen = false;
   } else {
-    int styles = SetWindowLong(hWnd, GWL_STYLE, WS_CAPTION | WS_THICKFRAME);
-    SetWindowLong(hWnd, GWL_STYLE, styles & ~(WS_CAPTION | WS_THICKFRAME));
-    ShowWindow(hWnd, SW_MAXIMIZE);
+    int styles = setWindowLong(hWnd, gwlStyle, wsCaption | wsThickFrame);
+    setWindowLong(hWnd, gwlStyle, styles & ~(wsCaption | wsThickFrame));
+    showWindow(hWnd, swMaximize);
     isFullScreen = true;
   }
 }

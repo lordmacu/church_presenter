@@ -6,10 +6,8 @@ import 'package:ipuc/models/book.dart';
 import 'package:ipuc/models/testament.dart';
 import 'package:ipuc/models/verse.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
 class BibleService {
@@ -358,6 +356,7 @@ class BibleService {
     "ffhelptext",
     "ffstattext"
   ];
+
   String removeRtfKeywords(String inputText, List<String> keywords) {
     String cleanedText = inputText;
 
@@ -422,10 +421,10 @@ class BibleService {
 
   Future<void> initializeDatabase(version) async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "${version}.db");
+    String path = join(documentsDirectory.path, "$version.db");
 
     ByteData data =
-        await rootBundle.load(join("lib/assets/bibles/${version}.sqlite"));
+        await rootBundle.load(join("lib/assets/bibles/$version.sqlite"));
     List<int> bytes = data.buffer.asUint8List();
     await File(path).writeAsBytes(bytes);
 
@@ -513,10 +512,10 @@ class BibleService {
     databaseFactory = databaseFactoryFfi;
 
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "${version}.db");
+    String path = join(documentsDirectory.path, "$version.db");
 
     ByteData data =
-        await rootBundle.load(join("lib/assets/bibles/${version}.sqlite"));
+        await rootBundle.load(join("lib/assets/bibles/$version.sqlite"));
     List<int> bytes = data.buffer.asUint8List();
     await File(path).writeAsBytes(bytes);
 

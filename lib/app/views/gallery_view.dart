@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 class GalleryView extends StatelessWidget {
   final String folderName;
-  Function selectImage;
+  final Function selectImage;
 
-  GalleryView({required this.folderName, required this.selectImage});
+  const GalleryView(
+      {Key? key, required this.folderName, required this.selectImage})
+      : super(key: key);
 
   Future<List<FileSystemEntity>> getFilesInDirectory() async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -22,7 +23,7 @@ class GalleryView extends StatelessWidget {
       future: getFilesInDirectory(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
@@ -31,7 +32,7 @@ class GalleryView extends StatelessWidget {
         final files = snapshot.data!;
 
         return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             childAspectRatio: 1.0, // Ajusta esto según tus necesidades
           ),
@@ -50,7 +51,7 @@ class GalleryView extends StatelessWidget {
                   child: FittedBox(
                     fit: BoxFit.fitWidth,
                     child: Container(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       child: Image.file(file),
                     ),
                   ),

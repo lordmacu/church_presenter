@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TabButton extends StatelessWidget {
@@ -6,22 +5,24 @@ class TabButton extends StatelessWidget {
   final bool isSelected;
   final Function onTap;
 
-  TabButton(
-      {required this.title, required this.isSelected, required this.onTap});
+  const TabButton(
+      {Key? key,
+      required this.title,
+      required this.isSelected,
+      required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: !this.isSelected
-          ? SystemMouseCursors.click
-          : SystemMouseCursors.basic,
+      cursor: !isSelected ? SystemMouseCursors.click : SystemMouseCursors.basic,
       child: GestureDetector(
-        onTap: () => {this.onTap()},
-        child: this.isSelected
+        onTap: () => {onTap()},
+        child: isSelected
             ? Container(
-                margin: EdgeInsets.only(left: 5, right: 5),
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                margin: const EdgeInsets.only(left: 5, right: 5),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, top: 5, bottom: 5),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(5),
@@ -37,18 +38,18 @@ class TabButton extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  this.title,
-                  style: TextStyle(color: Color(0xff4c4c4c)),
+                  title,
+                  style: const TextStyle(color: Color(0xff4c4c4c)),
                 ),
               )
             : Container(
                 color: Colors.transparent,
-                margin: EdgeInsets.only(left: 5, right: 5),
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                margin: const EdgeInsets.only(left: 5, right: 5),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, top: 5, bottom: 5),
                 child: Text(
-                  this.title,
-                  style: TextStyle(color: Color(0xff929292)),
+                  title,
+                  style: const TextStyle(color: Color(0xff929292)),
                 ),
               ),
       ),

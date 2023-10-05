@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 part 'slide.g.dart'; // Nombre del archivo del adaptador generado
 
 @HiveType(typeId: 24)
@@ -19,6 +20,7 @@ class Slide {
   final String dataTypePath;
   @HiveField(5)
   final String dataTypeMode;
+
   Slide({
     required this.key,
     required this.type,

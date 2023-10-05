@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/biblies_controller.dart';
-import 'package:ipuc/app/controllers/description_chapter_controller.dart';
-import 'package:ipuc/app/controllers/slide_controller.dart';
 import 'package:ipuc/widgets/title_bar.dart';
 
 class Biblies extends StatelessWidget {
+  Biblies({Key? key}) : super(key: key);
   final BibliesController controller = Get.find();
-  ScrollController scrollController = ScrollController();
+  final ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xff282828),
+      color: const Color(0xff282828),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TitleBar(title: "Biblias"),
+          const TitleBar(title: "Biblias"),
           Expanded(
             child: Scrollbar(
               controller: scrollController,
@@ -30,18 +29,18 @@ class Biblies extends StatelessWidget {
                         },
                         child: Container(
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
                             child: Row(
                               children: [
-                                Container(
+                                SizedBox(
                                   child: Text(
                                     'RV60',
                                     style: TextStyle(
                                       color: controller.selectedIndex.value ==
                                               index
-                                          ? Color(0xff979797)
-                                          : Color(0xff656565),
+                                          ? const Color(0xff979797)
+                                          : const Color(0xff656565),
                                     ),
                                   ),
                                   width: 100,
@@ -52,7 +51,7 @@ class Biblies extends StatelessWidget {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xff979797).withOpacity(0.3),
+                                color: const Color(0xff979797).withOpacity(0.3),
                                 width: 1,
                               ),
                             ),
