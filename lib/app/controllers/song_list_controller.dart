@@ -40,7 +40,7 @@ class SongListController extends GetxController {
   }
 
   void addNewSong(SongDb song) async {
-    if (controllerPresent.selectPresentation.value.key == "") {
+    if (controllerPresent.selectedPresentation.value.key == "") {
       await controllerPresent.addEmptyPresentation();
     }
     String? image = await controllerSlide.getRandomImage();
@@ -66,7 +66,7 @@ class SongListController extends GetxController {
       controllerPresent.setSlideToPresentation(slide);
 
       if (index == 0) {
-        controllerPresent.selectSlide.value = slide;
+        controllerPresent.selectedSlide.value = slide;
         controllerSlide.selectedItem.value = slide.key;
       }
       index++;
@@ -77,7 +77,7 @@ class SongListController extends GetxController {
       "title": song.title,
     });
 
-    await controllerPresent.sendToPresentation(firstParagraphPayload);
+    await controllerPresent.sendDataToPresentation(firstParagraphPayload);
   }
 
   @override

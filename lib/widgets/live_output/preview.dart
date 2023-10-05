@@ -495,7 +495,7 @@ class PreviewWidget extends StatelessWidget {
               message: "delete_slide".i18n(),
               child: InkWell(
                 onTap: () async {
-                  await presentController.deleteSlideToPresentation(keyItem);
+                  await presentController.deleteSlideFromPresentation(keyItem);
                 },
                 customBorder: const CircleBorder(),
                 child: Container(

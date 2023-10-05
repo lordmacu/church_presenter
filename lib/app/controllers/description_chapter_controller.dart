@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/present_controller.dart';
 import 'package:ipuc/app/controllers/slide_controller.dart';
@@ -7,34 +6,58 @@ import 'package:ipuc/models/slide.dart';
 import 'package:ipuc/services/verse_service.dart';
 import 'package:uuid/uuid.dart';
 
+/// Manages the description and details of chapters and verses
 class DescriptionChapterController extends GetxController {
-  var selectedIndex = 0.obs;
-  var searchQuery = "".obs;
-  var selectedVersion = "rvr1960".obs;
+  /// The currently selected index in the verse list
+  final selectedIndex = 0.obs;
+
+  /// Query used for searching verses
+  final searchQuery = ''.obs;
+
+  /// The selected Bible version
+  final selectedVersion = 'rvr1960'.obs;
+
+  /// Instance of the PresentController
   final PresentController controllerPresent = Get.put(PresentController());
+
+  /// Instance of the SliderController
   final SliderController controllerSlide = Get.find();
 
-  RxList<Map<String, dynamic>> versesWithRelations = RxList([]);
+  /// List of verses with their respective relations
+  final RxList<Map<String, dynamic>> versesWithRelations = RxList([]);
 
-  var versions = <String>[].obs;
+  /// List of available versions
+  final versions = <String>[].obs;
 
-  void loadVerses() async {
+  /// Initializes the controller
+  @override
+  void onInit() {
+    super.onInit();
+    loadVerses();
+  }
+
+  /// Loads verses from the database.
+  ///
+  /// Updates the `versesWithRelations` observable list.
+  Future<void> loadVerses() async {
     versesWithRelations.clear();
-
     versions.value = await VerseService().getAllUniqueVersions();
-
-    List<Map<String, dynamic>> allVerses =
+    final allVerses =
         await VerseService().getAllVersesWithRelations(versions.value[0]);
-
     versesWithRelations.assignAll(allVerses);
   }
 
-  void updateSearch(String query) async {
+  /// Updates the search query and triggers a new search.
+  ///
+  /// * [query]: The search term.
+  ///
+  /// Updates the `versesWithRelations` observable list based on the search query.
+  Future<void> updateSearch(String query) async {
     searchQuery.value = query;
     versesWithRelations.clear();
 
     if (searchQuery.value.isNotEmpty) {
-      List<Map<String, dynamic>> allVerses =
+      final allVerses =
           await VerseService().searchVerses(query, selectedVersion.value);
       versesWithRelations.assignAll(allVerses);
     } else {
@@ -42,83 +65,96 @@ class DescriptionChapterController extends GetxController {
     }
   }
 
-  loadBibleByVersion() async {
+  /// Loads the Bible verses based on the selected version.
+  ///
+  /// Updates the `versesWithRelations` observable list based on the selected Bible version.
+  Future<void> loadBibleByVersion() async {
     versesWithRelations.clear();
-
-    List<Map<String, dynamic>> allVerses =
+    final allVerses =
         await VerseService().getAllVersesWithRelations(selectedVersion.value);
     versesWithRelations.assignAll(allVerses);
   }
 
-  void addNewVerse(
+  /// Adds a new verse to the presentation.
+  ///
+  /// * [verse]: The verse number.
+  /// * [verseText]: The text of the verse.
+  /// * [book]: The book where the verse is located.
+  /// * [chapter]: The chapter where the verse is located.
+  ///
+  /// A new slide is added to the presentation.
+  Future<void> addNewVerse(
       int verse, String verseText, String book, int chapter) async {
-    if (controllerPresent.selectPresentation.value.key == "") {
+    if (controllerPresent.selectedPresentation.value.key == '') {
       await controllerPresent.addEmptyPresentation();
     }
 
-    var uuid = const Uuid();
-    final uniqueKey = uuid.v4();
+    final uniqueKey = const Uuid().v4();
 
     final payload = jsonEncode({
-      "type": "verse",
-      "verseText": verseText,
-      "book": book,
-      "testament": "",
-      "chapter": chapter,
-      "verse": verse,
+      'type': 'verse',
+      'verseText': verseText,
+      'book': book,
+      'testament': '',
+      'chapter': chapter,
+      'verse': verse,
     });
-    String? image = await controllerSlide.getRandomImage();
+    final image = await controllerSlide.getRandomImage();
 
     controllerPresent.setSlideToPresentation(Slide(
         key: uniqueKey,
-        type: "verse",
-        dataType: "image",
+        type: 'verse',
+        dataType: 'image',
         dataTypePath: image!,
-        dataTypeMode: "cover",
+        dataTypeMode: 'cover',
         json: payload));
   }
 
-  void addEmptyPresentationImage() async {
-    String? image = await controllerSlide.getRandomImage();
+  /// Adds an empty presentation slide with an image.
+  ///
+  /// A new empty slide with an image is added to the presentation.
+  Future<void> addEmptyPresentationImage() async {
+    final image = await controllerSlide.getRandomImage();
+    final uniqueKey = const Uuid().v4();
 
-    var uuid = const Uuid();
-    final uniqueKey = uuid.v4();
-    final payload = jsonEncode({"type": "image", "path": image});
+    final payload = jsonEncode({'type': 'image', 'path': image});
 
     controllerPresent.setSlideToPresentation(Slide(
         key: uniqueKey,
-        type: "image",
-        dataType: "image",
+        type: 'image',
+        dataType: 'image',
         dataTypePath: image!,
-        dataTypeMode: "cover",
+        dataTypeMode: 'cover',
         json: payload));
 
-    controllerPresent.selectSlide.value = Slide(
+    controllerPresent.selectedSlide.value = Slide(
         key: uniqueKey,
-        type: "image",
-        dataType: "image",
+        type: 'image',
+        dataType: 'image',
         dataTypePath: image,
-        dataTypeMode: "cover",
+        dataTypeMode: 'cover',
         json: payload);
   }
 
-  void sendDirectToPresentation(
+  /// Sends the selected verse directly to the presentation.
+  ///
+  /// * [verse]: The verse number.
+  /// * [verseText]: The text of the verse.
+  /// * [book]: The book where the verse is located.
+  /// * [chapter]: The chapter where the verse is located.
+  ///
+  /// Sends the verse directly to the current presentation.
+  Future<void> sendDirectToPresentation(
       int verse, String verseText, String book, int chapter) async {
     final payload = jsonEncode({
-      "type": "verse",
-      "verseText": verseText,
-      "book": book,
-      "testament": "",
-      "chapter": chapter,
-      "verse": verse,
+      'type': 'verse',
+      'verseText': verseText,
+      'book': book,
+      'testament': '',
+      'chapter': chapter,
+      'verse': verse,
     });
 
-    await controllerPresent.sendToPresentation(payload);
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    loadVerses();
+    await controllerPresent.sendDataToPresentation(payload);
   }
 }

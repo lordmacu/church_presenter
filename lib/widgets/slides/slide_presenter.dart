@@ -48,12 +48,12 @@ class SlidePresenter extends StatelessWidget {
               child: GalleryView(
                 folderName: 'ipucImages',
                 selectImage: (String image) async {
-                  Slide currentSlide = controllerPresenter.selectSlide.value;
+                  Slide currentSlide = controllerPresenter.selectedSlide.value;
                   var json = jsonDecode(currentSlide.json);
                   if (currentSlide.type == "image") {
                     json["path"] = image;
                   }
-                  controllerPresenter.selectSlide.value = Slide(
+                  controllerPresenter.selectedSlide.value = Slide(
                       key: currentSlide.key,
                       type: currentSlide.type,
                       dataType: "image",
@@ -64,18 +64,18 @@ class SlidePresenter extends StatelessWidget {
                   for (int i = 0;
                       i <
                           controllerPresenter
-                              .selectPresentation.value.slides.length;
+                              .selectedPresentation.value.slides.length;
                       i++) {
-                    var element =
-                        controllerPresenter.selectPresentation.value.slides[i];
+                    var element = controllerPresenter
+                        .selectedPresentation.value.slides[i];
                     if (currentSlide.key == element.key) {
-                      controllerPresenter.selectPresentation.value.slides[i] =
-                          controllerPresenter.selectSlide.value;
+                      controllerPresenter.selectedPresentation.value.slides[i] =
+                          controllerPresenter.selectedSlide.value;
                     }
                   }
 
                   controllerPresenter.updateSlideInPresentation(
-                      controllerPresenter.selectSlide.value);
+                      controllerPresenter.selectedSlide.value);
 
                   await controllerPresenter.sendToViewer();
                   Navigator.of(modalSheetContext).pop();
@@ -116,12 +116,12 @@ class SlidePresenter extends StatelessWidget {
               child: VideosView(
                 folderName: 'ipucVideos',
                 selectImage: (String image, String videoPath) async {
-                  Slide currentSlide = controllerPresenter.selectSlide.value;
+                  Slide currentSlide = controllerPresenter.selectedSlide.value;
                   var jsonData = jsonDecode(currentSlide.json);
                   jsonData["videoPath"] = videoPath;
 
                   var jsonFinal = jsonEncode(jsonData);
-                  controllerPresenter.selectSlide.value = Slide(
+                  controllerPresenter.selectedSlide.value = Slide(
                       key: currentSlide.key,
                       type: currentSlide.type,
                       dataType: "video",
@@ -132,17 +132,17 @@ class SlidePresenter extends StatelessWidget {
                   for (int i = 0;
                       i <
                           controllerPresenter
-                              .selectPresentation.value.slides.length;
+                              .selectedPresentation.value.slides.length;
                       i++) {
-                    var element =
-                        controllerPresenter.selectPresentation.value.slides[i];
+                    var element = controllerPresenter
+                        .selectedPresentation.value.slides[i];
                     if (currentSlide.key == element.key) {
-                      controllerPresenter.selectPresentation.value.slides[i] =
-                          controllerPresenter.selectSlide.value;
+                      controllerPresenter.selectedPresentation.value.slides[i] =
+                          controllerPresenter.selectedSlide.value;
                     }
                   }
                   controllerPresenter.updateSlideInPresentation(
-                      controllerPresenter.selectSlide.value);
+                      controllerPresenter.selectedSlide.value);
                   await controllerPresenter.sendToViewerVideo(videoPath);
                   Navigator.of(modalSheetContext).pop();
                 },
@@ -166,7 +166,7 @@ class SlidePresenter extends StatelessWidget {
     return FloatingActionButton(
       heroTag: "three",
       onPressed: () async {
-        if (controllerPresenter.selectPresentation.value.key == "") {
+        if (controllerPresenter.selectedPresentation.value.key == "") {
           await controllerPresenter.addEmptyPresentation();
         }
         await controller.pickImage();
@@ -184,7 +184,7 @@ class SlidePresenter extends StatelessWidget {
             dataTypeMode: "cover",
             json: payload));
 
-        controllerPresenter.selectSlide.value = Slide(
+        controllerPresenter.selectedSlide.value = Slide(
             key: uniqueKey,
             type: "image",
             dataType: "image",
@@ -203,7 +203,7 @@ class SlidePresenter extends StatelessWidget {
     return FloatingActionButton(
       heroTag: "two",
       onPressed: () async {
-        if (controllerPresenter.selectPresentation.value.key == "") {
+        if (controllerPresenter.selectedPresentation.value.key == "") {
           await controllerPresenter.addEmptyPresentation();
         }
 
@@ -226,7 +226,7 @@ class SlidePresenter extends StatelessWidget {
             dataTypeMode: "play",
             json: payload));
 
-        controllerPresenter.selectSlide.value = Slide(
+        controllerPresenter.selectedSlide.value = Slide(
             key: uniqueKey,
             type: "video",
             dataType: "video",
@@ -264,7 +264,7 @@ class SlidePresenter extends StatelessWidget {
   Widget text() {
     return FloatingActionButton(
       onPressed: () async {
-        if (controllerPresenter.selectPresentation.value.key == "") {
+        if (controllerPresenter.selectedPresentation.value.key == "") {
           await controllerPresenter.addEmptyPresentation();
         }
 
@@ -304,8 +304,8 @@ class SlidePresenter extends StatelessWidget {
           onTap: () async {
             controller.selectedOptionImage.value = selectedOption;
 
-            Slide currentSlide = controllerPresenter.selectSlide.value;
-            controllerPresenter.selectSlide.value = Slide(
+            Slide currentSlide = controllerPresenter.selectedSlide.value;
+            controllerPresenter.selectedSlide.value = Slide(
                 key: currentSlide.key,
                 type: currentSlide.type,
                 dataType: currentSlide.dataType,
@@ -314,13 +314,15 @@ class SlidePresenter extends StatelessWidget {
                 json: currentSlide.json);
 
             for (int i = 0;
-                i < controllerPresenter.selectPresentation.value.slides.length;
+                i <
+                    controllerPresenter
+                        .selectedPresentation.value.slides.length;
                 i++) {
               var element =
-                  controllerPresenter.selectPresentation.value.slides[i];
+                  controllerPresenter.selectedPresentation.value.slides[i];
               if (currentSlide.key == element.key) {
-                controllerPresenter.selectPresentation.value.slides[i] =
-                    controllerPresenter.selectSlide.value;
+                controllerPresenter.selectedPresentation.value.slides[i] =
+                    controllerPresenter.selectedSlide.value;
               }
             }
 
@@ -359,8 +361,8 @@ class SlidePresenter extends StatelessWidget {
           onTap: () async {
             controller.selectedOptionVideo.value = selectedOption;
 
-            Slide currentSlide = controllerPresenter.selectSlide.value;
-            controllerPresenter.selectSlide.value = Slide(
+            Slide currentSlide = controllerPresenter.selectedSlide.value;
+            controllerPresenter.selectedSlide.value = Slide(
                 key: currentSlide.key,
                 type: currentSlide.type,
                 dataType: currentSlide.dataType,
@@ -369,13 +371,15 @@ class SlidePresenter extends StatelessWidget {
                 json: currentSlide.json);
 
             for (int i = 0;
-                i < controllerPresenter.selectPresentation.value.slides.length;
+                i <
+                    controllerPresenter
+                        .selectedPresentation.value.slides.length;
                 i++) {
               var element =
-                  controllerPresenter.selectPresentation.value.slides[i];
+                  controllerPresenter.selectedPresentation.value.slides[i];
               if (currentSlide.key == element.key) {
-                controllerPresenter.selectPresentation.value.slides[i] =
-                    controllerPresenter.selectSlide.value;
+                controllerPresenter.selectedPresentation.value.slides[i] =
+                    controllerPresenter.selectedSlide.value;
               }
             }
 
@@ -421,7 +425,7 @@ class SlidePresenter extends StatelessWidget {
                           ),
                         ),
                         child: controllerPresenter
-                                .selectPresentation.value.slides.isNotEmpty
+                                .selectedPresentation.value.slides.isNotEmpty
                             ? Row(
                                 children: [
                                   Tooltip(
@@ -473,8 +477,9 @@ class SlidePresenter extends StatelessWidget {
 
                                           if (result == true) {
                                             controllerPresenter
-                                                .deleteAllSlideToPresentation();
-                                            controllerPresenter.resetSlide();
+                                                .deleteAllSlidesFromPresentation();
+                                            controllerPresenter
+                                                .resetSelectedSlide();
                                           }
                                         },
                                       ),
@@ -504,7 +509,7 @@ class SlidePresenter extends StatelessWidget {
                               child: InkWell(
                                 onTap: () async {
                                   await controllerPresenter
-                                      .sendToPresentation(null);
+                                      .sendDataToPresentation(null);
                                 },
                                 child: Container(
                                   width: 30,
@@ -541,12 +546,12 @@ class SlidePresenter extends StatelessWidget {
                       ),
                     ),
                     controllerPresenter
-                            .selectPresentation.value.slides.isNotEmpty
+                            .selectedPresentation.value.slides.isNotEmpty
                         ? Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              controllerPresenter.selectSlide.value.type !=
+                              controllerPresenter.selectedSlide.value.type !=
                                       "image"
                                   ? Container(
                                       padding: const EdgeInsets.only(
@@ -619,7 +624,7 @@ class SlidePresenter extends StatelessWidget {
                                           ),
                                           Obx(
                                             () => controllerPresenter
-                                                        .selectSlide
+                                                        .selectedSlide
                                                         .value
                                                         .dataType ==
                                                     "video"
@@ -661,7 +666,7 @@ class SlidePresenter extends StatelessWidget {
                                       ),
                                     )
                                   : Container(),
-                              controllerPresenter.selectSlide.value.type !=
+                              controllerPresenter.selectedSlide.value.type !=
                                       "video"
                                   ? Container(
                                       margin: const EdgeInsets.only(
@@ -734,7 +739,7 @@ class SlidePresenter extends StatelessWidget {
                                           ),
                                           Obx(
                                             () => controllerPresenter
-                                                        .selectSlide
+                                                        .selectedSlide
                                                         .value
                                                         .dataType ==
                                                     "image"

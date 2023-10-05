@@ -14,19 +14,41 @@ import 'dart:io';
 import 'package:uuid/uuid.dart';
 
 class PresentController extends GetxController {
+  /// Selected item for some purpose.
   var selectedItem = RxString("");
+
+  /// Height of the selected item.
   var heightItem = RxDouble(0.0);
+
+  /// Topic of the presentation.
   var topic = RxString("");
+
+  /// Unique identifier for various entities.
   var key = RxString("");
+
+  /// Preacher in the presentation.
   var preacher = RxString("");
+
+  /// Image URL or path.
   var image = RxString("");
+
+  /// Name of the presentation or slide.
   var name = RxString("");
+
+  /// Indicates whether the data is being saved.
   var isSaving = RxBool(false);
+
+  /// Date of the presentation.
   var date = Rx<DateTime>(DateTime.now());
+
+  /// Identifier for the presentation or slide.
   var id = RxInt(0);
 
+  /// Indicates whether the panel is open.
   var isPanelOpen = false.obs;
-  var selectPresentation = Presentation(
+
+  /// Currently selected presentation.
+  var selectedPresentation = Presentation(
     key: "",
     image: "",
     name: "",
@@ -36,33 +58,45 @@ class PresentController extends GetxController {
     slides: RxList<Slide>([]),
   ).obs;
 
-  var selectSlide = Slide(
-          key: "",
-          type: "",
-          dataType: "",
-          json: "",
-          dataTypePath: "",
-          dataTypeMode: "cover")
-      .obs;
+  /// Currently selected slide.
+  var selectedSlide = Slide(
+    key: "",
+    type: "",
+    dataType: "",
+    json: "",
+    dataTypePath: "",
+    dataTypeMode: "cover",
+  ).obs;
+
+  /// List of all presentations.
   RxList<Presentation> presentations = RxList<Presentation>();
-  final SliderController controllerSlide = Get.find();
 
+  /// Controller for managing slides.
+  final SliderController slideController = Get.find();
+
+  /// Responsible for picking an image from the gallery and storing it.
   Future<void> pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      final directory = await getApplicationDocumentsDirectory();
-      final fileName = path.basename(pickedFile.path);
-      final File savedImage =
-          await File(pickedFile.path).copy('${directory.path}/$fileName');
+      if (pickedFile != null) {
+        final directory = await getApplicationDocumentsDirectory();
+        final fileName = path.basename(pickedFile.path);
+        final File savedImage =
+            await File(pickedFile.path).copy('${directory.path}/$fileName');
 
-      image.value = savedImage.path;
+        image.value = savedImage.path;
+      }
+    } catch (e) {
+      // Handle exceptions
+      print("Error picking image: $e");
     }
   }
 
-  void resetSlide() {
-    selectSlide.value = Slide(
+  /// Resets the currently selected slide to its default state.
+  void resetSelectedSlide() {
+    selectedSlide.value = Slide(
       key: "",
       type: "",
       dataType: "",
@@ -72,27 +106,36 @@ class PresentController extends GetxController {
     );
   }
 
-  Future createNewWindow() async {
-    final window = await DesktopMultiWindow.createWindow(jsonEncode({
-      'args1': 'Sub window',
-      'args2': 100,
-      'args3': true,
-      'bussiness': 'bussiness_test',
-    }));
-    window
-      ..setFrame(const Offset(0, 0) & const Size(1280, 720))
-      ..setTitle("")
-      ..center()
-      ..show();
+  /// Creates a new window and sets its properties.
+  Future<void> createNewWindow() async {
+    try {
+      final window = await DesktopMultiWindow.createWindow(jsonEncode({
+        'args1': 'Sub window',
+        'args2': 100,
+        'args3': true,
+        'bussiness': 'bussiness_test',
+      }));
+      window
+        ..setFrame(const Offset(0, 0) & const Size(1280, 720))
+        ..setTitle("")
+        ..center()
+        ..show();
+    } catch (e) {
+      // Handle exceptions
+      print("Error creating new window: $e");
+    }
   }
 
-  Future sendToPresentation(payload) async {
-    var subWindowIds = [];
+  /// Sends data to the presentation window.
+  ///
+  /// @param {dynamic} payload - The data to be sent to the presentation.
+  Future<void> sendDataToPresentation(dynamic payload) async {
+    List<int> subWindowIds;
     try {
       subWindowIds = await getAllSubWindowIds();
 
       if (payload != null) {
-        if (selectSlide.value.key == "") {
+        if (selectedSlide.value.key.isEmpty) {
           await sendRandomDataType();
         } else {
           await sendCurrentSlideDataToViewer(subWindowIds);
@@ -104,7 +147,7 @@ class PresentController extends GetxController {
       await createNewWindow();
       subWindowIds = await getAllSubWindowIds();
 
-      if (selectSlide.value.key == "") {
+      if (selectedSlide.value.key.isEmpty) {
         await sendRandomDataType();
       } else {
         await sendCurrentSlideDataToViewer(subWindowIds);
@@ -114,84 +157,102 @@ class PresentController extends GetxController {
     }
   }
 
-  Future sendCurrentSlideDataToViewer(subWindowIds) async {
-    var payloaDataType = "";
+  /// Sends the current slide's data type information to the viewer.
+  ///
+  /// @param {List<String>} subWindowIds - The list of sub-window IDs.
+  Future<void> sendCurrentSlideDataToViewer(List<int> subWindowIds) async {
+    String payloadDataType;
+    Slide slide = selectedSlide.value;
 
-    Slide slide = selectSlide.value;
-
-    payloaDataType = jsonEncode({
+    payloadDataType = jsonEncode({
       "dataType": slide.dataType,
       "dataTypePath": slide.dataTypePath,
       "dataTypeMode": slide.dataTypeMode,
     });
 
     await DesktopMultiWindow.invokeMethod(
-        subWindowIds[0], "send_data_type", payloaDataType);
+        subWindowIds[0], "send_data_type", payloadDataType);
   }
 
-  Future sendDataToViewer(payload, subWindowIds) async {
+  /// Sends data to the viewer.
+  ///
+  /// @param {dynamic} payload - The payload to be sent to the viewer.
+  /// @param {List<String>} subWindowIds - The list of sub-window IDs.
+  Future<void> sendDataToViewer(dynamic payload, List<int> subWindowIds) async {
     await DesktopMultiWindow.invokeMethod(
         subWindowIds[0], "send_viewer", payload);
   }
 
-  Future sendRandomDataType() async {
-    var subWindowIds = await getAllSubWindowIds();
-    String? image = await controllerSlide.getRandomImage();
+  /// Sends a random data type to the viewer.
+  Future<void> sendRandomDataType() async {
+    List<int> subWindowIds = await getAllSubWindowIds();
+    String? randomImage = await slideController.getRandomImage();
 
-    final payloaDataType = jsonEncode({
+    final payloadDataType = jsonEncode({
       "dataType": "image",
-      "dataTypePath": "$image",
+      "dataTypePath": "$randomImage",
       "dataTypeMode": "cover"
     });
+
     await DesktopMultiWindow.invokeMethod(
-        subWindowIds[0], "send_data_type", payloaDataType);
+        subWindowIds[0], "send_data_type", payloadDataType);
   }
 
+  /// Gets the list of all sub-window IDs.
+  ///
+  /// @returns {Future<List<int>>} - The list of all sub-window IDs.
   Future<List<int>> getAllSubWindowIds() async {
     return await DesktopMultiWindow.getAllSubWindowIds();
   }
 
-  sendToViewer() async {
+  /// Sends the current slide data to the viewer.
+  Future<void> sendToViewer() async {
     try {
-      final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
+      final List<int> subWindowIds =
+          await DesktopMultiWindow.getAllSubWindowIds();
+      // TODO: Unclear why this line is here as its return value is not being used.
+      jsonEncode(selectedSlide.value.json);
 
-      jsonEncode(selectSlide.value.json);
-
-      final payloaDataType = jsonEncode({
-        "dataType": selectSlide.value.dataType,
-        "dataTypePath": selectSlide.value.dataTypePath,
-        "dataTypeMode": selectSlide.value.dataTypeMode,
+      final String payloadDataType = jsonEncode({
+        "dataType": selectedSlide.value.dataType,
+        "dataTypePath": selectedSlide.value.dataTypePath,
+        "dataTypeMode": selectedSlide.value.dataTypeMode,
       });
 
       await DesktopMultiWindow.invokeMethod(
-          subWindowIds[0], "send_data_type", payloaDataType);
+          subWindowIds[0], "send_data_type", payloadDataType);
     } catch (e) {
-      // catch exception
+      // TODO: Add logging or some sort of error handling here
     }
   }
 
-  sendToViewerVideo(String video) async {
+  /// Sends video data to the viewer.
+  ///
+  /// @param {String} video - The path to the video file.
+  Future<void> sendToViewerVideo(String video) async {
     try {
-      final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
+      final List<int> subWindowIds =
+          await DesktopMultiWindow.getAllSubWindowIds();
+      Map<String, dynamic> jsonData = jsonDecode(selectedSlide.value.json);
 
-      jsonEncode(selectSlide.value.json);
-      var jsonData = jsonDecode(selectSlide.value.json);
-
-      final payloaDataType = jsonEncode({
-        "dataType": selectSlide.value.dataType,
-        "dataTypePath": selectSlide.value.dataTypePath,
+      final String payloadDataType = jsonEncode({
+        "dataType": selectedSlide.value.dataType,
+        "dataTypePath": selectedSlide.value.dataTypePath,
         "dataTypeMode": "new",
         "dataVideoPath": jsonData["videoPath"],
       });
 
       await DesktopMultiWindow.invokeMethod(
-          subWindowIds[0], "send_data_type", payloaDataType);
+          subWindowIds[0], "send_data_type", payloadDataType);
     } catch (e) {
-      //catch exception
+      // TODO: Add logging or some sort of error handling here
     }
   }
 
-  void resetValues(double height) async {
+  /// Resets values for a new presentation.
+  ///
+  /// @param {double} height - The height for the item.
+  Future<void> resetValues(double height) async {
     heightItem.value = height;
     topic.value = "";
     preacher.value = "";
@@ -199,102 +260,114 @@ class PresentController extends GetxController {
     id.value = 0;
   }
 
-  Future selectItem(String key) async {
+  /// Selects an item based on the key.
+  ///
+  /// @param {String} key - The key of the item to select.
+  Future<void> selectItem(String key) async {
     selectedItem.value = key;
-    Box<Presentation>? box;
-
-    box = await Hive.openBox<Presentation>('presentations');
-    var presentationsList = box.values.toList();
-
-    int index =
-        presentationsList.indexWhere((presentation) => presentation.key == key);
-
-    if (index != -1) {
-      selectPresentation.value = presentationsList[index];
-    } else {}
-
-    try {} catch (e) {
-      //catch exception
-    } finally {
-      box.close();
-    }
-  }
-
-  void setSlideToPresentation(Slide newSlide) async {
     Box<Presentation>? box;
 
     try {
       box = await Hive.openBox<Presentation>('presentations');
+      List<Presentation> presentationsList = box.values.toList();
+      int index = presentationsList
+          .indexWhere((presentation) => presentation.key == key);
 
-      if (selectPresentation.value.key != null) {
-        int? key = findIndexByValue(box, selectPresentation.value.key);
-
-        if (key != null) {
-          selectPresentation.value.slides.add(newSlide);
-
-          await box.put(key, selectPresentation.value);
-          update();
-        } else {}
-      } else {}
+      if (index != -1) {
+        selectedPresentation.value = presentationsList[index];
+      }
     } catch (e) {
-      //catch exception
+      // TODO: Add logging or some sort of error handling here
     } finally {
       box?.close();
     }
   }
 
-  void updateSlideInPresentation(Slide newSlide) async {
-    Box<Presentation>? presentationBox;
-
-    try {
-      presentationBox = await Hive.openBox<Presentation>('presentations');
-
-      if (selectPresentation.value.key != null) {
-        int? hiveKey =
-            findIndexByValue(presentationBox, selectPresentation.value.key);
-
-        if (hiveKey != null) {
-          updateSlideInSelectedPresentation(newSlide);
-
-          await presentationBox.put(hiveKey, selectPresentation.value);
-          update();
-        }
-      }
-    } catch (e) {
-      //catch exception
-    } finally {
-      await presentationBox?.close();
-    }
-  }
-
-  void updateSlideInSelectedPresentation(Slide newSlide) {
-    for (var i = 0; i < selectPresentation.value.slides.length; i++) {
-      if (selectPresentation.value.slides[i].key == newSlide.key) {
-        selectPresentation.value.slides[i] = newSlide;
-        break;
-      }
-    }
-  }
-
-  Future deleteSlideToPresentation(String slideKey) async {
+  /// Updates or sets the current slide into the selected presentation.
+  ///
+  /// @param {Slide} newSlide - The new slide to set or update.
+  Future<void> setSlideToPresentation(Slide newSlide) async {
     Box<Presentation>? box;
 
     try {
       box = await Hive.openBox<Presentation>('presentations');
 
-      if (selectPresentation.value.key != null) {
-        int? key = findIndexByValue(box, selectPresentation.value.key);
+      if (selectedPresentation.value.key != null) {
+        int? key = findIndexByValue(box, selectedPresentation.value.key);
 
         if (key != null) {
-          List<Slide> filteredSlidesList = selectPresentation.value.slides
+          selectedPresentation.value.slides.add(newSlide);
+          await box.put(key, selectedPresentation.value);
+          update(); // TODO: Consider adding a more descriptive method name.
+        }
+      }
+    } catch (e) {
+      // TODO: Add logging or some sort of error handling here.
+    } finally {
+      box?.close();
+    }
+  }
+
+  /// Updates a slide in the currently selected presentation.
+  ///
+  /// @param {Slide} newSlide - The new slide data.
+  Future<void> updateSlideInPresentation(Slide newSlide) async {
+    Box<Presentation>? presentationBox;
+
+    try {
+      presentationBox = await Hive.openBox<Presentation>('presentations');
+
+      if (selectedPresentation.value.key != null) {
+        int? hiveKey =
+            findIndexByValue(presentationBox, selectedPresentation.value.key);
+
+        if (hiveKey != null) {
+          updateSlideInSelectedPresentation(newSlide);
+          await presentationBox.put(hiveKey, selectedPresentation.value);
+          update(); // TODO: Consider adding a more descriptive method name.
+        }
+      }
+    } catch (e) {
+      // TODO: Add logging or some sort of error handling here.
+    } finally {
+      await presentationBox?.close();
+    }
+  }
+
+  /// Updates a slide in the selected presentation's slides list.
+  ///
+  /// @param {Slide} newSlide - The new slide data.
+  void updateSlideInSelectedPresentation(Slide newSlide) {
+    for (var i = 0; i < selectedPresentation.value.slides.length; i++) {
+      if (selectedPresentation.value.slides[i].key == newSlide.key) {
+        selectedPresentation.value.slides[i] = newSlide;
+        break;
+      }
+    }
+  }
+
+  /// Deletes a slide from the selected presentation.
+  ///
+  /// @param {String} slideKey - The key of the slide to delete.
+  Future<void> deleteSlideFromPresentation(String slideKey) async {
+    Box<Presentation>? box;
+
+    try {
+      box = await Hive.openBox<Presentation>('presentations');
+
+      if (selectedPresentation.value.key != null) {
+        int? key = findIndexByValue(box, selectedPresentation.value.key);
+
+        if (key != null) {
+          List<Slide> filteredSlidesList = selectedPresentation.value.slides
               .where((slide) => slide.key != slideKey)
               .toList();
 
           RxList<Slide> filteredSlides = RxList<Slide>.from(filteredSlidesList);
 
-          Presentation currentPresentation = selectPresentation.value;
+          Presentation currentPresentation = selectedPresentation.value;
 
-          selectPresentation.value = Presentation(
+          selectedPresentation.value = Presentation(
               key: currentPresentation.key,
               image: currentPresentation.image,
               name: currentPresentation.name,
@@ -303,34 +376,37 @@ class PresentController extends GetxController {
               topic: currentPresentation.topic,
               slides: filteredSlides);
 
-          await box.put(key, selectPresentation.value);
-          update();
-        } else {}
-      } else {}
+          await box.put(key, selectedPresentation.value);
+          update(); // TODO: Consider adding a more descriptive method name.
+        }
+      }
     } catch (e) {
-      //catch exception
+      // TODO: Add logging or some sort of error handling here.
     } finally {
       box?.close();
     }
   }
 
-  Future deleteAllSlideToPresentation() async {
+  /// Deletes all slides from the selected presentation.
+  ///
+  /// @return {Future<void>}
+  Future<void> deleteAllSlidesFromPresentation() async {
     Box<Presentation>? box;
 
     try {
       box = await Hive.openBox<Presentation>('presentations');
 
-      if (selectPresentation.value.key != null) {
-        int? key = findIndexByValue(box, selectPresentation.value.key);
+      if (selectedPresentation.value.key != null) {
+        int? key = findIndexByValue(box, selectedPresentation.value.key);
 
         if (key != null) {
           List<Slide> filteredSlidesList = [];
 
           RxList<Slide> filteredSlides = RxList<Slide>.from(filteredSlidesList);
 
-          Presentation currentPresentation = selectPresentation.value;
+          Presentation currentPresentation = selectedPresentation.value;
 
-          selectPresentation.value = Presentation(
+          selectedPresentation.value = Presentation(
               key: currentPresentation.key,
               image: currentPresentation.image,
               name: currentPresentation.name,
@@ -339,119 +415,134 @@ class PresentController extends GetxController {
               topic: currentPresentation.topic,
               slides: filteredSlides);
 
-          await box.put(key, selectPresentation.value);
+          await box.put(key, selectedPresentation.value);
           update();
-        } else {}
-      } else {}
+        }
+      }
     } catch (e) {
-      //catch exception
+      // TODO: Add logging or some sort of error handling.
     } finally {
       box?.close();
     }
   }
 
-  void deletePresentation() async {
+  /// Deletes the selected presentation.
+  ///
+  /// @return {Future<void>}
+  Future<void> deletePresentation() async {
     Box<Presentation>? box;
     try {
       box = await Hive.openBox<Presentation>('presentations');
 
-      int? keyString = findIndexByValue(box, key.value);
-      box.deleteAt(keyString!);
+      int? keyIndex = findIndexByValue(box, key.value);
 
-      presentations.value = box.values.toList().reversed.toList();
-      if (key.value == selectPresentation.value.key) {
-        selectPresentation.value = Presentation(
-          key: "",
-          image: "",
-          name: "",
-          date: DateTime.now(),
-          preacher: "",
-          topic: "",
-          slides: RxList<Slide>([]),
-        );
+      if (keyIndex != null) {
+        box.deleteAt(keyIndex);
+        presentations.value = box.values.toList().reversed.toList();
+
+        if (key.value == selectedPresentation.value.key) {
+          selectedPresentation.value = Presentation(
+            key: "",
+            image: "",
+            name: "",
+            date: DateTime.now(),
+            preacher: "",
+            topic: "",
+            slides: RxList<Slide>([]),
+          );
+          // Assuming you have an empty constructor
+        }
+
+        resetValues(100);
       }
-
-      box.close();
     } catch (e) {
-      // catch exception
+      // TODO: Add logging or some sort of error handling.
     } finally {
       box?.close();
-
-      resetValues(100);
     }
   }
 
+  /// Handles a double-tap event on an item.
+  ///
+  /// @param {int} index - Index of the tapped item.
+  /// @param {double} height - Height of the item.
   void doubleTapItem(int index, double height) {
-    heightItem.value = heightItem.value;
+    heightItem.value = height;
     topic.value = presentations[index].topic;
     preacher.value = presentations[index].preacher;
     image.value = presentations[index].image;
-    date.value = presentations[index].date;
     date.value = presentations[index].date;
     id.value = index;
     key.value = presentations[index].key;
     isSaving.value = false;
   }
 
-  @override
+  /// Initializes the controller.
+  ///
+  /// @override
   void onInit() {
     super.onInit();
-    getAllPresentations();
+    getAllPresentations(); // Assuming this method is already defined.
   }
 
+  /// Finds the index of a presentation in a Hive box by its key.
+  ///
+  /// @param {Box<Presentation>} box - The Hive box containing presentations.
+  /// @param {String} targetKey - The key of the target presentation.
+  /// @return {int?} - The index of the presentation, or null if not found.
   int? findIndexByValue(Box<Presentation> box, String targetKey) {
     var presentationsList = box.values.toList();
 
     int index = presentationsList
         .indexWhere((presentation) => presentation.key == targetKey);
 
-    if (index != -1) {
-      return index;
-    }
-
-    return null;
+    return index != -1 ? index : null;
   }
 
-  Future addEmptyPresentation() async {
+  /// Adds an empty presentation to the list of presentations.
+  ///
+  /// @return {Future<void>}
+  Future<void> addEmptyPresentation() async {
     Box<Presentation>? box;
     try {
       box = await Hive.openBox<Presentation>('presentations');
-      var uuid = const Uuid();
-      final uniqueKey = uuid.v4();
+      final uniqueKey = Uuid().v4();
       DateTime currentDate = DateTime.now();
 
-      var presentation = Presentation(
+      var newPresentation = Presentation(
         key: uniqueKey,
         image: "",
-        name: "Nueva presentación",
+        name: "New Presentation",
         date: currentDate,
         preacher: "",
-        topic: "Nueva presentación",
+        topic: "New Presentation",
         slides: RxList<Slide>([]),
       );
+
+      // Update selected item and presentation values
       selectedItem.value = uniqueKey;
+      selectedPresentation.value = newPresentation;
 
-      selectPresentation.value = presentation;
-
-      final newId = box.length;
-      await box.put(newId, presentation);
-
+      await box.put(box.length, newPresentation);
       presentations.value = box.values.toList().reversed.toList();
     } catch (e) {
-      //carch exception
+      // TODO: Add logging or some sort of error handling.
     } finally {
       await box?.close();
     }
   }
 
-  void savePresentation() async {
+  /// Saves the current presentation data.
+  ///
+  /// @return {Future<void>}
+  Future<void> savePresentation() async {
     Box<Presentation>? box;
     try {
       box = await Hive.openBox<Presentation>('presentations');
 
       DateTime currentDate = isSaving.value ? DateTime.now() : date.value;
 
-      var presentation = Presentation(
+      var updatedPresentation = Presentation(
         key: key.value,
         image: image.value,
         name: name.value,
@@ -462,28 +553,39 @@ class PresentController extends GetxController {
       );
 
       if (isSaving.value) {
-        final newId = box.length;
-        await box.put(newId, presentation);
+        await box.put(box.length, updatedPresentation);
       } else {
-        await box.put(findIndexByValue(box, key.value), presentation);
+        int? existingKeyIndex = findIndexByValue(box, key.value);
+        if (existingKeyIndex != null) {
+          await box.put(existingKeyIndex, updatedPresentation);
+        }
       }
 
       presentations.value = box.values.toList().reversed.toList();
     } catch (e) {
-      // catch exception
+      // TODO: Add logging or some sort of error handling.
     } finally {
-      box?.close();
+      await box?.close();
     }
   }
 
-  void getAllPresentations() async {
-    var box = await Hive.openBox<Presentation>('presentations');
+  /// Retrieves all presentations and updates the list.
+  ///
+  /// @return {Future<void>}
+  Future<void> getAllPresentations() async {
+    Box<Presentation>? box;
+    try {
+      box = await Hive.openBox<Presentation>('presentations');
 
-    presentations.value = box.values.toList().reversed.toList();
+      presentations.value = box.values.toList().reversed.toList();
 
-    if (box.values.toList().isNotEmpty) {
-      await selectItem(presentations.value[0].key);
+      if (presentations.value.isNotEmpty) {
+        await selectItem(presentations.value[0].key);
+      }
+    } catch (e) {
+      // TODO: Add logging or some sort of error handling.
+    } finally {
+      await box?.close();
     }
-    box.close();
   }
 }

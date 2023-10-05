@@ -58,11 +58,11 @@ class SlideGrid extends StatelessWidget {
     double childAspectRatio = width / (crossAxisCount * desiredItemHeight);
 
     return Obx(
-        () => presentController.selectPresentation.value.slides.isNotEmpty
+        () => presentController.selectedPresentation.value.slides.isNotEmpty
             ? GridView.builder(
                 controller: slideController,
                 itemCount: presentController
-                    .selectPresentation.value.slides.reversed
+                    .selectedPresentation.value.slides.reversed
                     .toList()
                     .length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -70,8 +70,8 @@ class SlideGrid extends StatelessWidget {
                   childAspectRatio: childAspectRatio,
                 ),
                 itemBuilder: (context, index) {
-                  Slide slide =
-                      presentController.selectPresentation.value.slides[index];
+                  Slide slide = presentController
+                      .selectedPresentation.value.slides[index];
                   return Obx(() => PreviewWidget(
                       index: index,
                       keyItem: slide.key,
@@ -87,7 +87,7 @@ class SlideGrid extends StatelessWidget {
                         controller.selectedOptionImage.value =
                             slide.dataTypeMode;
 
-                        presentController.selectSlide.value = Slide(
+                        presentController.selectedSlide.value = Slide(
                             key: slide.key,
                             type: slide.type,
                             dataType: slide.dataType,
@@ -100,7 +100,7 @@ class SlideGrid extends StatelessWidget {
                         } catch (e) {
                           await presentController.createNewWindow();
                         }
-                        sendToViewer(presentController.selectSlide.value);
+                        sendToViewer(presentController.selectedSlide.value);
                       }));
                 },
               )
