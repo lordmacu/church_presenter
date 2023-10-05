@@ -13,6 +13,7 @@ import 'package:ipuc/widgets/live_output/live.dart';
 import 'package:ipuc/widgets/media_data/media_data.dart';
 import 'package:ipuc/widgets/presents/list_present.dart';
 import 'package:ipuc/widgets/slides/slide_presenter.dart';
+import 'package:window_manager/window_manager.dart';
 
 class HomeView extends StatelessWidget {
   final SliderController controller = Get.put(SliderController());

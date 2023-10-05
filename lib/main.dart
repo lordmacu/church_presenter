@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,15 +20,11 @@ import 'package:ipuc/models/song.dart';
 import 'package:ipuc/models/testament.dart';
 import 'package:ipuc/models/verse.dart';
 import 'package:ipuc/models/video_explanation.dart';
-import 'package:ipuc/services/bible_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:ipuc/services/song_servide.dart';
-import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'package:path/path.dart';
 import 'package:video_player_win/video_player_win_plugin.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +51,19 @@ void main(List<String> args) async {
       args: argument,
     ));
   } else {
+    await windowManager.ensureInitialized();
+
+    WindowOptions windowOptions = WindowOptions(
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.normal,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+
     await FFMpegHelper.instance.initialize(); // This is a singleton instance
 
     await Hive.initFlutter();
@@ -140,14 +150,57 @@ class MySubApp extends StatelessWidget {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WindowListener {
+  @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+    _init();
+  }
+
+  @override
+  void onWindowClose() async {
+    bool _isPreventClose = await windowManager.isPreventClose();
+    if (_isPreventClose) {
+      try {
+        var subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
+
+        await WindowController.fromWindowId(subWindowIds[0]).close();
+      } catch (e) {}
+
+      await windowManager.destroy();
+    }
+  }
+
+  @override
+  void onWindowMove() {
+    // do something
+    print('[onWindowMove] onWindowMove:');
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  void _init() async {
+    // Add this line to override the default close handler
+    await windowManager.setPreventClose(true);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
         scaffoldBackgroundColor: Colors
             .black, // Esto hace que todos los Scaffold tengan un fondo negro
-
         textTheme: TextTheme(
           // Aquí puedes especificar varios estilos de texto como headline1, headline2, etc.
           bodyText1: TextStyle(color: Color(0xff7e7e7e)),
@@ -158,8 +211,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'Mi Aplicación',
-      initialRoute: AppRoutes.LOADING,
-      getPages: AppPages.pages,
+      initialRoute: AppRoutes.LOADING, // Reemplaza con tu ruta inicial
+      getPages: AppPages.pages, // Reemplaza con tus páginas
     );
   }
 }

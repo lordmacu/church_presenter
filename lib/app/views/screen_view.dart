@@ -300,11 +300,10 @@ class ScreenView extends StatelessWidget {
         _screenController.dataType.value = payload['dataType'];
 
         if (_screenController.dataType.value == "video") {
-          print("llega aquidddd ?  ${payload}");
-
           if (payload.containsKey('dataVideoPath')) {
             if (payload['dataVideoPath'] !=
                 _screenController.dataVideoPath.value) {
+              _screenController.videoPlayerController.value.dispose();
               _screenController.dataVideoPath.value = payload['dataVideoPath'];
 
               _screenController.videoPlayerController.value =
@@ -320,7 +319,6 @@ class ScreenView extends StatelessWidget {
           if (_screenController.dataTypeMode.value == "play") {
             _screenController.videoPlayerController.value.play();
           } else if (_screenController.dataTypeMode.value == "pause") {
-            print("esta pausa --------");
             await _screenController.pause();
             //   _screenController.videoPlayerController.value.pause();
           } else if (_screenController.dataTypeMode.value == "reset") {
