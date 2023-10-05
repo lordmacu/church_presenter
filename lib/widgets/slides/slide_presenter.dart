@@ -226,13 +226,15 @@ class SlidePresenter extends StatelessWidget {
             "type": "video",
             "path": controller.video.value,
             "firstFrame": controller.videoFirstFrame.value,
+            "videoPath": controller.video.value
           });
+
           controllerPresenter.setSlideToPresentation(Slide(
               key: uniqueKey,
               type: "video",
               dataType: "video",
               dataTypePath: controller.video.value,
-              dataTypeMode: "cover",
+              dataTypeMode: "play",
               json: payload));
 
           controllerPresenter.selectSlide.value = Slide(

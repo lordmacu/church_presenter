@@ -39,7 +39,7 @@ class SlideGrid extends StatelessWidget {
         "dataTypeMode": slide.dataType == "video" ? "new" : slide.dataTypeMode,
         "dataVideoPath": video_path,
       });
-
+      print("esto se va a enviar: $payloaDataType");
       final setDataType = await DesktopMultiWindow.invokeMethod(
           subWindowIds[0], "send_data_type", payloaDataType);
 

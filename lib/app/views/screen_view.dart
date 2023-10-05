@@ -221,13 +221,48 @@ class ScreenView extends StatelessWidget {
     );
   }
 
+  Widget viewImage(context) {
+    return Container(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Obx(() => _screenController.dataTypePath.value != ""
+              ? getBackgroundType(context)
+              : Container()),
+        ],
+      ),
+    );
+  }
+
+  Widget viewVideo(context) {
+    return Container(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Obx(() => _screenController.dataTypePath.value != ""
+              ? getBackgroundType(context)
+              : Container()),
+        ],
+      ),
+    );
+  }
+
   Widget viewTypeSlide(context) {
+    print("aquiii esta el otro ${_screenController.type.value}");
     if (_screenController.type.value == "verse") {
       return viewVerse(context);
     }
+
     if (_screenController.type.value == "song") {
       return viewSong(context);
     }
+    if (_screenController.type.value == "video") {
+      return viewVideo(context);
+    }
+    if (_screenController.type.value == "image") {
+      return viewImage(context);
+    }
+
     return Container(
       color: Colors.black,
     );
@@ -263,6 +298,8 @@ class ScreenView extends StatelessWidget {
 
         _screenController.dataTypePath.value = payload['dataTypePath'];
         _screenController.dataType.value = payload['dataType'];
+
+        print("llega aquidddd ?  ${payload}");
 
         if (_screenController.dataType.value == "video") {
           if (payload['dataVideoPath'] !=
