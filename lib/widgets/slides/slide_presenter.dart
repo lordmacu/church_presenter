@@ -422,6 +422,7 @@ class SlidePresenter extends StatelessWidget {
           Obx(
             () => Container(
                 padding: const EdgeInsets.only(top: 0, bottom: 10),
+                height: 60,
                 child: Stack(
                   children: [
                     Positioned(
@@ -437,63 +438,70 @@ class SlidePresenter extends StatelessWidget {
                             bottomRight: Radius.circular(10),
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            Tooltip(
-                              message: "Borrar todos los slides",
-                              child: MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  child: Container(
-                                    color: Colors.transparent,
-                                    padding: const EdgeInsets.only(
-                                        right: 5, top: 5, bottom: 5),
-                                    child: const Icon(
-                                      Icons.clear_all,
-                                      size: 40,
+                        child: controllerPresenter
+                                .selectPresentation.value.slides.isNotEmpty
+                            ? Row(
+                                children: [
+                                  Tooltip(
+                                    message: "Borrar todos los slides",
+                                    child: MouseRegion(
+                                      cursor: SystemMouseCursors.click,
+                                      child: GestureDetector(
+                                        child: Container(
+                                          color: Colors.transparent,
+                                          padding: const EdgeInsets.only(
+                                              right: 5, top: 5, bottom: 5),
+                                          child: const Icon(
+                                            Icons.clear_all,
+                                            size: 40,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          // Mostrar un cuadro de diálogo de alerta para confirmar
+                                          final bool? result =
+                                              await showDialog<bool>(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title:
+                                                    const Text("Confirmación"),
+                                                content: const Text(
+                                                    "¿Seguro que quieres limpiar los slides?"),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child:
+                                                        const Text("Cancelar"),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop(
+                                                          false); // Devuelve 'false' cuando el usuario pulsa 'Cancelar'
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    child:
+                                                        const Text("Aceptar"),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop(
+                                                          true); // Devuelve 'true' cuando el usuario pulsa 'Aceptar'
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+
+                                          // Si el usuario confirmó la acción
+                                          if (result == true) {
+                                            controllerPresenter
+                                                .deleteAllSlideToPresentation();
+                                            controllerPresenter.resetSlide();
+                                          }
+                                        },
+                                      ),
                                     ),
                                   ),
-                                  onTap: () async {
-                                    // Mostrar un cuadro de diálogo de alerta para confirmar
-                                    final bool? result = await showDialog<bool>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text("Confirmación"),
-                                          content: const Text(
-                                              "¿Seguro que quieres limpiar los slides?"),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text("Cancelar"),
-                                              onPressed: () {
-                                                Navigator.of(context).pop(
-                                                    false); // Devuelve 'false' cuando el usuario pulsa 'Cancelar'
-                                              },
-                                            ),
-                                            TextButton(
-                                              child: const Text("Aceptar"),
-                                              onPressed: () {
-                                                Navigator.of(context).pop(
-                                                    true); // Devuelve 'true' cuando el usuario pulsa 'Aceptar'
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-
-                                    // Si el usuario confirmó la acción
-                                    if (result == true) {
-                                      controllerPresenter
-                                          .deleteAllSlideToPresentation();
-                                      controllerPresenter.resetSlide();
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                                ],
+                              )
+                            : Container(),
                       ),
                     ),
                     Positioned(
@@ -552,218 +560,255 @@ class SlidePresenter extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        controllerPresenter.selectSlide.value.type != "image"
-                            ? Container(
-                                padding:
-                                    const EdgeInsets.only(left: 5, right: 5),
-                                margin:
-                                    const EdgeInsets.only(left: 20, right: 20),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.3),
-                                  borderRadius: const BorderRadius.only(
-                                    bottomLeft: Radius.circular(10),
-                                    bottomRight: Radius.circular(10),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Tooltip(
-                                      message: "Seleccionar video",
-                                      child: MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: GestureDetector(
-                                          child: Container(
-                                            color: Colors.transparent,
-                                            padding: const EdgeInsets.only(
-                                                right: 5, top: 5, bottom: 5),
-                                            child: const Icon(
-                                              Icons.video_call,
-                                              size: 40,
-                                            ),
-                                          ),
-                                          onTap: () async {
-                                            final pageIndexNotifier =
-                                                ValueNotifier(1);
-
-                                            WoltModalSheet.show<void>(
-                                              pageIndexNotifier:
-                                                  pageIndexNotifier,
-                                              context: context,
-                                              pageListBuilder:
-                                                  (modalSheetContext) {
-                                                final textTheme =
-                                                    Theme.of(context).textTheme;
-                                                return [
-                                                  imageGalleryPage(
-                                                      modalSheetContext,
-                                                      textTheme),
-                                                  videoGalleryPage(
-                                                      modalSheetContext,
-                                                      textTheme),
-                                                ];
-                                              },
-                                              modalTypeBuilder: (context) {
-                                                return WoltModalType.dialog;
-                                              },
-                                              onModalDismissedWithBarrierTap:
-                                                  () {},
-                                              maxDialogWidth: 1000,
-                                              minDialogWidth: 1000,
-                                              minPageHeight: 0.0,
-                                              maxPageHeight: 0.9,
-                                            );
-                                          },
+                    controllerPresenter
+                            .selectPresentation.value.slides.isNotEmpty
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              controllerPresenter.selectSlide.value.type !=
+                                      "image"
+                                  ? Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5),
+                                      margin: const EdgeInsets.only(
+                                          left: 20, right: 20),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.3),
+                                        borderRadius: const BorderRadius.only(
+                                          bottomLeft: Radius.circular(10),
+                                          bottomRight: Radius.circular(10),
                                         ),
                                       ),
-                                    ),
-                                    Obx(
-                                      () => controllerPresenter
-                                                  .selectSlide.value.dataType ==
-                                              "video"
-                                          ? Container(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5),
-                                              child: Row(
-                                                children: [
-                                                  buildOptioVideo(
-                                                    tooltip: "Play",
-                                                    icon: Icons.play_arrow,
-                                                    selectedOption: "play",
+                                      child: Row(
+                                        children: [
+                                          Tooltip(
+                                            message: "Seleccionar video",
+                                            child: MouseRegion(
+                                              cursor: SystemMouseCursors.click,
+                                              child: GestureDetector(
+                                                child: Container(
+                                                  color: Colors.transparent,
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 5,
+                                                          top: 5,
+                                                          bottom: 5),
+                                                  child: const Icon(
+                                                    Icons.video_call,
+                                                    size: 40,
                                                   ),
-                                                  buildOptioVideo(
-                                                    tooltip: "Pausar",
-                                                    icon: Icons.pause,
-                                                    selectedOption: "pause",
-                                                  ),
-                                                  buildOptioVideo(
-                                                    tooltip: "Reiniciar",
-                                                    icon: Icons.restart_alt,
-                                                    selectedOption: "reset",
-                                                  ),
-                                                ],
+                                                ),
+                                                onTap: () async {
+                                                  final pageIndexNotifier =
+                                                      ValueNotifier(1);
+
+                                                  WoltModalSheet.show<void>(
+                                                    pageIndexNotifier:
+                                                        pageIndexNotifier,
+                                                    context: context,
+                                                    pageListBuilder:
+                                                        (modalSheetContext) {
+                                                      final textTheme =
+                                                          Theme.of(context)
+                                                              .textTheme;
+                                                      return [
+                                                        imageGalleryPage(
+                                                            modalSheetContext,
+                                                            textTheme),
+                                                        videoGalleryPage(
+                                                            modalSheetContext,
+                                                            textTheme),
+                                                      ];
+                                                    },
+                                                    modalTypeBuilder:
+                                                        (context) {
+                                                      return WoltModalType
+                                                          .dialog;
+                                                    },
+                                                    onModalDismissedWithBarrierTap:
+                                                        () {},
+                                                    maxDialogWidth: 1000,
+                                                    minDialogWidth: 1000,
+                                                    minPageHeight: 0.0,
+                                                    maxPageHeight: 0.9,
+                                                  );
+                                                },
                                               ),
-                                            )
-                                          : Container(),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Container(),
-                        controllerPresenter.selectSlide.value.type != "video"
-                            ? Container(
-                                margin:
-                                    const EdgeInsets.only(left: 20, right: 20),
-                                padding:
-                                    const EdgeInsets.only(left: 5, right: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.3),
-                                  borderRadius: const BorderRadius.only(
-                                    bottomLeft: Radius.circular(10),
-                                    bottomRight: Radius.circular(10),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Tooltip(
-                                      message: "Seleccionar Imagen",
-                                      child: MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: GestureDetector(
-                                          child: Container(
-                                            color: Colors.transparent,
-                                            padding: const EdgeInsets.only(
-                                                right: 5, top: 10, bottom: 10),
-                                            child: const Icon(
-                                              Icons.add_a_photo,
-                                              size: 30,
                                             ),
                                           ),
-                                          onTap: () async {
-                                            final pageIndexNotifier =
-                                                ValueNotifier(0);
-
-                                            WoltModalSheet.show<void>(
-                                              pageIndexNotifier:
-                                                  pageIndexNotifier,
-                                              context: context,
-                                              pageListBuilder:
-                                                  (modalSheetContext) {
-                                                final textTheme =
-                                                    Theme.of(context).textTheme;
-                                                return [
-                                                  imageGalleryPage(
-                                                      modalSheetContext,
-                                                      textTheme),
-                                                  videoGalleryPage(
-                                                      modalSheetContext,
-                                                      textTheme),
-                                                ];
-                                              },
-                                              modalTypeBuilder: (context) {
-                                                return WoltModalType.dialog;
-                                              },
-                                              onModalDismissedWithBarrierTap:
-                                                  () {},
-                                              maxDialogWidth: 1000,
-                                              minDialogWidth: 1000,
-                                              minPageHeight: 0.0,
-                                              maxPageHeight: 0.9,
-                                            );
-                                          },
+                                          Obx(
+                                            () => controllerPresenter
+                                                        .selectSlide
+                                                        .value
+                                                        .dataType ==
+                                                    "video"
+                                                ? Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 5),
+                                                    child: Row(
+                                                      children: [
+                                                        buildOptioVideo(
+                                                          tooltip: "Play",
+                                                          icon:
+                                                              Icons.play_arrow,
+                                                          selectedOption:
+                                                              "play",
+                                                        ),
+                                                        buildOptioVideo(
+                                                          tooltip: "Pausar",
+                                                          icon: Icons.pause,
+                                                          selectedOption:
+                                                              "pause",
+                                                        ),
+                                                        buildOptioVideo(
+                                                          tooltip: "Reiniciar",
+                                                          icon:
+                                                              Icons.restart_alt,
+                                                          selectedOption:
+                                                              "reset",
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : Container(),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                              controllerPresenter.selectSlide.value.type !=
+                                      "video"
+                                  ? Container(
+                                      margin: const EdgeInsets.only(
+                                          left: 20, right: 20),
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.3),
+                                        borderRadius: const BorderRadius.only(
+                                          bottomLeft: Radius.circular(10),
+                                          bottomRight: Radius.circular(10),
                                         ),
                                       ),
-                                    ),
-                                    Obx(
-                                      () => controllerPresenter
-                                                  .selectSlide.value.dataType ==
-                                              "image"
-                                          ? Container(
-                                              padding: const EdgeInsets.only(
-                                                  left: 5),
-                                              child: Row(
-                                                children: [
-                                                  buildOption(
-                                                    tooltip: "Llenar",
-                                                    icon: Icons.aspect_ratio,
-                                                    selectedOption: "fill",
+                                      child: Row(
+                                        children: [
+                                          Tooltip(
+                                            message: "Seleccionar Imagen",
+                                            child: MouseRegion(
+                                              cursor: SystemMouseCursors.click,
+                                              child: GestureDetector(
+                                                child: Container(
+                                                  color: Colors.transparent,
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 5,
+                                                          top: 10,
+                                                          bottom: 10),
+                                                  child: const Icon(
+                                                    Icons.add_a_photo,
+                                                    size: 30,
                                                   ),
-                                                  buildOption(
-                                                    tooltip: "Contener",
-                                                    icon: Icons.zoom_out_map,
-                                                    selectedOption: "contain",
-                                                  ),
-                                                  buildOption(
-                                                    tooltip: "Cover",
-                                                    icon: Icons.crop,
-                                                    selectedOption: "cover",
-                                                  ),
-                                                  buildOption(
-                                                    tooltip: "Ajustar ancho",
-                                                    icon: Icons
-                                                        .photo_size_select_large,
-                                                    selectedOption: "fitWidth",
-                                                  ),
-                                                  buildOption(
-                                                    tooltip: "Ajustar altura",
-                                                    icon: Icons
-                                                        .photo_size_select_small,
-                                                    selectedOption: "fitHeight",
-                                                  ),
-                                                ],
+                                                ),
+                                                onTap: () async {
+                                                  final pageIndexNotifier =
+                                                      ValueNotifier(0);
+
+                                                  WoltModalSheet.show<void>(
+                                                    pageIndexNotifier:
+                                                        pageIndexNotifier,
+                                                    context: context,
+                                                    pageListBuilder:
+                                                        (modalSheetContext) {
+                                                      final textTheme =
+                                                          Theme.of(context)
+                                                              .textTheme;
+                                                      return [
+                                                        imageGalleryPage(
+                                                            modalSheetContext,
+                                                            textTheme),
+                                                        videoGalleryPage(
+                                                            modalSheetContext,
+                                                            textTheme),
+                                                      ];
+                                                    },
+                                                    modalTypeBuilder:
+                                                        (context) {
+                                                      return WoltModalType
+                                                          .dialog;
+                                                    },
+                                                    onModalDismissedWithBarrierTap:
+                                                        () {},
+                                                    maxDialogWidth: 1000,
+                                                    minDialogWidth: 1000,
+                                                    minPageHeight: 0.0,
+                                                    maxPageHeight: 0.9,
+                                                  );
+                                                },
                                               ),
-                                            )
-                                          : Container(),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Container()
-                      ],
-                    ),
+                                            ),
+                                          ),
+                                          Obx(
+                                            () => controllerPresenter
+                                                        .selectSlide
+                                                        .value
+                                                        .dataType ==
+                                                    "image"
+                                                ? Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 5),
+                                                    child: Row(
+                                                      children: [
+                                                        buildOption(
+                                                          tooltip: "Llenar",
+                                                          icon: Icons
+                                                              .aspect_ratio,
+                                                          selectedOption:
+                                                              "fill",
+                                                        ),
+                                                        buildOption(
+                                                          tooltip: "Contener",
+                                                          icon: Icons
+                                                              .zoom_out_map,
+                                                          selectedOption:
+                                                              "contain",
+                                                        ),
+                                                        buildOption(
+                                                          tooltip: "Cover",
+                                                          icon: Icons.crop,
+                                                          selectedOption:
+                                                              "cover",
+                                                        ),
+                                                        buildOption(
+                                                          tooltip:
+                                                              "Ajustar ancho",
+                                                          icon: Icons
+                                                              .photo_size_select_large,
+                                                          selectedOption:
+                                                              "fitWidth",
+                                                        ),
+                                                        buildOption(
+                                                          tooltip:
+                                                              "Ajustar altura",
+                                                          icon: Icons
+                                                              .photo_size_select_small,
+                                                          selectedOption:
+                                                              "fitHeight",
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : Container(),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Container()
+                            ],
+                          )
+                        : Container(),
                   ],
                 )),
           ),

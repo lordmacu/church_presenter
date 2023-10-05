@@ -56,48 +56,61 @@ class SlideGrid extends StatelessWidget {
     double desiredItemHeight = 350.0;
     double childAspectRatio = width / (crossAxisCount * desiredItemHeight);
 
-    return Obx(() => GridView.builder(
-          controller: slideController,
-          itemCount: presentController.selectPresentation.value.slides.reversed
-              .toList()
-              .length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            childAspectRatio: childAspectRatio,
-          ),
-          itemBuilder: (context, index) {
-            Slide slide =
-                presentController.selectPresentation.value.slides[index];
-            return Obx(() => PreviewWidget(
-                index: index,
-                keyItem: slide.key,
-                type: slide.type,
-                isSelected: controller.selectedItem.value == slide.key,
-                json: slide.json,
-                dataType: slide.dataType,
-                dataTypeMode: slide.dataTypeMode,
-                dataTypePath: slide.dataTypePath,
-                onTap: () async {
-                  controller.selectedItem.value = slide.key;
-                  previewController.currentSlide.value = slide.json;
-                  controller.selectedOptionImage.value = slide.dataTypeMode;
-
-                  presentController.selectSlide.value = Slide(
-                      key: slide.key,
+    return Obx(
+        () => presentController.selectPresentation.value.slides.isNotEmpty
+            ? GridView.builder(
+                controller: slideController,
+                itemCount: presentController
+                    .selectPresentation.value.slides.reversed
+                    .toList()
+                    .length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  childAspectRatio: childAspectRatio,
+                ),
+                itemBuilder: (context, index) {
+                  Slide slide =
+                      presentController.selectPresentation.value.slides[index];
+                  return Obx(() => PreviewWidget(
+                      index: index,
+                      keyItem: slide.key,
                       type: slide.type,
+                      isSelected: controller.selectedItem.value == slide.key,
+                      json: slide.json,
                       dataType: slide.dataType,
-                      dataTypePath: slide.dataTypePath,
                       dataTypeMode: slide.dataTypeMode,
-                      json: slide.json);
+                      dataTypePath: slide.dataTypePath,
+                      onTap: () async {
+                        controller.selectedItem.value = slide.key;
+                        previewController.currentSlide.value = slide.json;
+                        controller.selectedOptionImage.value =
+                            slide.dataTypeMode;
 
-                  try {
-                    await presentController.getAllSubWindowIds();
-                  } catch (e) {
-                    await presentController.createNewWindow();
-                  }
-                  sendToViewer(presentController.selectSlide.value);
-                }));
-          },
-        ));
+                        presentController.selectSlide.value = Slide(
+                            key: slide.key,
+                            type: slide.type,
+                            dataType: slide.dataType,
+                            dataTypePath: slide.dataTypePath,
+                            dataTypeMode: slide.dataTypeMode,
+                            json: slide.json);
+
+                        try {
+                          await presentController.getAllSubWindowIds();
+                        } catch (e) {
+                          await presentController.createNewWindow();
+                        }
+                        sendToViewer(presentController.selectSlide.value);
+                      }));
+                },
+              )
+            : const Center(
+                child: Text(
+                  'Agrega una canción o un versículo..',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ));
   }
 }
