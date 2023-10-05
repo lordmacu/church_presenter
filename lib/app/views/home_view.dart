@@ -55,7 +55,6 @@ class HomeView extends StatelessWidget {
                           ),
                           child: Column(
                             children: [
-                              LiveWidget(),
                               Expanded(
                                 flex: 2,
                                 child: Container(

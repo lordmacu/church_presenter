@@ -484,6 +484,65 @@ class SlidePresenter extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Positioned(
+                      left: 10,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            left: 10, right: 10, top: 10, bottom: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.3),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Tooltip(
+                                message: "Enviar presentación vacia",
+                                child: Container(
+                                  child: InkWell(
+                                    onTap: () async {
+                                      await controllerPresenter
+                                          .sendToPresentation(null);
+                                    },
+                                    child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Colors.blue,
+                                            Colors.blueAccent
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black26,
+                                            blurRadius: 5.0,
+                                            offset: Offset(0, 4),
+                                          ),
+                                        ],
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 2.0,
+                                        ),
+                                      ),
+                                      child: const Icon(
+                                        Icons.play_arrow,
+                                        color: Colors.white,
+                                        size: 20.0,
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ),
                     Container(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
