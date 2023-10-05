@@ -14,7 +14,6 @@ import 'package:video_player_win/video_player_win_plugin.dart';
 class ScreenView extends StatelessWidget {
   ScreenView();
   ScreenController _screenController = Get.put(ScreenController());
-  late VideoPlayerController controller;
 
   String dataTypeMode = "cover";
   String text = "No matarás";
@@ -53,7 +52,7 @@ class ScreenView extends StatelessWidget {
 
   Widget getBackgroundType(context) {
     if (_screenController.dataType == "video") {
-      return Expanded(child: VideoPlayer(controller));
+      return VideoPlayer(_screenController.videoPlayerController.value);
     }
 
     if (_screenController.dataType == "image") {
@@ -264,11 +263,15 @@ class ScreenView extends StatelessWidget {
 
         if (_screenController.dataType.value == "video") {
           _screenController.dataVideoPath.value = payload['dataVideoPath'];
-          controller =
+          _screenController.videoPlayerController.value =
               VideoPlayerController.file(File(payload['dataVideoPath']));
-          controller.initialize().then((value) {
-            if (controller.value.isInitialized) {
-              controller.play();
+          _screenController.videoPlayerController.value
+              .initialize()
+              .then((value) {
+            if (_screenController
+                .videoPlayerController.value.value.isInitialized) {
+              _screenController.videoPlayerController.value.setLooping(true);
+              _screenController.videoPlayerController.value.play();
             } else {
               print("video file load failed");
             }

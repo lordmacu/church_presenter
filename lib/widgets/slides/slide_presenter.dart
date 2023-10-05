@@ -77,6 +77,9 @@ class SlidePresenter extends StatelessWidget {
                     }
                   }
 
+                  controllerPresenter.updateSlideInPresentation(
+                      controllerPresenter.selectSlide.value);
+
                   await controllerPresenter.sendToViewer();
                   Navigator.of(modalSheetContext).pop();
                 },
@@ -143,7 +146,8 @@ class SlidePresenter extends StatelessWidget {
                           controllerPresenter.selectSlide.value;
                     }
                   }
-
+                  controllerPresenter.updateSlideInPresentation(
+                      controllerPresenter.selectSlide.value);
                   await controllerPresenter.sendToViewerVideo(videoPath);
                   Navigator.of(modalSheetContext).pop();
                 },

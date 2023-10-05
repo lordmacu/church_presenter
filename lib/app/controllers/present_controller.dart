@@ -244,6 +244,44 @@ class PresentController extends GetxController {
     }
   }
 
+  void updateSlideInPresentation(Slide newSlide) async {
+    Box<Presentation>? presentationBox;
+
+    try {
+      presentationBox = await Hive.openBox<Presentation>('presentations');
+
+      // Ensure that selectPresentation is initialized and has a valid key.
+      if (selectPresentation.value.key != null) {
+        // Find the key in the Hive box.
+        int? hiveKey =
+            findIndexByValue(presentationBox, selectPresentation.value.key!);
+
+        if (hiveKey != null) {
+          // Update the slide in the selected presentation.
+          updateSlideInSelectedPresentation(newSlide);
+
+          // Update the Hive box with the modified selectPresentation object.
+          await presentationBox.put(hiveKey, selectPresentation.value);
+          update(); // Assuming this is a GetX update method.
+        }
+      }
+    } catch (e) {
+      print("An error occurred: $e");
+    } finally {
+      await presentationBox?.close();
+    }
+  }
+
+  void updateSlideInSelectedPresentation(Slide newSlide) {
+    for (var i = 0; i < selectPresentation.value.slides.length; i++) {
+      if (selectPresentation.value.slides[i].key == newSlide.key) {
+        print("Found match at index: $i");
+        selectPresentation.value.slides[i] = newSlide;
+        break;
+      }
+    }
+  }
+
   Future deleteSlideToPresentation(String slideKey) async {
     Box<Presentation>? box;
 

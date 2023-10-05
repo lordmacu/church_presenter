@@ -17,4 +17,13 @@ class ScreenController extends GetxController {
   var width = 0.0.obs;
   var height = 0.0.obs;
   var payload = ({} as Map<dynamic, dynamic>).obs;
+  late Rx<VideoPlayerController> videoPlayerController =
+      VideoPlayerController.network('').obs;
+
+  @override
+  void onClose() {
+    // Don't forget to dispose of the VideoPlayerController to free up resources.
+    videoPlayerController.value.dispose();
+    super.onClose();
+  }
 }
