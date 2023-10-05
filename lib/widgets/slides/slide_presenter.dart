@@ -381,8 +381,30 @@ class SlidePresenter extends StatelessWidget {
               color: Colors.white.withOpacity(0.6),
             ),
           ),
-          onTap: () {
+          onTap: () async {
             controller.selectedOptionVideo.value = selectedOption;
+
+            Slide currentSlide = controllerPresenter.selectSlide.value;
+            controllerPresenter.selectSlide.value = Slide(
+                key: currentSlide.key,
+                type: currentSlide.type,
+                dataType: currentSlide.dataType,
+                dataTypeMode: selectedOption,
+                dataTypePath: currentSlide.dataTypePath,
+                json: currentSlide.json);
+
+            for (int i = 0;
+                i < controllerPresenter.selectPresentation.value.slides.length;
+                i++) {
+              var element =
+                  controllerPresenter.selectPresentation.value.slides[i];
+              if (currentSlide.key == element.key) {
+                controllerPresenter.selectPresentation.value.slides[i] =
+                    controllerPresenter.selectSlide.value;
+              }
+            }
+
+            await controllerPresenter.sendToViewer();
           },
         ),
       ),
@@ -428,7 +450,7 @@ class SlidePresenter extends StatelessWidget {
                         child: Row(
                           children: [
                             Tooltip(
-                              message: "Limpiar",
+                              message: "Borrar todos los slides",
                               child: MouseRegion(
                                 cursor: SystemMouseCursors.click,
                                 child: GestureDetector(
@@ -488,7 +510,7 @@ class SlidePresenter extends StatelessWidget {
                       left: 10,
                       child: Container(
                         padding: EdgeInsets.only(
-                            left: 10, right: 10, top: 10, bottom: 5),
+                            left: 10, right: 10, top: 10, bottom: 10),
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.3),
                           borderRadius: BorderRadius.only(
@@ -507,8 +529,8 @@ class SlidePresenter extends StatelessWidget {
                                           .sendToPresentation(null);
                                     },
                                     child: Container(
-                                      width: 35,
-                                      height: 35,
+                                      width: 30,
+                                      height: 30,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         gradient: const LinearGradient(
@@ -623,18 +645,17 @@ class SlidePresenter extends StatelessWidget {
                                                     buildOptioVideo(
                                                       tooltip: "Play",
                                                       icon: Icons.play_arrow,
-                                                      selectedOption: "fill",
+                                                      selectedOption: "play",
                                                     ),
                                                     buildOptioVideo(
                                                       tooltip: "Pausar",
                                                       icon: Icons.pause,
-                                                      selectedOption: "contain",
+                                                      selectedOption: "pause",
                                                     ),
                                                     buildOptioVideo(
                                                       tooltip: "Reiniciar",
                                                       icon: Icons.restart_alt,
-                                                      selectedOption:
-                                                          "fitWidth",
+                                                      selectedOption: "reset",
                                                     ),
                                                   ],
                                                 ),

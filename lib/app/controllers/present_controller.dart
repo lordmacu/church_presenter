@@ -180,7 +180,7 @@ class PresentController extends GetxController {
       final payloaDataType = jsonEncode({
         "dataType": selectSlide.value.dataType,
         "dataTypePath": selectSlide.value.dataTypePath,
-        "dataTypeMode": selectSlide.value.dataTypeMode,
+        "dataTypeMode": "new",
         "dataVideoPath": video,
       });
 

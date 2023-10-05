@@ -121,6 +121,9 @@ class MySubApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors
+            .black, // Esto hace que todos los Scaffold tengan un fondo negro
+
         textTheme: TextTheme(
           // Aquí puedes especificar varios estilos de texto como headline1, headline2, etc.
           bodyText1: TextStyle(color: Color(0xff7e7e7e)),
@@ -142,6 +145,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors
+            .black, // Esto hace que todos los Scaffold tengan un fondo negro
+
         textTheme: TextTheme(
           // Aquí puedes especificar varios estilos de texto como headline1, headline2, etc.
           bodyText1: TextStyle(color: Color(0xff7e7e7e)),

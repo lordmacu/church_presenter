@@ -226,7 +226,9 @@ class ScreenView extends StatelessWidget {
     if (_screenController.type.value == "song") {
       return viewSong(context);
     }
-    return Container();
+    return Container(
+      color: Colors.black,
+    );
   }
 
   @override
@@ -262,20 +264,42 @@ class ScreenView extends StatelessWidget {
         _screenController.dataType.value = payload['dataType'];
 
         if (_screenController.dataType.value == "video") {
-          _screenController.dataVideoPath.value = payload['dataVideoPath'];
-          _screenController.videoPlayerController.value =
-              VideoPlayerController.file(File(payload['dataVideoPath']));
-          _screenController.videoPlayerController.value
-              .initialize()
-              .then((value) {
-            if (_screenController
-                .videoPlayerController.value.value.isInitialized) {
-              _screenController.videoPlayerController.value.setLooping(true);
-              _screenController.videoPlayerController.value.play();
-            } else {
-              print("video file load failed");
-            }
-          });
+          print("aqu iel mode ${_screenController.dataTypeMode.value}");
+
+          if (_screenController.dataTypeMode.value == "play") {
+            _screenController.videoPlayerController.value.play();
+          } else if (_screenController.dataTypeMode.value == "pause") {
+            _screenController.videoPlayerController.value.pause();
+          } else if (_screenController.dataTypeMode.value == "reset") {
+            _screenController.videoPlayerController.value
+                .seekTo(Duration(seconds: 0));
+          } else {
+            _screenController.videoPlayerController.value.play();
+          }
+
+          var position =
+              await _screenController.videoPlayerController.value.position;
+
+          if (_screenController.dataTypeMode.value == "new") {
+            _screenController.dataVideoPath.value = payload['dataVideoPath'];
+
+            _screenController.videoPlayerController.value =
+                VideoPlayerController.file(File(payload['dataVideoPath']));
+            _screenController.videoPlayerController.value
+                .initialize()
+                .then((value) {
+              if (_screenController
+                  .videoPlayerController.value.value.isInitialized) {
+                _screenController.videoPlayerController.value.setLooping(true);
+
+                _screenController.videoPlayerController.value.setVolume(0.0);
+
+                _screenController.videoPlayerController.value.play();
+              } else {
+                print("video file load failed");
+              }
+            });
+          }
         }
       }
 
@@ -286,12 +310,13 @@ class ScreenView extends StatelessWidget {
       init: HomeController(),
       builder: (controller) {
         return Scaffold(
+            backgroundColor: Colors.black,
             body: GestureDetector(
-          onTap: () {
-            toggleFullScreen();
-          },
-          child: Obx(() => viewTypeSlide(context)),
-        ));
+              onTap: () {
+                toggleFullScreen();
+              },
+              child: Obx(() => viewTypeSlide(context)),
+            ));
       },
     );
   }
