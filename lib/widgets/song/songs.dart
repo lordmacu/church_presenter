@@ -163,6 +163,8 @@ class SongsList extends StatelessWidget {
                                                   "Agregar a la presentación",
                                               icon: Icon(Icons.add),
                                               onPressed: () {
+                                                print(
+                                                    "estar aqui ${song.paragraphs[0]}");
                                                 controller.addNewSong(song);
                                               },
                                             ),

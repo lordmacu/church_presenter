@@ -8,10 +8,13 @@ import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/home_controller.dart';
 import 'package:ipuc/app/controllers/screen_controller.dart';
 import 'package:ipuc/core/windows_utils.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_player_win/video_player_win_plugin.dart';
 
 class ScreenView extends StatelessWidget {
   ScreenView();
   ScreenController _screenController = Get.put(ScreenController());
+  late VideoPlayerController controller;
 
   String dataTypeMode = "cover";
   String text = "No matarás";
@@ -48,7 +51,28 @@ class ScreenView extends StatelessWidget {
     return BoxFit.cover;
   }
 
-  Widget viewVerse() {
+  Widget getBackgroundType(context) {
+    if (_screenController.dataType == "video") {
+      return Expanded(child: VideoPlayer(controller));
+    }
+
+    if (_screenController.dataType == "image") {
+      return ClipRRect(
+        child: Image.file(
+          File(_screenController.dataTypePath.value),
+          fit: getBoxFit(),
+        ),
+      );
+    }
+    return ClipRRect(
+      child: Image.file(
+        File(_screenController.dataTypePath.value),
+        fit: getBoxFit(),
+      ),
+    );
+  }
+
+  Widget viewVerse(context) {
     double fontSize = getFontSize(_screenController.verseText.value,
         _screenController.width.value, _screenController.height.value);
     _screenController.fontSize.value = fontSize;
@@ -58,12 +82,7 @@ class ScreenView extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Obx(() => _screenController.dataTypePath.value != ""
-              ? ClipRRect(
-                  child: Image.file(
-                    File(_screenController.dataTypePath.value),
-                    fit: getBoxFit(),
-                  ),
-                )
+              ? getBackgroundType(context)
               : Container()),
           Center(
             child: Container(
@@ -144,7 +163,7 @@ class ScreenView extends StatelessWidget {
     );
   }
 
-  Widget viewSong() {
+  Widget viewSong(context) {
     double fontSize = getFontSize(_screenController.paragraph.value,
         _screenController.width.value, _screenController.height.value);
     _screenController.fontSize.value = fontSize;
@@ -154,12 +173,7 @@ class ScreenView extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Obx(() => _screenController.dataTypePath.value != ""
-              ? ClipRRect(
-                  child: Image.file(
-                    File(_screenController.dataTypePath.value),
-                    fit: getBoxFit(),
-                  ),
-                )
+              ? getBackgroundType(context)
               : Container()),
           Center(
             child: Container(
@@ -206,12 +220,12 @@ class ScreenView extends StatelessWidget {
     );
   }
 
-  Widget viewTypeSlide() {
+  Widget viewTypeSlide(context) {
     if (_screenController.type.value == "verse") {
-      return viewVerse();
+      return viewVerse(context);
     }
     if (_screenController.type.value == "song") {
-      return viewSong();
+      return viewSong(context);
     }
     return Container();
   }
@@ -226,6 +240,7 @@ class ScreenView extends StatelessWidget {
     DesktopMultiWindow.setMethodHandler((call, fromWindowId) async {
       var payload = jsonDecode(call.arguments);
 
+      print(payload);
       if (call.method == "send_viewer") {
         _screenController.type.value = payload["type"];
 
@@ -236,6 +251,7 @@ class ScreenView extends StatelessWidget {
           _screenController.book.value = payload['book'];
         }
 
+        print("dfs asd   ${_screenController.type.value}");
         if (_screenController.type.value == "song") {
           _screenController.paragraph.value = payload['paragraph'];
         }
@@ -244,6 +260,20 @@ class ScreenView extends StatelessWidget {
       if (call.method == "send_data_type") {
         _screenController.dataTypeMode.value = payload['dataTypeMode'];
         _screenController.dataTypePath.value = payload['dataTypePath'];
+        _screenController.dataType.value = payload['dataType'];
+
+        if (_screenController.dataType.value == "video") {
+          _screenController.dataVideoPath.value = payload['dataVideoPath'];
+          controller =
+              VideoPlayerController.file(File(payload['dataVideoPath']));
+          controller.initialize().then((value) {
+            if (controller.value.isInitialized) {
+              controller.play();
+            } else {
+              print("video file load failed");
+            }
+          });
+        }
       }
 
       return "result";
@@ -257,7 +287,7 @@ class ScreenView extends StatelessWidget {
           onTap: () {
             toggleFullScreen();
           },
-          child: Obx(() => viewTypeSlide()),
+          child: Obx(() => viewTypeSlide(context)),
         ));
       },
     );

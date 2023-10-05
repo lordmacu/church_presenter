@@ -86,9 +86,7 @@ class VideosView extends StatelessWidget {
                 await createThumbnail(
                     files[index].path, thumbnailPath, seconds);
 
-                selectImage(
-                  thumbnailPath,
-                );
+                selectImage(thumbnailPath, files[index].path);
               },
               hoverColor: Colors.transparent,
               child: MouseRegion(

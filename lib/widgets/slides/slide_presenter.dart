@@ -118,15 +118,18 @@ class SlidePresenter extends StatelessWidget {
               // Añade este widget
               child: VideosView(
                 folderName: 'ipucVideos',
-                selectImage: (String image) async {
+                selectImage: (String image, String videoPath) async {
                   Slide currentSlide = controllerPresenter.selectSlide.value;
+                  var jsonData = jsonDecode(currentSlide.json);
+
+                  var jsonFinal = jsonEncode(jsonData);
                   controllerPresenter.selectSlide.value = Slide(
                       key: currentSlide.key,
                       type: currentSlide.type,
                       dataType: "video",
                       dataTypeMode: "cover",
                       dataTypePath: image,
-                      json: currentSlide.json);
+                      json: jsonFinal);
 
                   for (int i = 0;
                       i <
@@ -141,7 +144,7 @@ class SlidePresenter extends StatelessWidget {
                     }
                   }
 
-                  await controllerPresenter.sendToViewer();
+                  await controllerPresenter.sendToViewerVideo(videoPath);
                   Navigator.of(modalSheetContext).pop();
                 },
               ),

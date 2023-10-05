@@ -63,8 +63,8 @@ class SongDb {
     // Realizar la búsqueda en SQLite
     final List<Map<String, dynamic>> result = await db.query(
       'songs',
-      where: 'searchableText LIKE ?',
-      whereArgs: ['%$query%'],
+      where: 'searchableTitle LIKE ? OR  searchableText LIKE ?',
+      whereArgs: ['%$query%', '%$query%'],
       orderBy: 'id DESC', // Para conseguir los más recientes primero
     );
 

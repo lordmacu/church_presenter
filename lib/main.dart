@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,9 +24,14 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:ipuc/services/song_servide.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:path/path.dart';
+import 'package:video_player_win/video_player_win_plugin.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isWindows) WindowsVideoPlayer.registerWith();
 
   DatabaseHelper databaseHelper =
       DatabaseHelper(); // Crea una instancia de DatabaseHelper

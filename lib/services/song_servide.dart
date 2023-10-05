@@ -66,7 +66,7 @@ class SongService {
 
       for (var lyric in song["videoExplanation"]) {
         for (var paragraph in lyric) {
-          paragraphsExplation.add(paragraph);
+          paragraphsExplation.add(paragraph.replaceAll(r'\n', '\n'));
         }
       }
 
@@ -79,14 +79,21 @@ class SongService {
       String searchableText = removeDiacritics(
           (cleanTitle + " " + paragraphs.join(" ")).replaceAll('\n', ' '));
 
-      await ipucDb.insert('songs', {
-        'title': cleanTitle, // Use the cleaned title here
-        'youtubeUrl': song["youtubeUrl"],
-        'paragraphs': jsonEncode(paragraphs),
-        'lyricsPlain': jsonEncode(song["lyrics"]),
-        'videoExplanation': jsonEncode(paragraphsExplation),
-        'searchableText': searchableText // Insert the searchable text here
-      });
+      List<Map> existingSongs = await ipucDb.query('songs',
+          where: 'searchableTitle = ?',
+          whereArgs: [removeDiacritics(cleanTitle)]);
+      if (existingSongs.isEmpty) {
+        await ipucDb.insert('songs', {
+          'title': cleanTitle, // Use the cleaned title here
+          'youtubeUrl': song["youtubeUrl"],
+          'paragraphs': jsonEncode(paragraphs),
+          'lyricsPlain': jsonEncode(song["lyrics"]),
+          'videoExplanation': jsonEncode(paragraphsExplation),
+          'searchableText': searchableText,
+          'searchableTitle':
+              removeDiacritics(cleanTitle) // Insert the searchable text here
+        });
+      }
     }
   }
 
@@ -104,7 +111,7 @@ class SongService {
       List<String> paragraphs = [];
 
       for (var lyric in song["lyrics"]) {
-        paragraphs.add(lyric);
+        paragraphs.add(lyric.replaceAll(r'\n', '\n'));
       }
 
       // Clean the title here
@@ -117,14 +124,21 @@ class SongService {
       String searchableText = removeDiacritics(
           (cleanTitle + " " + paragraphs.join(" ")).replaceAll('\n', ' '));
 
-      await ipucDb.insert('songs', {
-        'title': cleanTitle, // Use the cleaned title here
-        'youtubeUrl': song["youtubeUrl"],
-        'paragraphs': jsonEncode(paragraphs),
-        'lyricsPlain': jsonEncode(song["lyrics"]),
-        'videoExplanation': jsonEncode([]),
-        'searchableText': searchableText // Insert the searchable text here
-      });
+      List<Map> existingSongs = await ipucDb.query('songs',
+          where: 'searchableTitle = ?',
+          whereArgs: [removeDiacritics(cleanTitle)]);
+      if (existingSongs.isEmpty) {
+        await ipucDb.insert('songs', {
+          'title': cleanTitle, // Use the cleaned title here
+          'youtubeUrl': song["youtubeUrl"],
+          'paragraphs': jsonEncode(paragraphs),
+          'lyricsPlain': jsonEncode(song["lyrics"]),
+          'videoExplanation': jsonEncode([]),
+          'searchableText': searchableText, // Insert the searchable text here
+          'searchableTitle':
+              removeDiacritics(cleanTitle) // Insert the searchable text here
+        });
+      }
     }
   }
 }

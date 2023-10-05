@@ -43,6 +43,7 @@ class DatabaseHelper {
           paragraphs TEXT,
           lyricsPlain TEXT,
           videoExplanation TEXT,
+          searchableTitle TEXT,
           searchableText TEXT)
         ''');
 

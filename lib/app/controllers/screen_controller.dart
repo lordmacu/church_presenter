@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
 
 class ScreenController extends GetxController {
   var verse = 0.obs;
@@ -9,6 +10,9 @@ class ScreenController extends GetxController {
   var dataTypeMode = "".obs;
   var fontSize = 10.0.obs;
   var dataTypePath = "".obs;
+  var dataVideoPath = "".obs;
+
+  var dataType = "".obs;
   var paragraph = "".obs;
   var width = 0.0.obs;
   var height = 0.0.obs;

@@ -1,14 +1,24 @@
 #include "flutter_window.h"
 
 #include <optional>
-
+#include <iostream>
 #include "flutter/generated_plugin_registrant.h"
+
+ #include "desktop_multi_window/desktop_multi_window_plugin.h"
+ //#include "lib/video/video_player_win_plugin.h"
+ #include <video_player_win/video_player_win_plugin_c_api.h>
+
+ #include "desktop_lifecycle/desktop_lifecycle_plugin.h"
+
+ 
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
 
 FlutterWindow::~FlutterWindow() {}
 
+ 
+ 
 bool FlutterWindow::OnCreate() {
   if (!Win32Window::OnCreate()) {
     return false;
@@ -24,7 +34,16 @@ bool FlutterWindow::OnCreate() {
   if (!flutter_controller_->engine() || !flutter_controller_->view()) {
     return false;
   }
-  RegisterPlugins(flutter_controller_->engine());
+RegisterPlugins(flutter_controller_->engine());
+
+  DesktopMultiWindowSetWindowCreatedCallback([](void *controller) {
+  auto *flutter_view_controller =
+        reinterpret_cast<flutter::FlutterViewController *>(controller);
+    auto *registry = flutter_view_controller->engine();
+    VideoPlayerWinPluginCApiRegisterWithRegistrar(
+        registry->GetRegistrarForPlugin("VideoPlayerWinPlugin"));
+  });
+
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
   return true;
 }
@@ -36,6 +55,7 @@ void FlutterWindow::OnDestroy() {
 
   Win32Window::OnDestroy();
 }
+ 
 
 LRESULT
 FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
@@ -59,3 +79,5 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
 
   return Win32Window::MessageHandler(hwnd, message, wparam, lparam);
 }
+
+ 

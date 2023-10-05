@@ -171,6 +171,24 @@ class PresentController extends GetxController {
     } catch (e) {}
   }
 
+  sendToViewerVideo(String video) async {
+    try {
+      final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
+
+      final payload = jsonEncode(selectSlide.value.json);
+
+      final payloaDataType = jsonEncode({
+        "dataType": selectSlide.value.dataType,
+        "dataTypePath": selectSlide.value.dataTypePath,
+        "dataTypeMode": selectSlide.value.dataTypeMode,
+        "dataVideoPath": video,
+      });
+
+      final setDataType = await DesktopMultiWindow.invokeMethod(
+          subWindowIds[0], "send_data_type", payloaDataType);
+    } catch (e) {}
+  }
+
   void resetValues(double height) async {
     heightItem.value = height;
     topic.value = "";

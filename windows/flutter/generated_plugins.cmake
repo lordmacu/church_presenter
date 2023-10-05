@@ -4,11 +4,13 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
+  desktop_lifecycle
   desktop_multi_window
   desktop_window
   file_selector_windows
   fullscreen_window
   screen_retriever
+  video_player_win
   window_manager
 )
 

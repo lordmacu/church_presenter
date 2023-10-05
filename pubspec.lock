@@ -249,6 +249,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.3"
+  desktop_lifecycle:
+    dependency: "direct main"
+    description:
+      name: desktop_lifecycle
+      sha256: "221c0d1fd6582bbc28bd03f186983682d998459f3e8efde0105324a8ab350040"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   desktop_multi_window:
     dependency: "direct main"
     description:
@@ -788,10 +796,10 @@ packages:
     dependency: transitive
     description:
       name: plugin_platform_interface
-      sha256: dbf0f707c78beedc9200146ad3cb0ab4d5da13c246336987be6940f026500d3a
+      sha256: da3fdfeccc4d4ff2da8f8c556704c08f912542c5fb3cf2233ed75372384a034d
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.6"
   pointycastle:
     dependency: transitive
     description:
@@ -1125,6 +1133,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  video_player_win:
+    dependency: "direct main"
+    description:
+      name: video_player_win
+      sha256: "56afaf991161ca681d2d28f02a6dbf7f2b84b6f91d6a03f74b7bf8af857ef1ad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.1"
   watcher:
     dependency: transitive
     description:
