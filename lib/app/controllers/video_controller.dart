@@ -4,9 +4,17 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
+/// `VideoController` is responsible for video-related functionalities such as creating thumbnails.
 class VideoController extends GetxController {
+  // Observable to hold the path of the video.
   var videoPath = "".obs;
 
+  /// Creates a thumbnail for a given video.
+  ///
+  /// @param videoPath - The path of the video file.
+  /// @param outputPath - The path where the thumbnail should be saved.
+  /// @param seconds - The time in the video to capture the thumbnail.
+  /// @return Future<String?> - The path of the created thumbnail or null.
   Future<String?> createThumbnail(
       String videoPath, String outputPath, String seconds) async {
     final programFilesPath = Platform.environment['ProgramFiles'];
@@ -38,9 +46,9 @@ class VideoController extends GetxController {
     }
   }
 
+  /// Creates a URL for the video thumbnail and stores it.
   Future createVideoUrl() async {
     Uuid uuid = const Uuid();
-
     final directory = await getApplicationDocumentsDirectory();
     final String randomThumbnailName = uuid.v1();
     final thumbnailPath = path.join(directory.path, '$randomThumbnailName.png');
@@ -48,10 +56,10 @@ class VideoController extends GetxController {
     createThumbnail(videoPath.value, thumbnailPath, seconds);
   }
 
+  /// Overrides the `onInit` lifecycle method to create a video URL when the controller is initialized.
   @override
   void onInit() {
     super.onInit();
-
     createVideoUrl();
   }
 }
