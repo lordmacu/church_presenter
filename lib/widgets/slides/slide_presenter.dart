@@ -396,8 +396,6 @@ class SlidePresenter extends StatelessWidget {
       floatingActionButton: AnimatedFloatingActionButton(
         fabButtons: <Widget>[image(), video(), text()],
         key: keyFloating,
-        colorStartAnimation: Colors.blue,
-        colorEndAnimation: Colors.red,
         animatedIconData: AnimatedIcons.menu_close,
         tooltip: "add_resource".i18n(),
       ),

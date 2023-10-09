@@ -5,6 +5,8 @@
     "confirmation": "Confirmación",
     "confirm_delete_presentation": "¿Estás seguro de que quieres borrar la presentación? Esto también eliminará todos los diapositivas dentro.",
     "cancel": "Cancelar",
+    "delete": "Borrar",
+
     "accept": "Aceptar",
     "topic": "Tema",
     "preacher": "Predicador",
@@ -48,10 +50,13 @@
     "add_empty_presentation":"Agregar una nueva presentación vacía",
     "edit_song":"Editar canción",
     "song_title":"Título de la canción",
-    "confirm_delete_song":"Confirmar eliminación",
-    "question_delete_song":"¿Estás seguro de que quieres eliminar este párrafo?",
+    "confirm_delete_song_paragraph":"Confirmar eliminación",
+    "question_delete_song_paragraph":"¿Estás seguro de que quieres eliminar este párrafo?",
     "paragraph_number": "Parrafo %s",
     "add_paragraph": "Agregar parrafo",
-    "add_song": "Agregar canción"
+    "add_song": "Agregar canción",
+    "delete_song": "Borrar canción",
+    "question_delete_song":"¿Estás seguro de que quieres eliminar esta canción?",
+    "confirm_delete_song":"Confirmar eliminación"
 
 }

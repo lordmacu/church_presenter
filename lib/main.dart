@@ -130,6 +130,15 @@ class MySubApp extends StatelessWidget {
       ],
       theme: ThemeData(
         scaffoldBackgroundColor: Color(0xff353535),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.grey,
+          splashColor: Colors.grey,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+          ),
+        ),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Color(0xff7e7e7e)),
           bodyMedium: TextStyle(color: Color(0xff7e7e7e)),
@@ -213,6 +222,15 @@ class _MyAppState extends State<MyApp> with WindowListener {
       ],
       theme: ThemeData(
         scaffoldBackgroundColor: Color(0xff353535),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+          ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.grey,
+          splashColor: Colors.grey,
+        ),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Color(0xff7e7e7e)),
           bodyMedium: TextStyle(color: Color(0xff7e7e7e)),

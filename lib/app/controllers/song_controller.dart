@@ -163,6 +163,7 @@ class SongController extends GetxController {
         'searchableText': searchableText,
         'searchableTitle': removeDiacritics(cleanTitle)
       });
+      loadSongs();
     }
   }
 
@@ -176,7 +177,7 @@ class SongController extends GetxController {
     List<dynamic> paragraphs = currentSong.value.paragraphs;
     final ipucDb = await DatabaseHelper().db;
 
-    if (ipucDb == null) {
+    if (ipucDb == null || currentSong.value.id == null) {
       return;
     }
 
@@ -200,6 +201,24 @@ class SongController extends GetxController {
     );
 
     resetSong();
+    loadSongs();
+  }
+
+  Future<void> deleteDbSong() async {
+    final ipucDb = await DatabaseHelper().db;
+
+    if (ipucDb == null || currentSong.value.id == null) {
+      return;
+    }
+
+    await ipucDb.delete(
+      'songs',
+      where: 'id = ?',
+      whereArgs: [currentSong.value.id],
+    );
+
+    resetSong(); // Reset the current song to default values
+    loadSongs();
   }
 
   /// Overrides the `onInit` lifecycle method to load songs when the controller is initialized.

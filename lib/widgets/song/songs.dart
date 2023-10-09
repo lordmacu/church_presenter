@@ -44,7 +44,6 @@ class SongsList extends StatelessWidget {
             message: "add_song".i18n(),
             child: Icon(Icons.add),
           ),
-          backgroundColor: Colors.blue,
         ),
         body: Column(
           mainAxisSize: MainAxisSize.min,
@@ -108,11 +107,11 @@ class SongsList extends StatelessWidget {
                 children: [
                   const SizedBox(
                     child: Text(' '),
-                    width: 100,
+                    width: 130,
                   ),
                   SizedBox(
                     child: Text('lyric'.i18n()),
-                    width: 100,
+                    width: 200,
                   ),
                 ],
               ),
@@ -141,9 +140,13 @@ class SongsList extends StatelessWidget {
                                         child: Row(
                                           children: [
                                             IconButton(
+                                              padding: EdgeInsets.all(5),
                                               tooltip:
                                                   "add_to_presentation".i18n(),
-                                              icon: const Icon(Icons.add),
+                                              icon: const Icon(
+                                                Icons.add,
+                                                size: 20,
+                                              ),
                                               onPressed: () {
                                                 controller
                                                     .addNewSongToPresenter(
@@ -151,8 +154,12 @@ class SongsList extends StatelessWidget {
                                               },
                                             ),
                                             IconButton(
+                                              padding: EdgeInsets.all(5),
                                               tooltip: "edit_song".i18n(),
-                                              icon: const Icon(Icons.edit),
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                size: 20,
+                                              ),
                                               onPressed: () {
                                                 controller.currentSong.value =
                                                     song;
@@ -184,9 +191,57 @@ class SongsList extends StatelessWidget {
                                                 );
                                               },
                                             ),
+                                            IconButton(
+                                              padding: EdgeInsets.all(5),
+                                              tooltip: "delete_song".i18n(),
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                size: 20,
+                                              ),
+                                              onPressed: () async {
+                                                final bool? confirmed =
+                                                    await showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AlertDialog(
+                                                    title: Text(
+                                                        'confirm_delete_song'
+                                                            .i18n()),
+                                                    content: Text(
+                                                        'question_delete_song'
+                                                            .i18n()),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(false),
+                                                        child: Text(
+                                                            'cancel'.i18n()),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(true),
+                                                        child: Text(
+                                                            'delete'.i18n()),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                                controller.currentSong.value =
+                                                    song;
+
+                                                if (confirmed == true) {
+                                                  await controller
+                                                      .deleteDbSong();
+                                                }
+                                              },
+                                            )
                                           ],
                                         ),
-                                        width: 90,
+                                        width: 130,
                                       ),
                                       Expanded(
                                         child: Column(
@@ -262,7 +317,7 @@ class SongsList extends StatelessWidget {
           onPressed: () {
             Navigator.of(modalSheetContext).pop();
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.close,
             color: Colors.grey,
           ),
@@ -285,14 +340,9 @@ class SongsList extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 Navigator.of(modalSheetContext).pop();
-                print("aquiii que onda ${controller.currentSong.value.id}");
                 if (controller.currentSong.value.id == null) {
-                  print("aquiii que onda ");
-
                   await controller.addNewDbSong();
                 } else {
-                  print("aquiii que onda editar ");
-
                   await controller.updateDbSong();
                 }
               },

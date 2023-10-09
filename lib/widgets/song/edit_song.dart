@@ -46,8 +46,10 @@ class EditSong extends StatelessWidget {
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: Text('confirm_delete_song'.i18n()),
-                                  content: Text('question_delete_song'.i18n()),
+                                  title: Text(
+                                      'confirm_delete_song_paragraph'.i18n()),
+                                  content: Text(
+                                      'question_delete_song_paragraph'.i18n()),
                                   actions: [
                                     TextButton(
                                       child: Text('cancel'.i18n()),

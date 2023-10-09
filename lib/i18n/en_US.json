@@ -9,6 +9,7 @@
     "topic": "Topic",
     "preacher": "Preacher",
     "save": "Save",
+    "delete": "Delete",
     "meeting_of": "Sermon of %s",
     "add_song_or_verse": "Add a song or a verse...",
     "gallery": "Gallery",
@@ -47,9 +48,11 @@
     "add_empty_presentation":"Add Empty Presentation",
     "edit_song":"Edit Song",
     "song_title":"Song Title",
-    "confirm_delete_song":"Confirm delete",
-    "question_delete_song":"Do you want to delete this song?",
+    "confirm_delete_song_paragraph":"Confirm delete",
+    "question_delete_song_paragraph":"Do you want to delete this song paragraph?",
     "paragraph_number": "Paragraph %s",
     "add_paragraph": "Add Paragraph",
-    "add_song": "Add Song"
+    "add_song": "Add Song",
+    "delete_song": "Delete Song"
+
 }

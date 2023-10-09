@@ -42,7 +42,6 @@ class ListPresent extends StatelessWidget {
               message: "add_empty_presentation".i18n(),
               child: Icon(Icons.add),
             ),
-            backgroundColor: Colors.blue,
           ),
         );
       }),
