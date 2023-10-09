@@ -15,58 +15,24 @@ class VideosView extends StatelessWidget {
   VideosView({Key? key, required this.folderName, required this.selectImage})
       : super(key: key);
 
-  Future<List<FileSystemEntity>> getFilesInDirectory() async {
-    final Directory appDocDir = await getApplicationDocumentsDirectory();
-    final String docPath = appDocDir.path;
-    final directory = Directory('$docPath/$folderName');
-    return directory.listSync();
-  }
-
-  Future<String?> createThumbnail(
-      String videoPath, String outputPath, String seconds) async {
-    final programFilesPath = Platform.environment['ProgramFiles'];
-    final ffmpegPath = '$programFilesPath\\ipuc\\ffmpeg';
-    try {
-      final processResult = await Process.run(
-        ffmpegPath + '\\bin\\ffmpeg.exe',
-        [
-          '-i',
-          videoPath,
-          '-y',
-          '-ss',
-          seconds,
-          '-frames:v',
-          '1',
-          '-q:v',
-          '1',
-          outputPath,
-        ],
-      );
-
-      if (processResult.exitCode == 0) {
-        return outputPath;
-      } else {
-        return null;
-      }
-    } catch (e) {
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    // Utilize the controller to fetch the files in the specified directory.
     return FutureBuilder<List<FileSystemEntity>>(
-      future: getFilesInDirectory(),
+      future: controllerSlide.getFilesInDirectory(folderName),
       builder: (context, snapshot) {
+        // Show a loading indicator while waiting for the future to complete.
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         }
+        // Display any errors that occur while fetching files.
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
 
         final files = snapshot.data!;
 
+        // Build a grid view of the video files.
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
@@ -75,6 +41,7 @@ class VideosView extends StatelessWidget {
           itemCount: files.length,
           itemBuilder: (context, index) {
             return InkWell(
+              // When a video file is tapped, create a thumbnail and trigger selectImage.
               onTap: () async {
                 Uuid uuid = const Uuid();
 
@@ -83,7 +50,8 @@ class VideosView extends StatelessWidget {
                 final thumbnailPath =
                     path.join(directory.path, '$randomThumbnailName.png');
                 const seconds = '0:00:01.000000';
-                await createThumbnail(
+
+                await controllerSlide.createThumbnail(
                     files[index].path, thumbnailPath, seconds);
 
                 selectImage(thumbnailPath, files[index].path);

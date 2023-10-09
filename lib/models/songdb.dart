@@ -1,8 +1,11 @@
 import 'dart:convert';
-
 import 'package:diacritic/diacritic.dart';
 import 'package:ipuc/core/sqlite_helper.dart';
 
+/// Represents a song in the database.
+///
+/// The class includes properties for ID, title, YouTube URL, song paragraphs,
+/// plain lyrics, video explanations, and searchable text.
 class SongDb {
   final int? id;
   final String title;
@@ -12,6 +15,9 @@ class SongDb {
   final List<dynamic> videoExplanation;
   final String searchableText;
 
+  /// Constructs a [SongDb] instance with all required fields.
+  ///
+  /// All fields are required except the ID, which can be null.
   SongDb({
     this.id,
     required this.title,
@@ -22,6 +28,7 @@ class SongDb {
     required this.searchableText,
   });
 
+  /// Creates a [SongDb] instance from a [Map].
   factory SongDb.fromMap(Map<String, dynamic> map) {
     return SongDb(
       id: map['id'],
@@ -34,6 +41,7 @@ class SongDb {
     );
   }
 
+  /// Converts the [SongDb] instance to a [Map].
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -46,6 +54,10 @@ class SongDb {
     };
   }
 
+  /// Searches songs based on the given query string.
+  ///
+  /// The method performs a case-insensitive search and removes diacritics.
+  /// Returns a list of [SongDb] instances that match the query.
   static Future<List<SongDb>> searchSongs(String query) async {
     final db = await DatabaseHelper().db;
 
@@ -54,7 +66,6 @@ class SongDb {
     }
 
     query = removeDiacritics(query.toLowerCase());
-
     final List<Map<String, dynamic>> result = await db.query(
       'songs',
       where: 'searchableTitle LIKE ? OR  searchableText LIKE ?',
@@ -62,17 +73,9 @@ class SongDb {
       orderBy: 'id DESC',
     );
 
-    List<SongDb> matchingSongs = List<SongDb>.generate(result.length, (i) {
-      return SongDb(
-        id: result[i]['id'],
-        title: result[i]['title'],
-        youtubeUrl: result[i]['youtubeUrl'],
-        paragraphs: jsonDecode(result[i]['paragraphs']),
-        lyricsPlain: result[i]['lyricsPlain'],
-        videoExplanation: jsonDecode(result[i]['videoExplanation']),
-        searchableText: result[i]['searchableText'],
-      );
-    });
+    // Convert query results to List of SongDb instances
+    var matchingSongs =
+        List.generate(result.length, (i) => SongDb.fromMap(result[i]));
 
     if (matchingSongs.length > 50) {
       matchingSongs = matchingSongs.sublist(matchingSongs.length - 50);
@@ -81,6 +84,9 @@ class SongDb {
     return matchingSongs;
   }
 
+  /// Fetches the first 50 songs from the database.
+  ///
+  /// Returns a list of [SongDb] instances.
   static Future<List<SongDb>> getFirst50Songs() async {
     final db = await DatabaseHelper().db;
 
@@ -94,18 +100,7 @@ class SongDb {
       limit: 50,
     );
 
-    List<SongDb> first50Songs = List<SongDb>.generate(result.length, (i) {
-      return SongDb(
-        id: result[i]['id'],
-        title: result[i]['title'],
-        youtubeUrl: result[i]['youtubeUrl'],
-        paragraphs: jsonDecode(result[i]['paragraphs']),
-        lyricsPlain: result[i]['lyricsPlain'],
-        videoExplanation: jsonDecode(result[i]['videoExplanation']),
-        searchableText: result[i]['searchableText'],
-      );
-    });
-
-    return first50Songs;
+    // Convert query results to List of SongDb instances
+    return List.generate(result.length, (i) => SongDb.fromMap(result[i]));
   }
 }

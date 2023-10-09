@@ -79,6 +79,44 @@ class SliderController extends GetxController {
     }
   }
 
+  Future<List<FileSystemEntity>> getFilesInDirectory(folderName) async {
+    final Directory appDocDir = await getApplicationDocumentsDirectory();
+    final String docPath = appDocDir.path;
+    final directory = Directory('$docPath/$folderName');
+    return directory.listSync();
+  }
+
+  Future<String?> createThumbnailFile(
+      String videoPath, String outputPath, String seconds) async {
+    final programFilesPath = Platform.environment['ProgramFiles'];
+    final ffmpegPath = '$programFilesPath\\ipuc\\ffmpeg';
+    try {
+      final processResult = await Process.run(
+        ffmpegPath + '\\bin\\ffmpeg.exe',
+        [
+          '-i',
+          videoPath,
+          '-y',
+          '-ss',
+          seconds,
+          '-frames:v',
+          '1',
+          '-q:v',
+          '1',
+          outputPath,
+        ],
+      );
+
+      if (processResult.exitCode == 0) {
+        return outputPath;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
   /// Picks an image from the device gallery and saves it to the application's document directory.
   Future<void> pickImage() async {
     final pickedFile =
