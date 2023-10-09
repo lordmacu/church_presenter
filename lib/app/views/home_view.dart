@@ -60,7 +60,7 @@ class HomeView extends StatelessWidget {
   /// The left panel contains the ListPresent and MediaDataWidget.
   Widget _buildLeftPanel() {
     return Expanded(
-      flex: 2,
+      flex: 3,
       child: Container(
         decoration: BoxDecoration(
           border: Border(
@@ -91,7 +91,7 @@ class HomeView extends StatelessWidget {
   /// The right panel contains the SlidePresenter.
   Widget _buildRightPanel() {
     return Expanded(
-      flex: 7,
+      flex: 9,
       child: SlidePresenter(),
     );
   }
