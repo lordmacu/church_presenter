@@ -1,20 +1,31 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:get/get.dart';
 import 'package:ipuc/app/controllers/present_controller.dart';
 import 'package:ipuc/app/controllers/slide_controller.dart';
+import 'package:ipuc/core/sqlite_helper.dart';
 import 'package:ipuc/models/slide.dart';
 import 'package:ipuc/models/song.dart';
 import 'package:ipuc/models/songdb.dart';
 import 'package:uuid/uuid.dart';
 import 'package:diacritic/diacritic.dart';
 
-/// `SongListController` manages the list of songs, search functionality,
+/// `SongController` manages the list of songs, search functionality,
 /// and interaction with other controllers like `PresentController` and `SliderController`.
-class SongListController extends GetxController {
+class SongController extends GetxController {
   // Observables to hold the index of the selected song and the search query.
   var selectedIndex = 0.obs;
   var searchQuery = "".obs;
+
+  Rx<SongDb> currentSong = SongDb(
+          title: "",
+          youtubeUrl: "",
+          paragraphs: [],
+          videoExplanation: [],
+          searchableText: "",
+          lyricsPlain: "")
+      .obs;
 
   // Controllers for presentation and slides.
   final PresentController controllerPresent = Get.put(PresentController());
@@ -60,7 +71,7 @@ class SongListController extends GetxController {
   /// Adds a new song to the presentation.
   ///
   /// @param song - The song to be added.
-  void addNewSong(SongDb song) async {
+  void addNewSongToPresenter(SongDb song) async {
     // Check if there's an empty presentation, if so, create one
     if (controllerPresent.selectedPresentation.value.key == "") {
       await controllerPresent.addEmptyPresentation();
@@ -106,6 +117,89 @@ class SongListController extends GetxController {
       "title": song.title,
     });
     await controllerPresent.sendDataToPresentation(firstParagraphPayload);
+  }
+
+  /// Resets the [currentSong] to an empty [SongDb] object.
+  ///
+  /// This is used to clear the current song data when needed.
+  Future<void> resetSong() async {
+    currentSong.value = SongDb(
+        title: "",
+        youtubeUrl: "",
+        paragraphs: [],
+        videoExplanation: [],
+        searchableText: "",
+        lyricsPlain: "");
+  }
+
+  /// Inserts a new song into the database.
+  ///
+  /// The method first checks if a song with the same searchable title
+  /// already exists. If not, it inserts a new song with details
+  /// such as title, YouTube URL, paragraphs, etc.
+  Future<void> addNewDbSong() async {
+    final ipucDb = await DatabaseHelper().db;
+    if (ipucDb == null) {
+      return;
+    }
+
+    List<dynamic> paragraphs = currentSong.value.paragraphs;
+    String cleanTitle = currentSong.value.title;
+
+    String searchableText = removeDiacritics(
+        (cleanTitle + " " + paragraphs.join(" ")).replaceAll('\n', ' '));
+
+    List<Map> existingSongs = await ipucDb.query('songs',
+        where: 'searchableTitle = ?',
+        whereArgs: [removeDiacritics(cleanTitle)]);
+
+    if (existingSongs.isEmpty) {
+      await ipucDb.insert('songs', {
+        'title': cleanTitle,
+        'youtubeUrl': currentSong.value.youtubeUrl,
+        'paragraphs': jsonEncode(paragraphs),
+        'lyricsPlain': jsonEncode(paragraphs),
+        'videoExplanation': jsonEncode([]),
+        'searchableText': searchableText,
+        'searchableTitle': removeDiacritics(cleanTitle)
+      });
+    }
+  }
+
+  /// Updates an existing song in the database.
+  ///
+  /// It updates the details of the song such as title, YouTube URL,
+  /// paragraphs, etc., based on the ID of the [currentSong].
+  ///
+  /// After the update operation, it resets the [currentSong] to empty.
+  Future<void> updateDbSong() async {
+    List<dynamic> paragraphs = currentSong.value.paragraphs;
+    final ipucDb = await DatabaseHelper().db;
+
+    if (ipucDb == null) {
+      return;
+    }
+
+    String cleanTitle = currentSong.value.title;
+    String searchableText = removeDiacritics(
+        (cleanTitle + " " + paragraphs.join(" ")).replaceAll('\n', ' '));
+
+    await ipucDb.update(
+      'songs',
+      {
+        'title': cleanTitle,
+        'youtubeUrl': currentSong.value.youtubeUrl,
+        'paragraphs': jsonEncode(paragraphs),
+        'lyricsPlain': jsonEncode(paragraphs),
+        'videoExplanation': jsonEncode([]),
+        'searchableText': searchableText,
+        'searchableTitle': removeDiacritics(cleanTitle),
+      },
+      where: 'id = ?',
+      whereArgs: [currentSong.value.id],
+    );
+
+    resetSong();
   }
 
   /// Overrides the `onInit` lifecycle method to load songs when the controller is initialized.

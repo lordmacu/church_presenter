@@ -7,7 +7,7 @@ import 'package:ipuc/app/controllers/media_data_controller.dart';
 import 'package:ipuc/app/controllers/present_controller.dart';
 import 'package:ipuc/app/controllers/preview_controller.dart';
 import 'package:ipuc/app/controllers/slide_controller.dart';
-import 'package:ipuc/app/controllers/song_list_controller.dart';
+import 'package:ipuc/app/controllers/song_controller.dart';
 import 'package:ipuc/widgets/media_data/media_data.dart';
 import 'package:ipuc/widgets/presents/list_present.dart';
 import 'package:ipuc/widgets/slides/slide_presenter.dart';
@@ -24,7 +24,7 @@ class HomeView extends StatelessWidget {
 
   final BibliesController bibliesController = Get.put(BibliesController());
   final PreviewController previewController = Get.put(PreviewController());
-  final SongListController controllerSongs = Get.put(SongListController());
+  final SongController controllerSongs = Get.put(SongController());
   final MediaDataController controllerMedia = Get.put(MediaDataController());
 
   @override

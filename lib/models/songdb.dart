@@ -8,11 +8,11 @@ import 'package:ipuc/core/sqlite_helper.dart';
 /// plain lyrics, video explanations, and searchable text.
 class SongDb {
   final int? id;
-  final String title;
+  String title;
   final String youtubeUrl;
   final List<dynamic> paragraphs;
   final String lyricsPlain;
-  final List<dynamic> videoExplanation;
+  List<dynamic> videoExplanation;
   final String searchableText;
 
   /// Constructs a [SongDb] instance with all required fields.

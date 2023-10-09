@@ -12,7 +12,7 @@ part 'song.g.dart';
 class Song {
   // The title of the song.
   @HiveField(0)
-  final String title;
+  String title;
 
   // The YouTube URL for the song.
   @HiveField(1)
@@ -20,7 +20,7 @@ class Song {
 
   // The paragraphs of the song, typically used for display.
   @HiveField(2)
-  final List<String> paragraphs;
+  List<String> paragraphs;
 
   // Plain lyrics of the song for searching or other non-display purposes.
   @HiveField(4)
@@ -29,6 +29,15 @@ class Song {
   // Video explanations associated with the song.
   @HiveField(3)
   final List<String> videoExplanation;
+
+  set setTitle(String newTitle) {
+    title = newTitle;
+  }
+
+  // Setter for paragraphs
+  set setParagraphs(List<String> newParagraphs) {
+    paragraphs = newParagraphs;
+  }
 
   /// Constructs a [Song] instance with all required fields.
   ///

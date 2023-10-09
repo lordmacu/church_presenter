@@ -45,5 +45,13 @@
     "slides":"Diapositivas",
     "delete_presentation":"Borrar presentación",
     "edit_presentation":"Editar presentación",
-    "add_empty_presentation":"Agregar una nueva presentación vacía"
+    "add_empty_presentation":"Agregar una nueva presentación vacía",
+    "edit_song":"Editar canción",
+    "song_title":"Título de la canción",
+    "confirm_delete_song":"Confirmar eliminación",
+    "question_delete_song":"¿Estás seguro de que quieres eliminar este párrafo?",
+    "paragraph_number": "Parrafo %s",
+    "add_paragraph": "Agregar parrafo",
+    "add_song": "Agregar canción"
+
 }

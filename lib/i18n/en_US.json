@@ -44,6 +44,12 @@
     "presentations":"Presentations",
     "delete_presentation":"Delete Presentation",
     "edit_presentation":"Edit Presentation",
-    "add_empty_presentation":"Add Empty Presentation"
-
+    "add_empty_presentation":"Add Empty Presentation",
+    "edit_song":"Edit Song",
+    "song_title":"Song Title",
+    "confirm_delete_song":"Confirm delete",
+    "question_delete_song":"Do you want to delete this song?",
+    "paragraph_number": "Paragraph %s",
+    "add_paragraph": "Add Paragraph",
+    "add_song": "Add Song"
 }

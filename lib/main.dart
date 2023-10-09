@@ -129,7 +129,7 @@ class MySubApp extends StatelessWidget {
         Locale('es', 'ES'),
       ],
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black,
+        scaffoldBackgroundColor: Color(0xff353535),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Color(0xff7e7e7e)),
           bodyMedium: TextStyle(color: Color(0xff7e7e7e)),
@@ -212,7 +212,7 @@ class _MyAppState extends State<MyApp> with WindowListener {
         Locale('es', 'ES'),
       ],
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black,
+        scaffoldBackgroundColor: Color(0xff353535),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Color(0xff7e7e7e)),
           bodyMedium: TextStyle(color: Color(0xff7e7e7e)),
