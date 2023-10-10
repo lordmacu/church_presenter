@@ -57,6 +57,10 @@
     "add_song": "Agregar canción",
     "delete_song": "Borrar canción",
     "question_delete_song":"¿Estás seguro de que quieres eliminar esta canción?",
-    "confirm_delete_song":"Confirmar eliminación"
+    "confirm_delete_song":"Confirmar eliminación",
+    "add_youtube_video":"Add youtube video",
+    "youtube_downloader":"YouTube Downloader"
+
+
 
 }

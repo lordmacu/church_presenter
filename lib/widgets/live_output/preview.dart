@@ -179,7 +179,6 @@ class PreviewWidget extends StatelessWidget {
           child: GestureDetector(
               onTap: () => onTap(),
               child: Container(
-                padding: const EdgeInsets.all(2),
                 margin: const EdgeInsets.all(20),
                 height: 180,
                 decoration: BoxDecoration(
@@ -188,7 +187,7 @@ class PreviewWidget extends StatelessWidget {
                       color: isSelected
                           ? Colors.blue.withOpacity(0.7)
                           : Colors.transparent,
-                      width: 2),
+                      width: isSelected ? 2 : 0),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
@@ -243,38 +242,6 @@ class PreviewWidget extends StatelessWidget {
                 ),
               )),
         ),
-        Positioned(
-          child: Container(
-            color: Colors.black.withOpacity(0.3),
-            child: Stack(
-              children: [
-                Text(
-                  "${data['title']}",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    foreground: Paint()
-                      ..style = PaintingStyle.stroke
-                      ..strokeWidth = 4
-                      ..color = Colors.black,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  "${data['title']}",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-          left: 20,
-          bottom: 0,
-        )
       ],
     );
   }
@@ -350,7 +317,6 @@ class PreviewWidget extends StatelessWidget {
           child: GestureDetector(
               onTap: () => onTap(),
               child: Container(
-                padding: const EdgeInsets.all(2),
                 margin: const EdgeInsets.all(20),
                 height: 180,
                 decoration: BoxDecoration(
@@ -359,7 +325,7 @@ class PreviewWidget extends StatelessWidget {
                       color: isSelected
                           ? Colors.blue.withOpacity(0.7)
                           : Colors.transparent,
-                      width: 2),
+                      width: isSelected ? 2 : 0),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
@@ -507,7 +473,7 @@ class PreviewWidget extends StatelessWidget {
                   child: const Center(
                     child: Icon(
                       Icons.delete,
-                      size: 20,
+                      size: 15,
                     ),
                   ),
                 ),

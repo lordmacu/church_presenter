@@ -2,15 +2,18 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ipuc/app/controllers/present_controller.dart';
 import 'package:ipuc/app/controllers/preview_controller.dart';
 import 'package:ipuc/app/controllers/slide_controller.dart';
 import 'package:get/get.dart';
+import 'package:ipuc/app/controllers/youtube_controller.dart';
 import 'package:ipuc/app/views/gallery_view.dart';
 import 'package:ipuc/app/views/videos_view.dart';
 import 'package:ipuc/models/slide.dart';
 import 'package:ipuc/widgets/slides/slide_grid.dart';
 import 'package:ipuc/widgets/title_bar.dart';
+import 'package:ipuc/widgets/youtube/youtube_list.dart';
 import 'package:localization/localization.dart';
 import 'package:uuid/uuid.dart';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
@@ -25,6 +28,8 @@ class SlidePresenter extends StatelessWidget {
   final SliderController controller = Get.find();
   final PresentController controllerPresenter = Get.find();
   final PreviewController previewController = Get.find();
+  final YoutubeController youtubeController = Get.put(YoutubeController());
+
   final GlobalKey<AnimatedFloatingActionButtonState> keyFloating =
       GlobalKey<AnimatedFloatingActionButtonState>();
 
@@ -32,12 +37,21 @@ class SlidePresenter extends StatelessWidget {
       BuildContext modalSheetContext, TextTheme textTheme) {
     return WoltModalSheetPage.withSingleChild(
       hasSabGradient: false,
-      topBarTitle: Text('gallery'.i18n(), style: textTheme.titleSmall),
+      topBarTitle:
+          Text('gallery'.i18n(), style: TextStyle(color: Colors.white)),
       isTopBarLayerAlwaysVisible: true,
-      trailingNavBarWidget: IconButton(
-        padding: const EdgeInsets.all(10),
-        icon: const Icon(Icons.close),
-        onPressed: Navigator.of(modalSheetContext).pop,
+      backgroundColor: Color(0xff353535),
+      trailingNavBarWidget: Container(
+        padding: EdgeInsets.only(right: 10),
+        child: IconButton(
+          onPressed: () {
+            Navigator.of(modalSheetContext).pop();
+          },
+          icon: const Icon(
+            Icons.close,
+            color: Colors.grey,
+          ),
+        ),
       ),
       child: SizedBox(
         height: 500,
@@ -100,71 +114,75 @@ class SlidePresenter extends StatelessWidget {
       BuildContext modalSheetContext, TextTheme textTheme) {
     return WoltModalSheetPage.withSingleChild(
       hasSabGradient: false,
-      topBarTitle: Text('videos'.i18n(), style: textTheme.titleSmall),
+      topBarTitle: Text('videos'.i18n(), style: TextStyle(color: Colors.white)),
       isTopBarLayerAlwaysVisible: true,
-      trailingNavBarWidget: IconButton(
-        padding: const EdgeInsets.all(10),
-        icon: const Icon(Icons.close),
-        onPressed: Navigator.of(modalSheetContext).pop,
-      ),
-      child: SizedBox(
-        height: 500,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              child: VideosView(
-                folderName: 'ipucVideos',
-                selectImage: (String image, String videoPath) async {
-                  Slide currentSlide = controllerPresenter.selectedSlide.value;
-                  var jsonData = jsonDecode(currentSlide.json);
-                  jsonData["videoPath"] = videoPath;
-
-                  var jsonFinal = jsonEncode(jsonData);
-                  controllerPresenter.selectedSlide.value = Slide(
-                      key: currentSlide.key,
-                      type: currentSlide.type,
-                      dataType: "video",
-                      dataTypeMode: "cover",
-                      dataTypePath: image,
-                      json: jsonFinal);
-
-                  for (int i = 0;
-                      i <
-                          controllerPresenter
-                              .selectedPresentation.value.slides.length;
-                      i++) {
-                    var element = controllerPresenter
-                        .selectedPresentation.value.slides[i];
-                    if (currentSlide.key == element.key) {
-                      controllerPresenter.selectedPresentation.value.slides[i] =
-                          controllerPresenter.selectedSlide.value;
-                    }
-                  }
-                  controllerPresenter.updateSlideInPresentation(
-                      controllerPresenter.selectedSlide.value);
-                  await controllerPresenter.sendToViewerVideo(videoPath);
-                  Navigator.of(modalSheetContext).pop();
-                },
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(modalSheetContext).pop(),
-              child: SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: Center(child: Text('cancel'.i18n())),
-              ),
-            ),
-          ],
+      backgroundColor: Color(0xff353535),
+      trailingNavBarWidget: Container(
+        padding: EdgeInsets.only(right: 10),
+        child: IconButton(
+          onPressed: () {
+            Navigator.of(modalSheetContext).pop();
+          },
+          icon: const Icon(
+            Icons.close,
+            color: Colors.grey,
+          ),
         ),
       ),
+      child: SizedBox(
+          height: 500,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: VideosView(
+                    folderName: 'ipucVideos',
+                    selectImage: (String image, String videoPath) async {
+                      Slide currentSlide =
+                          controllerPresenter.selectedSlide.value;
+                      var jsonData = jsonDecode(currentSlide.json);
+                      jsonData["videoPath"] = videoPath;
+
+                      var jsonFinal = jsonEncode(jsonData);
+                      controllerPresenter.selectedSlide.value = Slide(
+                          key: currentSlide.key,
+                          type: currentSlide.type,
+                          dataType: "video",
+                          dataTypeMode: "cover",
+                          dataTypePath: image,
+                          json: jsonFinal);
+
+                      for (int i = 0;
+                          i <
+                              controllerPresenter
+                                  .selectedPresentation.value.slides.length;
+                          i++) {
+                        var element = controllerPresenter
+                            .selectedPresentation.value.slides[i];
+                        if (currentSlide.key == element.key) {
+                          controllerPresenter
+                                  .selectedPresentation.value.slides[i] =
+                              controllerPresenter.selectedSlide.value;
+                        }
+                      }
+                      controllerPresenter.updateSlideInPresentation(
+                          controllerPresenter.selectedSlide.value);
+                      await controllerPresenter.sendToViewerVideo(videoPath);
+                      Navigator.of(modalSheetContext).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          )),
     );
   }
 
   Widget image() {
     return FloatingActionButton(
-      heroTag: "three",
+      heroTag: "two",
       onPressed: () async {
         if (controllerPresenter.selectedPresentation.value.key == "") {
           await controllerPresenter.addEmptyPresentation();
@@ -201,7 +219,7 @@ class SlidePresenter extends StatelessWidget {
 
   Widget video() {
     return FloatingActionButton(
-      heroTag: "two",
+      heroTag: "three",
       onPressed: () async {
         if (controllerPresenter.selectedPresentation.value.key == "") {
           await controllerPresenter.addEmptyPresentation();
@@ -240,6 +258,70 @@ class SlidePresenter extends StatelessWidget {
     );
   }
 
+  WoltModalSheetPage youtubeDownloader(
+      BuildContext modalSheetContext, TextTheme textTheme) {
+    return WoltModalSheetPage.withSingleChild(
+      hasSabGradient: false,
+      backgroundColor: Color(0xff353535),
+      trailingNavBarWidget: Container(
+        padding: EdgeInsets.only(right: 10),
+        child: IconButton(
+          onPressed: () {
+            Navigator.of(modalSheetContext).pop();
+          },
+          icon: const Icon(
+            Icons.close,
+            color: Colors.grey,
+          ),
+        ),
+      ),
+      topBarTitle: Text('youtube_downloader'.i18n(),
+          style: TextStyle(color: Colors.white)),
+      isTopBarLayerAlwaysVisible: true,
+      child: SizedBox(
+        height: 600,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(child: YoutubeList(
+              selectImage: (String image, String video) async {
+                Slide currentSlide = controllerPresenter.selectedSlide.value;
+                var jsonData = jsonDecode(currentSlide.json);
+                jsonData["videoPath"] = video;
+
+                var jsonFinal = jsonEncode(jsonData);
+                controllerPresenter.selectedSlide.value = Slide(
+                    key: currentSlide.key,
+                    type: currentSlide.type,
+                    dataType: "video",
+                    dataTypeMode: "cover",
+                    dataTypePath: image,
+                    json: jsonFinal);
+
+                for (int i = 0;
+                    i <
+                        controllerPresenter
+                            .selectedPresentation.value.slides.length;
+                    i++) {
+                  var element =
+                      controllerPresenter.selectedPresentation.value.slides[i];
+                  if (currentSlide.key == element.key) {
+                    controllerPresenter.selectedPresentation.value.slides[i] =
+                        controllerPresenter.selectedSlide.value;
+                  }
+                }
+                controllerPresenter.updateSlideInPresentation(
+                    controllerPresenter.selectedSlide.value);
+                await controllerPresenter.sendToViewerVideo(video);
+                Navigator.of(modalSheetContext).pop();
+              },
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<String?> getRandomImage() async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();
     final String docPath = appDocDir.path;
@@ -261,8 +343,53 @@ class SlidePresenter extends StatelessWidget {
     return imageFile.path;
   }
 
+  Widget youtube(context) {
+    return FloatingActionButton(
+      heroTag: "four",
+      onPressed: () async {
+        youtubeController.searches.clear();
+        youtubeController.nextPage.value = "";
+        youtubeController.currentQuery.value = 0;
+
+        try {
+          EasyLoading.show(status: 'Cargando videos...');
+          await youtubeController.getYoutubeVideos();
+
+          WoltModalSheet.show<void>(
+            context: context,
+            enableDrag: true,
+            barrierDismissible: true,
+            pageListBuilder: (modalSheetContext) {
+              final textTheme = Theme.of(context).textTheme;
+              return [
+                youtubeDownloader(modalSheetContext, textTheme),
+              ];
+            },
+            modalTypeBuilder: (context) {
+              return WoltModalType.dialog;
+            },
+            onModalDismissedWithBarrierTap: () {},
+            maxDialogWidth: 1000,
+            minDialogWidth: 1000,
+            minPageHeight: 0.0,
+            maxPageHeight: 0.9,
+          );
+        } catch (e) {
+          EasyLoading.showInfo("Error al cargar videos");
+        } finally {
+          EasyLoading.dismiss();
+        }
+
+        keyFloating.currentState!.closeFABs();
+      },
+      tooltip: 'add_youtube_video'.i18n(),
+      child: const Icon(Icons.video_chat_outlined),
+    );
+  }
+
   Widget text() {
     return FloatingActionButton(
+      heroTag: "five",
       onPressed: () async {
         if (controllerPresenter.selectedPresentation.value.key == "") {
           await controllerPresenter.addEmptyPresentation();
@@ -271,7 +398,6 @@ class SlidePresenter extends StatelessWidget {
         keyFloating.currentState!.closeFABs();
       },
       tooltip: 'add_text'.i18n(),
-      heroTag: "one",
       child: const Icon(Icons.text_format),
     );
   }
@@ -362,6 +488,9 @@ class SlidePresenter extends StatelessWidget {
             controller.selectedOptionVideo.value = selectedOption;
 
             Slide currentSlide = controllerPresenter.selectedSlide.value;
+
+            Map<String, dynamic> jsonData = jsonDecode(currentSlide.json);
+
             controllerPresenter.selectedSlide.value = Slide(
                 key: currentSlide.key,
                 type: currentSlide.type,
@@ -394,7 +523,7 @@ class SlidePresenter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: AnimatedFloatingActionButton(
-        fabButtons: <Widget>[image(), video(), text()],
+        fabButtons: <Widget>[image(), video(), youtube(context), text()],
         key: keyFloating,
         animatedIconData: AnimatedIcons.menu_close,
         tooltip: "add_resource".i18n(),
@@ -486,61 +615,6 @@ class SlidePresenter extends StatelessWidget {
                                 ],
                               )
                             : Container(),
-                      ),
-                    ),
-                    Positioned(
-                      left: 10,
-                      child: Container(
-                        padding: const EdgeInsets.only(
-                            left: 10, right: 10, top: 10, bottom: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.3),
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Tooltip(
-                              message: "send_empty_presentation".i18n(),
-                              child: InkWell(
-                                onTap: () async {
-                                  await controllerPresenter
-                                      .sendDataToPresentation(null);
-                                },
-                                child: Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: const LinearGradient(
-                                      colors: [Colors.blue, Colors.blueAccent],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.black26,
-                                        blurRadius: 5.0,
-                                        offset: Offset(0, 4),
-                                      ),
-                                    ],
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  child: const Icon(
-                                    Icons.play_arrow,
-                                    color: Colors.white,
-                                    size: 20.0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                     controllerPresenter
@@ -809,17 +883,3 @@ class SlidePresenter extends StatelessWidget {
     );
   }
 }
-
-/*  floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          var uuid = Uuid();
-          final uniqueKey = uuid.v4();
-          final payload = jsonEncode({
-            "type": "image",
-          });
-          controllerPresenter.setSlideToPresentation(
-              Slide(key: uniqueKey, type: "song", dataType: "", json: payload));
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
-      ),*/

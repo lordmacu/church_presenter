@@ -53,6 +53,8 @@
     "paragraph_number": "Paragraph %s",
     "add_paragraph": "Add Paragraph",
     "add_song": "Add Song",
-    "delete_song": "Delete Song"
+    "delete_song": "Delete Song",
+    "add_youtube_video":"Agregar Video de YouTube",
+    "youtube_downloader":"YouTube Downloader"
 
 }

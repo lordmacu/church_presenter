@@ -285,7 +285,7 @@ class ScreenView extends StatelessWidget {
           if (payload.containsKey('dataVideoPath')) {
             if (payload['dataVideoPath'] !=
                 _screenController.dataVideoPath.value) {
-              _screenController.videoPlayerController.value.dispose();
+              //await _screenController.videoPlayerController.value.dispose();
               _screenController.dataVideoPath.value = payload['dataVideoPath'];
 
               _screenController.videoPlayerController.value =
@@ -320,7 +320,7 @@ class ScreenView extends StatelessWidget {
               } else {}
             });
           }
-        }
+        } else {}
       }
 
       return "result";

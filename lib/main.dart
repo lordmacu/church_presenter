@@ -25,6 +25,7 @@ import 'package:localization/localization.dart';
 import 'package:video_player_win/video_player_win_plugin.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -150,6 +151,7 @@ class MySubApp extends StatelessWidget {
       title: 'Ipuc',
       initialRoute: AppRoutes.preview,
       getPages: AppPages.pages,
+      builder: EasyLoading.init(),
     );
   }
 }
@@ -242,6 +244,7 @@ class _MyAppState extends State<MyApp> with WindowListener {
       title: 'Mi Aplicación',
       initialRoute: AppRoutes.loading,
       getPages: AppPages.pages,
+      builder: EasyLoading.init(),
     );
   }
 }

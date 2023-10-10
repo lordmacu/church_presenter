@@ -111,7 +111,7 @@ class SongsList extends StatelessWidget {
                   ),
                   SizedBox(
                     child: Text('lyric'.i18n()),
-                    width: 200,
+                    width: 100,
                   ),
                 ],
               ),

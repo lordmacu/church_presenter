@@ -51,7 +51,7 @@ class VideosView extends StatelessWidget {
                     path.join(directory.path, '$randomThumbnailName.png');
                 const seconds = '0:00:01.000000';
 
-                await controllerSlide.createThumbnail(
+                await controllerSlide.createThumbnailFile(
                     files[index].path, thumbnailPath, seconds);
 
                 selectImage(thumbnailPath, files[index].path);
