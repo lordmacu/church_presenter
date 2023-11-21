@@ -42,3 +42,19 @@ void toggleFullScreen() {
     isFullScreen = true;
   }
 }
+
+// Definición de la función nativa
+typedef PostQuitMessageC = Void Function(Int32 exitCode);
+typedef PostQuitMessageDart = void Function(int exitCode);
+
+void closeWindow() {
+  // Cargando la biblioteca de usuario de Windows
+  final user32 = DynamicLibrary.open('user32.dll');
+
+  // Obteniendo un puntero a la función 'PostQuitMessage'
+  final PostQuitMessageDart postQuitMessage = user32
+      .lookupFunction<PostQuitMessageC, PostQuitMessageDart>('PostQuitMessage');
+
+  // Llamando a la función con código de salida 0
+  postQuitMessage(0);
+}

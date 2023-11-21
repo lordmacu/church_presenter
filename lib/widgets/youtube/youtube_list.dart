@@ -87,6 +87,9 @@ class YoutubeList extends StatelessWidget {
                                       );
                                     },
                                     errorBuilder: (context, error, stackTrace) {
+                                      print(search['thumbnail']);
+                                      controller.deleteErrorVideoId(
+                                          search['videoId']);
                                       return Container(
                                         color: Colors.black,
                                         child: Center(
@@ -119,7 +122,7 @@ class YoutubeList extends StatelessWidget {
                   },
                 )),
           ),
-          Obx(() => controller.nextPage.value != ""
+          Obx(() => controller.currentQuery.value != 50
               ? Padding(
                   padding: EdgeInsets.all(10),
                   child: ElevatedButton(
@@ -131,7 +134,7 @@ class YoutubeList extends StatelessWidget {
                           status: 'Cargando videos...',
                           maskType: EasyLoadingMaskType.black);
 
-                      await controller.getNextYoutubeVideos();
+                      await controller.getYoutubeVideos();
                       EasyLoading.dismiss();
                     },
                     child: Text('Cargar más'),

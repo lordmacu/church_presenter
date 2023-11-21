@@ -9,8 +9,8 @@ list(APPEND FLUTTER_PLUGIN_LIST
   desktop_window
   file_selector_windows
   fullscreen_window
+  fvp
   screen_retriever
-  video_player_win
   window_manager
 )
 

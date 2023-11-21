@@ -218,6 +218,7 @@ class PresentController extends GetxController {
         "dataTypePath": selectedSlide.value.dataTypePath,
         "dataTypeMode": selectedSlide.value.dataTypeMode,
       });
+      print("aquii las subwindows ${subWindowIds.length}");
 
       await DesktopMultiWindow.invokeMethod(
           subWindowIds[0], "send_data_type", payloadDataType);
@@ -242,6 +243,7 @@ class PresentController extends GetxController {
         "dataVideoPath": jsonData["videoPath"],
       });
 
+      print("aquii las subwindows ${subWindowIds.length}");
       await DesktopMultiWindow.invokeMethod(
           subWindowIds[0], "send_data_type", payloadDataType);
     } catch (e) {

@@ -11,7 +11,7 @@ import 'package:video_player/video_player.dart';
 
 class ScreenView extends StatelessWidget {
   ScreenView({Key? key}) : super(key: key);
-  final ScreenController _screenController = Get.put(ScreenController());
+  final ScreenController _screenController = Get.find();
 
   final String dataTypeMode = "cover";
   final String text = "No matarás";
@@ -51,7 +51,7 @@ class ScreenView extends StatelessWidget {
 
   Widget getBackgroundType(context) {
     if (_screenController.dataType.value == "video") {
-      return VideoPlayer(_screenController.videoPlayerController.value);
+      return VideoPlayer(_screenController.videoPlayerController);
     }
 
     if (_screenController.dataType.value == "image") {
@@ -288,8 +288,7 @@ class ScreenView extends StatelessWidget {
               //await _screenController.videoPlayerController.value.dispose();
               _screenController.dataVideoPath.value = payload['dataVideoPath'];
 
-              _screenController.videoPlayerController.value =
-                  VideoPlayerController.file(File(payload['dataVideoPath']));
+              _screenController.initializeVideoPlayerFromFile(File(payload['dataVideoPath']));
               isVideoEqual = false;
             } else {
               isVideoEqual = true;
@@ -299,26 +298,18 @@ class ScreenView extends StatelessWidget {
           }
 
           if (_screenController.dataTypeMode.value == "play") {
-            _screenController.videoPlayerController.value.play();
+            _screenController.videoPlayerController.play();
           } else if (_screenController.dataTypeMode.value == "pause") {
             await _screenController.pause();
           } else if (_screenController.dataTypeMode.value == "reset") {
-            _screenController.videoPlayerController.value
+            _screenController.videoPlayerController
                 .seekTo(const Duration(seconds: 0));
           } else {}
 
           if (_screenController.dataTypeMode.value == "new" && !isVideoEqual) {
-            _screenController.videoPlayerController.value
-                .initialize()
-                .then((value) {
-              if (_screenController
-                  .videoPlayerController.value.value.isInitialized) {
-                _screenController.videoPlayerController.value.setLooping(true);
 
-                _screenController.videoPlayerController.value.setVolume(0.0);
-                _screenController.videoPlayerController.value.play();
-              } else {}
-            });
+            print("aquiii esta la cosa ");
+              _screenController.initializeVideoPlayer();
           }
         } else {}
       }

@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:ipuc/app/controllers/argument_controller.dart';
+import 'package:ipuc/app/controllers/screen_controller.dart';
 import 'package:ipuc/app/routes/app_pages.dart';
 import 'package:ipuc/app/routes/app_routes.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:ipuc/core/sqlite_helper.dart';
+import 'package:ipuc/core/windows_utils.dart';
 import 'package:ipuc/models/book.dart';
 import 'package:ipuc/models/lyric.dart';
 import 'package:ipuc/models/paragraph.dart';
@@ -22,22 +24,27 @@ import 'package:ipuc/models/video_explanation.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:localization/localization.dart';
-import 'package:video_player_win/video_player_win_plugin.dart';
-import 'package:window_manager/window_manager.dart';
+ import 'package:window_manager/window_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fvp/fvp.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isWindows) WindowsVideoPlayer.registerWith();
 
   DatabaseHelper databaseHelper = DatabaseHelper();
   await databaseHelper.initDb();
 
   ArgumentController controller = Get.put(ArgumentController());
 
+
+
   if (args.firstOrNull == 'multi_window') {
+   registerWith(options: {'platforms': ['windows']}); // only these platforms will use this plugin implementation
+
     final windowId = int.parse(args[1]);
+
+    print("aquiiiddddddddddddd  ${windowId} ");
 
     final argument = args[2].isEmpty
         ? const {}
@@ -63,7 +70,6 @@ void main(List<String> args) async {
       await windowManager.show();
       await windowManager.focus();
     });
-
     await FFMpegHelper.instance.initialize();
 
     await Hive.initFlutter();
@@ -104,7 +110,7 @@ Future<void> clearAllHiveBoxes() async {
   }
 }
 
-class MySubApp extends StatelessWidget {
+class MySubApp extends StatefulWidget {
   const MySubApp({
     Key? key,
     required this.windowController,
@@ -113,6 +119,15 @@ class MySubApp extends StatelessWidget {
 
   final WindowController windowController;
   final Map? args;
+
+  @override
+  _MySubAppState createState() => _MySubAppState();
+}
+
+class _MySubAppState extends State<MySubApp>    {
+  _MySubAppState();
+
+  final ScreenController _screenController = Get.put(ScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -173,6 +188,19 @@ class _MyAppState extends State<MyApp> with WindowListener {
     _init();
   }
 
+
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  void _init() async {
+   await windowManager.setPreventClose(true);
+    setState(() {});
+  }
+
   @override
   void onWindowClose() async {
     bool _isPreventClose = await windowManager.isPreventClose();
@@ -187,17 +215,6 @@ class _MyAppState extends State<MyApp> with WindowListener {
 
       await windowManager.destroy();
     }
-  }
-
-  @override
-  void dispose() {
-    windowManager.removeListener(this);
-    super.dispose();
-  }
-
-  void _init() async {
-    await windowManager.setPreventClose(true);
-    setState(() {});
   }
 
   @override

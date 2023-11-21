@@ -22,8 +22,10 @@ class SlideGrid extends StatelessWidget {
   final FocusNode focusNode = FocusNode();
 
   sendToViewer(Slide slide) async {
+
     try {
       final subWindowIds = await DesktopMultiWindow.getAllSubWindowIds();
+      print("aquiii ${subWindowIds.length} ");
 
       var jsonData = jsonDecode(slide.json);
       var videoPath = "";
